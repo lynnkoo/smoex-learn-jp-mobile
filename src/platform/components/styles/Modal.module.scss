@@ -1,0 +1,38 @@
+
+.full-screen-modal {
+  position: fixed;
+  top: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 4000;
+  transition: all .3s;
+  &.shown {
+    top: 0;
+  }
+}
+.full-screen-header {
+  height: 48px;
+  padding: 10px;
+  border-bottom: 1px solid gray
+}
+.full-screen-content {
+  padding: 0 10px;
+}
+
+.drawer-modal {
+  width: 100%;
+  height: 100%;
+  transition: background-color .3s;
+  position: absolute;
+  top: 48px;
+  &.shown {
+    background-color: rgba(0, 0, 0, .3);
+  }
+}
+
+// .drawer-modal-content {
+//   background-color: white;
+//   margin-top: 48px;
+// }

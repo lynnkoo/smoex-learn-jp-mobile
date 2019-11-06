@@ -1,0 +1,6 @@
+auth:
+  accessKeyId: xxxxxxxxx
+  accessKeySecret: xxxxxxxxxx
+oss: 
+  bucket: xxxxxx
+  endpoint: https://xxx.xxx.com

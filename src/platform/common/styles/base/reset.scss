@@ -1,0 +1,61 @@
+* {
+  box-sizing: border-box;
+  /* 防止点击闪烁 */
+  -webkit-tap-highlight-color: transparent;
+
+  /* 缩放网页，文字大小不变 */
+  -webkit-text-size-adjust: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 修复img默认位置和IE边框 */
+img {
+  vertical-align: top;
+  border: none;
+}
+
+textarea {
+  resize: none;
+  padding: 5px;
+}
+
+/* 去除虚线 */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+/* 重置部分表单圆角和内阴影 */
+input[type='text'],
+input[type='file'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='number'],
+input[type='email'],
+input[type='url'],
+textarea {
+  -webkit-appearance: none;
+}
+
+/* 去除文本框上下箭头 */
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+/* 设置iconfont标签font-famile */
+[class^='icon-'],
+[class*=' icon-'] {
+  font-family: 'iconfont';
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+// TODO 
+input {
+  border: none;
+  padding: 0
+}

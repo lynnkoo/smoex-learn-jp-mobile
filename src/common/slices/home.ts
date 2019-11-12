@@ -1,15 +1,13 @@
 
-import * as React from 'react'
-import { createContainer } from '../../shared/redux-kit/dynamic';
 import { accountReducer } from '../../platform/common/logics';
-import { useScopedSelector, useScopedAction } from 'shared/redux-kit';
 import { Loading } from 'platform/components/Loading';
+import { createSlice, useScopedSelector, useScopedAction } from 'redux-async-kit'
 
 const SLICE_NAME = 'home'
 
 export function createHomeSlice(opts: any) {
   const { loader, loading } = opts
-  return createContainer({
+  return createSlice({
     loader,
     loading,
     name: SLICE_NAME,

@@ -2,7 +2,6 @@ import * as React from 'react'
 import styles from './styles/HomePage.module.scss'
 import { transformStyles } from '../../platform/utils/styles';
 import { Link } from 'react-router-dom';
-import { useAction } from '../../shared/redux-kit';
 import { accountAsyncAction } from '../../platform/common/logics/account/actions';
 import { useHomeSelector, useHomeAction, selectHomeAccount } from '../../common/slices/home';
 import { ModalBeta } from 'platform/components/hooks/modal';

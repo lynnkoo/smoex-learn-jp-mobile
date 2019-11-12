@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { AppHeader } from './AppHeader'
 import uuidv4 from 'uuid/v4';
-import { useGlobalAction } from 'shared/redux-kit';
+import { useGlobalAction, useActionCallback } from 'redux-async-kit';
 import { accountAsyncAction } from 'platform/common/logics/account/actions';
 import { ModalLayer } from './ModalLayer';
 
@@ -29,9 +29,10 @@ export function useModalState(modal: any, deps: any = []) {
 
 export const AppPage: React.FC<any> = props => {
   const { children } = props
-  const [getInfo, loading, error] = useGlobalAction(accountAsyncAction.getInfo)
+  const [getInfo, loading] = useGlobalAction(accountAsyncAction.getInfo)
+  const [onGetInfo, error] = useActionCallback(getInfo)
   React.useEffect(() => {
-    getInfo()
+    onGetInfo()
   }, [])
   return !loading && (
     <>

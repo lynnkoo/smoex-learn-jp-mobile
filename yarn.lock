@@ -9921,6 +9921,19 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
+redux-async-kit@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/redux-async-kit/-/redux-async-kit-0.0.3.tgz#34d8a5aa6e4443d44ea83cc88b6ace2970c617df"
+  integrity sha512-bYWm2b7FYSxAesPEWHnmwyGWtxlfoWNFXvXTjeND7KVEXtpPBWw8ryRmnnSNN7hE3jlFVRsJ1hR2oIz0r/b2Iw==
+  dependencies:
+    immer "^4.0.1"
+    lodash "^4.17.15"
+    react-loadable "^5.5.0"
+    react-redux "^7.1.1"
+    redux "^4.0.4"
+    redux-observable "^1.2.0"
+    reselect "^4.0.0"
+
 redux-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-1.2.0.tgz#ff51b6c6be2598e9b5e89fc36639186bb0e669c7"

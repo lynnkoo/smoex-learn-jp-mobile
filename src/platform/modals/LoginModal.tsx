@@ -4,7 +4,7 @@ import styles from './styles/LoginModal.module.scss'
 import { transformStyles } from '../utils/styles';
 import { enhanceFormComponent } from 'platform/components/Form';
 import { useFormState } from '../components/Form';
-import { useGlobalSelector, useActionCallback, useGlobalAction, useAsyncCallback } from 'shared/redux-kit';
+import { useGlobalSelector, useActionCallback, useGlobalAction, useAsyncCallback } from 'redux-async-kit';
 import { accountAsyncAction } from 'platform/common/logics/account/actions';
 import { asModalProps } from 'platform/components/ModalLayer';
 
@@ -39,7 +39,7 @@ const TLoginForm: React.FC<any> = props => {
   const [update, updateLoading] = useGlobalAction(accountAsyncAction.getInfo);
   const loading = LoginLoading || updateLoading
 
-  const onLogin = useActionCallback(async () => {
+  const [onLogin] = useActionCallback(async () => {
     const { account, password } = data
     await login(account, password)
     // await update()

@@ -31,6 +31,7 @@
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
+    "redux-async-kit": "^0.0.3",
     "redux-observable": "^1.2.0",
     "reselect": "^4.0.0",
     "uuid": "^3.3.3"
@@ -67,7 +68,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,md,css,scss,json,html}": [
-      "prettier --config .prettierrc --write",
+      "npm run format",
       "git add"
     ],
     "yarn.lock": [

@@ -5,7 +5,7 @@ import { useModalState } from './AppContainer';
 import { DrawerModal } from './DrawerModal';
 import { usePopupShown, IPopupProps } from './PopupLayer';
 import { LoginModal } from '../modals/LoginModal';
-import { useGlobalSelector } from 'shared/redux-kit';
+import { useGlobalSelector } from 'redux-async-kit';
 import { useToggleModal, asModalProps } from './ModalLayer';
 
 const cx = transformStyles(styles);

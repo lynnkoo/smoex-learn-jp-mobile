@@ -1,12 +1,19 @@
 import * as React from 'react'
 import styles from './styles/HomePage.module.scss'
-import { transformStyles } from '../../platform/utils/styles';
-import { Link } from 'react-router-dom';
-import { accountAsyncAction } from '../../platform/common/logics/account/actions';
-import { useHomeSelector, useHomeAction, selectHomeAccount } from '../../common/slices/home';
-import { ModalBeta } from 'platform/components/hooks/modal';
-import { FullScreenModal, MessageModal } from 'platform/components/FullScreenModal';
-import { AppContext } from 'platform/components/AppContainer';
+import { AppContext } from 'shared/react-dom-basic-kit'
+import { transformStyles } from 'shared/react-dom-basic-kit/utils'
+import { Link } from 'react-router-dom'
+import { accountAsyncAction } from '../../shared/smoex-frontend-basic/logics/account/actions'
+import {
+  useHomeSelector,
+  useHomeAction,
+  selectHomeAccount,
+} from '../../common/slices/home'
+import {
+  FullScreenModal,
+  MessageModal,
+} from 'shared/smoex-moblie-basic/components/FullScreenModal'
+import { useHeaderProps } from 'shared/smoex-moblie-basic/containers/Pages'
 const cx = transformStyles(styles)
 
 // name = Home
@@ -23,7 +30,7 @@ export const HomePage: React.FC = (props: any) => {
     updateInfo(count)
   }, [count])
   const [visible, setVisible] = React.useState(true)
-  const { showModal, closeModal } = React.useContext(AppContext);
+  const { showModal, closeModal } = React.useContext(AppContext)
   const onToggleModal = () => {
     showModal(FullScreenModal, {
       children: (
@@ -31,20 +38,22 @@ export const HomePage: React.FC = (props: any) => {
           <div onClick={closeModal}>CLOSE CLOSE</div>
           <div onClick={() => showModal(MessageModal, {})}>SHOWMODAL</div>
         </div>
-      )
+      ),
     })
   }
   return (
-    <div className={cx('home-page')}>
+    <section className={cx('home-page')}>
       <div>{account.name} </div>
       <div onClick={onUpdateInfo}>UPDATE NAME</div>
       <div>{count}</div>
-      <div onClick={() => setCount(x => x + 1)}>ADD COUNT</div>
+      <div onClick={() => setCount((x) => x + 1)}>ADD COUNT</div>
       <div>{loading && 'loading'}</div>
       <div>{account.loading && 'account loading'}</div>
       <div>{error && 'error: ' + JSON.stringify(error)}</div>
       <Link to="/search">TO SEARCH</Link>
-    </div>
+      <br />
+      <Link to="/notfound">TO NOTFOUND</Link>
+    </section>
   )
 }
 

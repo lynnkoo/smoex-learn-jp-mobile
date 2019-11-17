@@ -1,11 +1,10 @@
 import * as React from 'react'
 
 import styles from './styles/SearchPage.module.scss'
-import { transformStyles } from '../../platform/utils/styles';
+import { transformStyles } from 'shared/react-dom-basic-kit/utils'
 const cx = transformStyles(styles)
 
-type ISearchPageProps = {
-}
+type ISearchPageProps = {}
 
 export const SearchPage: React.FC<ISearchPageProps> = (props: any) => {
   return (

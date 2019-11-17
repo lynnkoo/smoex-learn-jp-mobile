@@ -1,0 +1,51 @@
+.login-modal {
+  padding: 20px 0;
+}
+
+.login-modal-logo {
+  font-size: 30px;
+  text-align: center;
+}
+
+.login-change-type {
+  border: 1px solid gray;
+  float: right;
+  margin-bottom: 20px;
+  margin-top: 15px;
+  padding: 5px;
+}
+
+.login-back {
+  border: 1px solid gray;
+  float: left;
+  margin-bottom: 20px;
+  margin-top: 15px;
+  padding: 5px;
+}
+
+.login-label {
+  margin-top: 15px;
+}
+
+.login-input-wrapper {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
+.login-send-code {
+  float: right;
+}
+
+.login-form-btn {
+  background-color: gray;
+  clear: both;
+  color: white;
+  margin-top: 15px;
+  padding: 15px;
+  text-align: center;
+}
+
+.for-test-scroll {
+  border: 1px solid gray;
+  height: 50px;
+}

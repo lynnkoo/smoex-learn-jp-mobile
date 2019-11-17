@@ -14,11 +14,11 @@ const KANA_TEXT = `
   だぢづでど
   ばびぶべぼ
   ぱぴぷぺぽ
-`.replace(/\s/g, '');
+`.replace(/\s/g, '')
 
 const KANA_YOUON_ROWS_TEXT = 'かさたなまらが'
 const KANA_VOICED_ROWS_TEXT = 'かかたは'
-const KANA_SMALL_TEXT = 'あいうえおやゆよつかけは';
+const KANA_SMALL_TEXT = 'あいうえおやゆよつかけは'
 
 const KANA_COLUMN_COUNT = 5
 const KANA_VOICED_ROW = 10
@@ -28,7 +28,7 @@ const HALF_VOICED_CHAR_OFFSET = 0x02
 const KATAKANA_CHAR_OFFSET = 0x60
 const HIRAGANA_CHAR_OFFSET = -0x60
 
-export const KANA_CHARS = KANA_TEXT.split('');
+export const KANA_CHARS = KANA_TEXT.split('')
 export enum KANA_TYPE {
   UNVICED = 0,
   KATAKANA = 1,

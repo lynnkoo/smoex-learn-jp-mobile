@@ -1,16 +1,18 @@
-
-import { accountReducer } from '../../platform/common/logics';
-import { Loading } from 'platform/components/Loading';
-import { createSlice, useScopedSelector, useScopedAction } from 'redux-async-kit'
+import { accountReducer } from '../../shared/smoex-frontend-basic/logics'
+import { Loading } from 'shared/smoex-moblie-basic/components/Loading'
+import {
+  createSlice,
+  useScopedSelector,
+  useScopedAction,
+} from 'redux-async-kit'
 
 const SLICE_NAME = 'home'
 
 export function createHomeSlice(opts: any) {
   const { loader, loading } = opts
-  return createSlice({
+  return createSlice(SLICE_NAME, {
     loader,
     loading,
-    name: SLICE_NAME,
     reducers: {
       account: accountReducer,
       account2: accountReducer,

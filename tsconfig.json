@@ -4,13 +4,7 @@
     "jsx": "react",
     "module": "esnext",
     "moduleResolution": "node",
-    "lib": [
-      "es7",
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "es2017.object"
-    ],
+    "lib": ["es7", "dom", "dom.iterable", "esnext", "es2017.object"],
     "rootDir": "src",
     "baseUrl": "src",
     "sourceMap": true,
@@ -27,11 +21,9 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
-    "allowJs": true
+    "allowJs": true,
+    "isolatedModules": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

@@ -1,0 +1,61 @@
+@import 'shared/smoex-frontend-basic/styles/moblie.scss';
+
+$header-height: 48px;
+
+.header {
+  height: $header-height;
+}
+
+.header-wrapper {
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid gray;
+  display: flex;
+  height: $header-height;
+  justify-content: space-between;
+  left: 0;
+  padding: 0 16px;
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  &.overlay {
+    z-index: 1;
+  }
+}
+
+.menu-modal {
+  background-color: white;
+  max-height: 70%;
+  overflow-y: scroll;
+  // margin-top: $header-height;
+  padding: 16px;
+  position: relative;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+
+  &.shown {
+    transform: translateY(0);
+  }
+}
+
+.account-intro {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.intro-avatar {
+  border: 1px solid gray;
+  border-radius: 50%;
+  height: 80px;
+  margin-bottom: 10px;
+  padding: 20px;
+  width: 80px;
+}
+
+.intro-login {
+  // margin-top: 10px;
+}

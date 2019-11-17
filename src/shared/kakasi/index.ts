@@ -1,4 +1,3 @@
-
 export function a() {
- console.log('')
+  console.log('')
 }

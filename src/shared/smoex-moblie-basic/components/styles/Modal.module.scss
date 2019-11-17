@@ -1,0 +1,47 @@
+.full-screen-modal {
+  background-color: white;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 100%;
+  transition: all 0.3s;
+  z-index: 4000;
+
+  &.shown {
+    top: 0;
+  }
+}
+
+.full-screen-header {
+  border-bottom: 1px solid gray;
+  flex-shrink: 0;
+  height: 48px;
+  padding: 10px;
+}
+
+.full-screen-content {
+  flex-grow: 1;
+  overflow-y: scroll;
+  padding: 0 10px;
+}
+
+.drawer-modal {
+  height: 100%;
+  position: absolute;
+  top: 48px;
+  transition: background-color 0.3s;
+  width: 100%;
+
+  &.shown {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+// .drawer-modal-content {
+//   background-color: white;
+//   margin-top: 48px;
+// }

@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page1 rendor correctly 1`] = `
+<View
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "fontSize": 20,
+          "margin": 10,
+          "textAlign": "center",
+        }
+      }
+    >
+      Welcome to Page1
+    </Text>
+    <Text
+      style={
+        Object {
+          "color": "#333333",
+          "marginBottom": 5,
+          "textAlign": "center",
+        }
+      }
+    >
+      Shake or press menu button for dev menu2
+    </Text>
+    <View
+      accessible={true}
+      focusable={true}
+      isTVSelectable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "backgroundColor": "#333333",
+          "opacity": 1,
+        }
+      }
+    >
+      Go to List
+    </View>
+  </View>
+</View>
+`;

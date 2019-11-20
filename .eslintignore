@@ -1,0 +1,6 @@
+# it doesn't works, configuration in .gitignore.
+**/*.test.js
+**/*.test.ts
+**/*.test.tsx
+
+

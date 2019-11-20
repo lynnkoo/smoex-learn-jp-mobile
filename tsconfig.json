@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "allowJs": false,
+    "jsx": "react-native",
+    "outDir": "./build",
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "noImplicitReturns": false,
+    "noUnusedParameters": false,
+    "mapRoot": "",
+    "lib": ["es6", "dom", "es2017"]
+  },
+  "include": ["typings/**/*.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": [
+    "android",
+    "ios",
+    "build",
+    "node_modules",
+    "**/build/",
+    "**/*.test.ts"
+  ],
+  "compileOnSave": false
+}

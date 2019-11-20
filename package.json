@@ -1,0 +1,94 @@
+{
+    "name": "rn_car_app",
+    "version": "0.0.1",
+    "appVersion": "8.15",
+    "private": true,
+    "scripts": {
+        "patch": "crn-cli run-patch",
+        "start": "crn-cli start --port 5389",
+        "android": "crn-cli run-android --port 5389 --app-version 8.14",
+        "ios": "crn-cli run-ios --port 5389 --app-version 8.14",
+        "start:trip": "crn-cli start --port 5388",
+        "android:trip": "crn-cli run-android --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --port 5388",
+        "ios:trip": "crn-cli run-ios --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --reset --port 5388",
+        "lint": "npm run lint:js",
+        "lint:js": "eslint . --ignore-path .gitignore --ext .js,.ts,.tsx",
+        "lint:fix": "npm run lint:js:fix",
+        "lint:js:staged": "eslint . --ignore-path .gitignore",
+        "lint:js:fix": "npm run lint:js -- --fix",
+        "lint:js:fix:staged": "eslint . --ignore-path .gitignore --fix",
+        "build:ts": "tsc",
+        "watch:ts": "tsc -w",
+        "build:version": "sh ./scripts/BuildVersion.sh",
+        "precommit": "lint-staged",
+        "test": "jest --coverage",
+        "test:fix": "npm run test -- -u",
+        "clean": "watchman watch-del-all && rm -rf package-lock.json && rm -rf node_modules && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-* && npm run ctrip:install",
+        "ctrip:install": "npm install --registry=http://registry.npm.release.ctripcorp.com"
+    },
+    "dependencies": {
+        "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
+        "react": "16.9.0",
+        "react-native": "0.61.2",
+        "redux": "^4.0.4",
+        "redux-logic": "^2.1.1"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.2",
+        "@babel/runtime": "^7.6.2",
+        "@react-native-community/eslint-config": "^0.0.5",
+        "@types/jest": "^24.0.18",
+        "@types/react": "^16.9.9",
+        "@types/react-native": "^0.60.21",
+        "@types/react-test-renderer": "16.9.0",
+        "@typescript-eslint/parser": "^2.4.0",
+        "babel-eslint": "^10.0.3",
+        "babel-jest": "^24.9.0",
+        "bpk-tokens": "^29.2.2",
+        "enzyme": "^3.10.0",
+        "enzyme-adapter-react-16": "^1.15.1",
+        "eslint": "^5.10.0",
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-config-skyscanner": "^3.0.0",
+        "eslint-import-resolver-typescript": "^2.0.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-jsx-a11y": "^6.1.1",
+        "eslint-plugin-react": "^7.11.1",
+        "eslint-plugin-skyscanner-dates": "^1.0.9",
+        "eslint-plugin-typescript": "^0.14.0",
+        "husky": "^3.0.9",
+        "jest": "^24.9.0",
+        "jest-junit": "^9.0.0",
+        "jest-react-native": "^18.0.0",
+        "lerna": "^3.10.7",
+        "lint-staged": "^8.1.0",
+        "lodash": "^4.17.15",
+        "metro-react-native-babel-preset": "^0.56.0",
+        "react-dom": "^16.12.0",
+        "react-intl": "^3.6.0",
+        "react-test-renderer": "16.9.0",
+        "ts-jest": "^24.1.0",
+        "typescript": "^3.6.4"
+    },
+    "lint-staged": {
+        "src/**/*.{js,ts,tsx}": [
+            "npm run lint:js:staged --"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "jest": {
+        "preset": "react-native",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ]
+    }
+}

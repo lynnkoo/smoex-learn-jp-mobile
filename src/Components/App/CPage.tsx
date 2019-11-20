@@ -8,11 +8,12 @@ import {
 } from '@ctrip/crn';
 import { IntlProvider } from 'react-intl';
 import { Text } from 'react-native';
-import { DefaultAppID } from '@ctrip/shark-app-sdk/lib/Shark/IBUSharkConf';
+import { AppContext } from '../../Util/Index';
+import { Platform, TranslationKeys } from '../../Constants/Index';
 
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
 
-export default class CarPage extends Page<IBasePageProps, any> {
+export default class CPage extends Page<IBasePageProps, any> {
   constructor(prop) {
     super(prop);
     this.state = {
@@ -25,6 +26,7 @@ export default class CarPage extends Page<IBasePageProps, any> {
     // const startTime = new Date().getTime();
     IBUSharkUtil.fetchSharkData(this.getSharkConfig())
       .then(({ lang, messages }) => {
+        this.setAppContextSharkKeys(lang, messages);
         this.setState({ lang, messages });
         this.sharkFetchDidFinish();
         // const costTime = new Date().getTime() - startTime;
@@ -33,6 +35,7 @@ export default class CarPage extends Page<IBasePageProps, any> {
         // });
       })
       .catch(() => {
+        this.setAppContextSharkKeys('', {});
         this.setState({ lang: '', messages: {} });
         this.sharkFetchDidFinish();
       });
@@ -41,13 +44,18 @@ export default class CarPage extends Page<IBasePageProps, any> {
   componentWillUnmount() { }
 
   /* eslint-disable class-methods-use-this */
-  sharkFetchDidFinish() { }
+  sharkFetchDidFinish() {
+  }
+
+  setAppContextSharkKeys(lang, messages) {
+    AppContext.SharkKeys = { lang, messages };
+  }
 
   /* eslint-disable class-methods-use-this */
   getSharkConfig() {
     return {
-      appid: DefaultAppID,
-      keys: {},
+      appid: Platform.SHARK_APP_ID.TRIP,
+      keys: { ...TranslationKeys },
     };
   }
 

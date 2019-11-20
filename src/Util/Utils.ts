@@ -1,5 +1,7 @@
 import { Env } from '@ctrip/crn';
-import { ENV_TYPE, DOMAIN_URL } from '../Constants/Platform';
+import {
+  ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, CHANNEL_TYPE,
+} from '../Constants/Platform';
 
 class Utils {
   static async getEnvType() {
@@ -10,6 +12,15 @@ class Utils {
 
   static getDomainURL(env: string) {
     return DOMAIN_URL[env] || DOMAIN_URL[ENV_TYPE.PROD];
+  }
+
+  // APP Type is oneof : CTRIP_ISD & CTRIP_OSD & TRIP
+  static getAppType(): string {
+    /* eslint-disable dot-notation */
+    if (global['__crn_appId'] === APP_ID.TRIP) return APP_TYPE.TRIP;
+    if (global['__crn_productName'] === CHANNEL_TYPE.OSD) return APP_TYPE.CTRIP_OSD;
+    if (global['__crn_productName'] === CHANNEL_TYPE.ISD) return APP_TYPE.CTRIP_ISD;
+    return APP_TYPE.UNKNOW;
   }
 }
 

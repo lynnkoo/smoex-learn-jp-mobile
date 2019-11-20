@@ -1,4 +1,7 @@
-// import SearchPanel from '../'
-// import ToolBox from '../'
-// let IndexKeys = {..SearchPanel, ...ToolBox}
-// export {IndexKeys}
+import Test from './Test';
+
+export { Test };
+
+export default {
+  ...Test,
+};

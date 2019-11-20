@@ -1,8 +1,7 @@
 
 ## Quick links
-- [Documentation](https://backpack.github.io/)
-- [Changelog](./documents/CHANGELOG.md)
-- [GitLab Configuration](./documents/GITLAB-CONFIGURATION.md)
+- [Shark](./documents/SHARKSDK.md)
+- [Jest](./documents/JEST.md)
 
 ## Usage
 
@@ -22,18 +21,8 @@ npm run ios:trip
 
 
 
-## List of packages
-
-| Component | Version |
-|--------|-------|
-| [`bbk-theming`](/packages/bbk-theming) | ![version](http://npm.release.ctripcorp.com/badge/v/@ctrip/bbk-theming.svg?style=flat-square)
-| [`bbk-tokens`](/packages/bbk-tokens) |![version](http://npm.release.ctripcorp.com/badge/v/@ctrip/bbk-tokens.svg?style=flat-square)
-
-
-## Fork by Skycanner backpack & react-native-backpack
-- [backpack](https://github.com/Skyscanner/backpack)    
-- [react-native-backpack](https://github.com/Skyscanner/backpack-react-native)
-
+## Fork by Skycanner Hercules
+- [hercules](http://git.dev.sh.ctripcorp.com/carosd/hercules)    
 
 ## Design Review
 - [Design Review And Q&A](http://conf.ctripcorp.com/display/CAR/App-Three-In-One+Design+Review)    

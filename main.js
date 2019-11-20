@@ -1,7 +1,5 @@
-import { CRNDev, App } from '@ctrip/crn';
-
-import Demo from './build/Pages/Demo/Page1';
-import Debug from './build/Pages/Debug';
+import { CRNDev } from '@ctrip/crn';
+import RnCarApp from './build/Index';
 
 /* eslint-disable */
 if (__DEV__) {
@@ -15,28 +13,5 @@ if (__DEV__) {
   });
 }
 
-const pages = [
-  {
-    component: Debug,
-    name: 'Debug',
-    isInitialPage: true
-  },
-  {
-    component: Demo,
-    name: 'Demo',
-  }
-];
 
-const navigationBarConfig = {
-  hide: true,
-  backgroundColor: 'rgb(9, 159, 222)',
-};
-
-class rn_car_app extends App {
-  constructor(props) {
-    super(props);
-    this.init({ pages, navigationBarConfig });
-  }
-}
-
-module.exports = rn_car_app;
+module.exports = RnCarApp;

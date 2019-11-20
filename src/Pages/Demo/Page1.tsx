@@ -2,9 +2,8 @@ import React from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
 } from 'react-native';
-import {
-  Page,
-} from '@ctrip/crn';
+
+import CPage from '../../Components/App/CPage';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Page1 extends Page<any, any> {
+export default class Page1 extends CPage {
   render() {
     return (
       <View style={{ height: '100%', width: '100%' }}>
@@ -42,7 +41,7 @@ export default class Page1 extends Page<any, any> {
             }}
             style={styles.button}
           >
-            Go to List
+            <Text style={styles.welcome}>Go to List</Text>
           </TouchableOpacity>
         </View>
       </View>

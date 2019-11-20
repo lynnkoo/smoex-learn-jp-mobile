@@ -6,9 +6,11 @@ import {
   TextInput,
 } from 'react-native';
 import {
-  ViewPort, Page, IBasePageProps, HeaderView,
+  ViewPort, HeaderView,
 } from '@ctrip/crn';
 import AppContext from '../../Util/AppContext';
+import CPage from '../../Components/App/CPage';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -25,13 +27,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class MagicGate extends Page<IBasePageProps> {
+export default class MagicGate extends CPage {
   getAppContext = () => {
     const contexts = Object.keys(AppContext).map((name): string => `${name}:${JSON.stringify(AppContext[name])}`);
     return contexts.join('\n');
   }
 
-  render() {
+  renderPageContent() {
     return (
       <ViewPort>
         <HeaderView title="Debug" />

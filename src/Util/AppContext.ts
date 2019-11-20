@@ -7,7 +7,9 @@ class AppContext {
 
   static Cache = {};
 
-  static CarEnv = { BuildTime };
+  static CarEnv = { BuildTime, AppType: '' };
+
+  static SharkKeys = {};
 }
 
 export default AppContext;

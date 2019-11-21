@@ -5,12 +5,10 @@ import {
   StyleSheet,
   TextInput,
 } from 'react-native';
-import {
-  ViewPort, HeaderView,
-} from '@ctrip/crn';
+import { ViewPort, HeaderView } from '@ctrip/crn';
 import AppContext from '../../Util/AppContext';
 import CPage from '../../Components/App/CPage';
-
+import { PageId } from '../../Constants/Index';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,15 +26,21 @@ const styles = StyleSheet.create({
 });
 
 export default class MagicGate extends CPage {
+  /* eslint-disable class-methods-use-this */
+  getPageId() {
+    return PageId.Index.ID;
+  }
+
   getAppContext = () => {
-    const contexts = Object.keys(AppContext).map((name): string => `${name}:${JSON.stringify(AppContext[name])}`);
+    const contexts = Object.keys(AppContext)
+      .map((name): string => `${name}:${JSON.stringify(AppContext[name])}`);
     return contexts.join('\n');
   }
 
   renderPageContent() {
     return (
       <ViewPort>
-        <HeaderView title="Debug" />
+        <HeaderView title={this.getPageId()} />
         <ScrollView style={styles.container}>
           <View>
             <TextInput

@@ -27,7 +27,12 @@ export const APP_ID = {
 export const CHANNEL_TYPE = {
   ISD: 'rn_car_isd',
   OSD: 'rn_car_osd',
-  CTQ: 'rn_car_app',
+  IBU: 'rn_ibu_car',
+};
+
+export const CHANNEL_TYPE_UNION = {
+  CTRIP: 'rn_car_app',
+  TRIP: 'rn_ibu_car_app',
 };
 
 export const SHARK_APP_ID = {

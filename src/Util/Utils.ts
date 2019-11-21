@@ -1,6 +1,6 @@
 import { Env } from '@ctrip/crn';
 import {
-  ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, CHANNEL_TYPE,
+  ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, CHANNEL_TYPE, CHANNEL_TYPE_UNION,
 } from '../Constants/Platform';
 
 class Utils {
@@ -21,6 +21,13 @@ class Utils {
     if (global['__crn_productName'] === CHANNEL_TYPE.OSD) return APP_TYPE.CTRIP_OSD;
     if (global['__crn_productName'] === CHANNEL_TYPE.ISD) return APP_TYPE.CTRIP_ISD;
     return APP_TYPE.UNKNOW;
+  }
+
+  // distinguish Trip and Ctrip
+  // used in MCD publish channel type
+  static getChannelName(): string {
+    return global['__crn_appId'] === APP_ID.TRIP
+      ? CHANNEL_TYPE_UNION.TRIP : CHANNEL_TYPE_UNION.CTRIP;
   }
 }
 

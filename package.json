@@ -27,7 +27,7 @@
         "ctrip:install": "npm install --registry=http://registry.npm.release.ctripcorp.com"
     },
     "dependencies": {
-        "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
+        "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/8.15",
         "react": "16.9.0",
         "react-native": "0.61.2",
         "redux": "^4.0.4",

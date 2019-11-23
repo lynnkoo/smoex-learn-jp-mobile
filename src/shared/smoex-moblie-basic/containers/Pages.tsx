@@ -1,18 +1,12 @@
 import * as React from 'react'
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  useLocation,
-  useHistory,
-} from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import { Header } from './Header'
-import { useGlobalAction, useActionCallback } from 'redux-async-kit'
+import { useActionCallback } from 'shared/redux-async-kit'
 import { accountAsyncAction } from 'shared/smoex-frontend-basic/logics/account'
 import { Footer } from './Footer'
 import { PageError } from './PageError'
 import { PageLoading } from './PageLoading'
+import { commonSlice } from 'shared/smoex-frontend-basic'
 
 const PageContext = React.createContext<any>(null)
 
@@ -22,10 +16,9 @@ const DEFALUT_HEADER_PROPS = {
 const DEFALUT_FOOTER_PROPS = {
   visible: true,
 }
-
 export const Pages: React.FC<any> = (props) => {
   const { children } = props
-  const [getInfo, loading] = useGlobalAction(accountAsyncAction.getInfo)
+  const [getInfo, loading] = commonSlice.useAction(accountAsyncAction.getInfo)
   const [onGetInfo, error] = useActionCallback(getInfo)
   const [headerProps, setHeaderProps] = React.useState(DEFALUT_HEADER_PROPS)
   const [footerProps, setFooterProps] = React.useState(DEFALUT_HEADER_PROPS)

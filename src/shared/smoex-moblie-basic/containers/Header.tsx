@@ -5,15 +5,15 @@ import { usePopupShown } from 'shared/react-dom-basic-kit/components/Popup'
 import { transformStyles } from 'shared/react-dom-basic-kit/utils'
 import { LoginModal } from '../partials/LoginModal'
 
-import { useGlobalSelector } from 'redux-async-kit'
 import { useToggleModal, asModalProps } from 'shared/react-dom-basic-kit'
 import { useModalState } from 'shared/react-dom-basic-kit'
+import { commonSlice } from 'shared/smoex-frontend-basic'
 
 const cx = transformStyles(styles)
 
 const AccountIntro = (props: any) => {
   const { showLogin } = props
-  const account = useGlobalSelector((state: any) => state.account)
+  const account = commonSlice.useSelector((state: any) => state.account)
   const onAvatarClick = React.useCallback(() => {
     if (account.group === 'visitor') {
       showLogin()

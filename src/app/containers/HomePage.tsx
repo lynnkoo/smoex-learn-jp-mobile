@@ -4,11 +4,7 @@ import { AppContext } from 'shared/react-dom-basic-kit'
 import { transformStyles } from 'shared/react-dom-basic-kit/utils'
 import { Link } from 'react-router-dom'
 import { accountAsyncAction } from '../../shared/smoex-frontend-basic/logics/account/actions'
-import {
-  useHomeSelector,
-  useHomeAction,
-  selectHomeAccount,
-} from '../../common/slices/home'
+import { homeSlice } from 'common/slices/home'
 import {
   FullScreenModal,
   MessageModal,
@@ -23,8 +19,10 @@ type IHomePageProps = {
 
 export const HomePage: React.FC = (props: any) => {
   const { className } = props
-  const [updateInfo, loading, error] = useHomeAction(accountAsyncAction.getInfo)
-  const account = useHomeSelector((home: any) => home.account)
+  const [updateInfo, loading, error] = homeSlice.useAction(
+    accountAsyncAction.getInfo,
+  )
+  const account = homeSlice.useSelector((home: any) => home.account)
   const [count, setCount] = React.useState(0)
   const onUpdateInfo = React.useCallback(() => {
     updateInfo(count)

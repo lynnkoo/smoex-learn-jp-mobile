@@ -1,5 +1,5 @@
 import { ACCOUNT_ASYNC_ACTION, ACCOUNT_ACTION } from './enums'
-import { createReducer } from 'redux-async-kit'
+import { createReducer } from 'shared/redux-async-kit'
 
 const initialState = {
   name: '123',

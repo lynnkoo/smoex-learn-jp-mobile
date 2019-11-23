@@ -1,25 +1,29 @@
 import * as React from 'react'
 import { Route } from 'react-router-dom'
-import { configureStore } from 'redux-async-kit'
+import { configureStore } from 'shared/redux-async-kit'
 import { accountReducer } from '../shared/smoex-frontend-basic/logics/account/reducers'
 import { Container } from 'shared/react-dom-basic-kit'
 import { Pages } from 'shared/smoex-moblie-basic/containers/Pages'
-import { createHomeSlice } from 'common/slices/home'
+// import { createHomeSlice } from 'common/slices/home'
+import { commonSlice } from 'shared/smoex-frontend-basic'
 import { Provider } from 'react-redux'
 import 'shared/smoex-frontend-basic/styles/index.scss'
+import { homeSlice } from 'common/slices/home'
+import { createLazyComponent } from 'shared/redux-async-kit'
 
 const store = configureStore({
-  reducers: {
-    // TODO: 可能是 immer 造成的 reducer 只能放在最外层
-    account: accountReducer,
-  },
+  injector: commonSlice.injector,
 })
 
-export const HomeSlice = createHomeSlice({
+window['store'] = store
+
+const HomePage = createLazyComponent({
+  injector: homeSlice.injector,
   loader: () => import('./containers/HomePage' /* webpackChunkName: "home" */),
 })
 
-export const SearchSlice = createHomeSlice({
+const SearchPage = createLazyComponent({
+  injector: homeSlice.injector,
   loader: () =>
     import('./containers/SearchPage' /* webpackChunkName: "search" */),
 })
@@ -29,8 +33,8 @@ export const App: React.FC = () => {
     <Provider store={store}>
       <Container>
         <Pages>
-          <Route exact path="/" component={HomeSlice} />
-          <Route path="/search" component={SearchSlice} />
+          <Route exact path="/" component={HomePage} />
+          <Route path="/search" component={SearchPage} />
         </Pages>
       </Container>
     </Provider>

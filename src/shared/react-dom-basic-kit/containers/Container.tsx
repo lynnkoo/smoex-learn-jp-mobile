@@ -1,16 +1,7 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  useLocation,
-  useHistory,
-} from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import uuidv4 from 'uuid/v4'
-import { useGlobalAction, useActionCallback } from 'redux-async-kit'
-import { accountAsyncAction } from 'shared/smoex-frontend-basic/logics/account/actions'
 import { ModalLayer } from './ModalLayer'
 
 type IAppContainerProps = {

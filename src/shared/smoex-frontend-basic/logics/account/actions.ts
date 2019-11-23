@@ -1,7 +1,7 @@
 import { ACCOUNT_ACTION, ACCOUNT_ASYNC_ACTION } from './enums'
 import { accountAPI } from '../../apis/account'
-import { selectHomeAccount } from 'common/slices/home'
-import { asAccountParams } from './transformers'
+import { asAccountParams } from './convertors'
+import { accountApi } from '../../apis'
 
 export const accountAction = {
   setInfo: (data: any) => ({

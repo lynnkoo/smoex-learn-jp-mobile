@@ -5,13 +5,10 @@ import { asModalProps } from 'shared/react-dom-basic-kit'
 import { useFormState } from 'shared/react-dom-basic-kit/components/Form'
 import { transformStyles } from 'shared/react-dom-basic-kit/utils'
 import { enhanceFormComponent } from 'shared/react-dom-basic-kit/components/Form'
-import {
-  useActionCallback,
-  useGlobalAction,
-  useAsyncCallback,
-} from 'redux-async-kit'
+import { useActionCallback, useAsyncCallback } from 'shared/redux-async-kit'
 import { accountAsyncAction } from 'shared/smoex-frontend-basic/logics/account/actions'
 import { LoginFormInput } from './LoginModal'
+import { commonSlice } from 'shared/smoex-frontend-basic'
 
 const cx = transformStyles(styles)
 

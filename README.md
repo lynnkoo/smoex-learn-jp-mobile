@@ -2,6 +2,7 @@
 ## Quick links
 - [Shark](./documents/SHARKSDK.md)
 - [Jest](./documents/JEST.md)
+- [Jest Coverage](./coverage/index.html)
 
 ## Usage
 
@@ -18,6 +19,15 @@ npm run ios
 npm run ios:trip
 
 ```
+### Locally Development
+1) `npm run start` or `npm run start:trip` - to start server
+2) `npm run watch:ts` - to just-in-time compilation  typescript
+
+### Locally Commands
+* `npm run lint` - eslint check (standards by airbnb and skyscanner)
+* `npm run lint:fix` - automatic fix eslint errors
+* `npm run test` - run jest unit test    
+* `npm run test:fix` - run jest unit test and update local snapshot cache
 
 
 

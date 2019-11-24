@@ -8,7 +8,7 @@ import {
 } from '@ctrip/crn';
 // import { IntlProvider } from 'react-intl';
 // import { Text } from 'react-native';
-import { AppContext } from '../../Util/Index';
+import { AppContext, CarLog } from '../../Util/Index';
 import { Platform, TranslationKeys } from '../../Constants/Index';
 
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
@@ -20,6 +20,17 @@ export default class CPage extends Page<IBasePageProps, any> {
       lang: '',
       messages: null,
     };
+  }
+
+  getPageId() {
+    return ''
+  }
+
+  getPVOption() {
+    return {
+       pageId: this.getPageId(),
+       ...CarLog.logBasicInfo()
+    }
   }
 
   componentDidMount() {

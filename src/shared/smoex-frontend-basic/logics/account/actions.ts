@@ -10,10 +10,23 @@ export const accountAction = {
   }),
 }
 
+const getInfo = async (meta: any, dispatch: any) => {
+  return Promise.all(
+    ['type1', 'type2'].map(async (x) => {
+      const resp = await accountApi.getInfo(meta)
+      if (x === 'type1') {
+        throw {}
+      }
+      dispatch(accountAction.setInfo(resp))
+      return resp
+    }),
+  )
+}
+
 export const accountAsyncAction = {
   getInfo: () => ({
     type: ACCOUNT_ASYNC_ACTION.GET_INFO,
-    target: accountAPI.getInfo,
+    target: getInfo,
     failure: ACCOUNT_ACTION.SET_ERROR,
     success: accountAction.setInfo,
   }),

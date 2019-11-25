@@ -19,11 +19,12 @@ export default class RnCarApp extends Component {
   constructor(props) {
     super(props);
     this.initAppContext();
+    AppContext.initMarketInfo(props);
   }
 
   initAppContext = () => {
     AppContext.CarEnv.AppType = Utils.getAppType();
-  }
+  };
 
   render() {
     return (

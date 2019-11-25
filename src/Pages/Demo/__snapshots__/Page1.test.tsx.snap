@@ -58,7 +58,17 @@ exports[`Page1 rendor correctly 1`] = `
         }
       }
     >
-      Go to List
+      <Text
+        style={
+          Object {
+            "fontSize": 20,
+            "margin": 10,
+            "textAlign": "center",
+          }
+        }
+      >
+        Go to List
+      </Text>
     </View>
   </View>
 </View>

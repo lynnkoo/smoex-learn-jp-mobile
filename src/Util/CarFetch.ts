@@ -6,7 +6,10 @@ export interface RequestType {
   sequenceId: string;
 }
 
-class FetchBase {
+export interface FetchBaseType {
+}
+
+class FetchBase implements FetchBaseType {
   envType = null;
 
   constructor() {

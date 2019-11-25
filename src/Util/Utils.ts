@@ -4,13 +4,13 @@ import {
 } from '../Constants/Platform';
 
 class Utils {
-  static async getEnvType() {
+  static async getEnvType(): Promise<string> {
     return new Promise((resolve) => {
       Env.getEnvType(env => resolve(env));
     });
   }
 
-  static getDomainURL(env: string) {
+  static getDomainURL(env: string): string {
     return DOMAIN_URL[env] || DOMAIN_URL[ENV_TYPE.PROD];
   }
 

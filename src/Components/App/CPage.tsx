@@ -1,3 +1,4 @@
+// http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
 import React from 'react';
 import {
   Page,
@@ -11,10 +12,13 @@ import {
 import { AppContext } from '../../Util/Index';
 import { Platform, TranslationKeys } from '../../Constants/Index';
 
-// http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
+export interface IStateType {
+  lang?: string,
+  messages?: any,
+}
 
-export default class CPage extends Page<IBasePageProps, any> {
-  constructor(prop) {
+export default class CPage<P extends IBasePageProps, S extends IStateType> extends Page<P, S> {
+  constructor(prop: P) {
     super(prop);
     this.state = {
       lang: '',

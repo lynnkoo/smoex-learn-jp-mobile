@@ -5,9 +5,10 @@ import {
 } from 'redux';
 
 import enhancer from './Enhancer';
+import debug from './Debug/Reducers';
 
 const rootReducer = combineReducers({
-
+  debug,
 });
 
 let store: Store;

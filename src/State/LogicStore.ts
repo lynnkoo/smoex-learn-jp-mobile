@@ -2,14 +2,14 @@ import { createLogicMiddleware } from 'redux-logic';
 
 import { CarFetch } from '../Util/Index';
 
-import debugLogic from './Debug/Logic';
+import debug from './Debug/Logic';
 
 const dependencies = {
   CarFetch,
 };
 
 export const rootLogics = [
-  ...debugLogic,
+  ...debug,
 ];
 
 export const logicMiddleware = createLogicMiddleware(rootLogics, dependencies);

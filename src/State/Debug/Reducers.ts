@@ -1,14 +1,17 @@
 import { INCREMENT, DECREMENT } from './Types';
 import { DebugActionType } from './Actions';
 
-export default (state = {}, action: DebugActionType = { type: '' }) => {
-  const actionType = action.type;
+export interface debugStateType {
+  count: number,
+}
 
+export default (state: debugStateType = { count: 0 }, action: DebugActionType = { type: '' }) => {
+  const actionType = action.type;
   if (actionType === INCREMENT) {
-    return { ...state, count: action.data };
+    return { ...state, count: state.count + 1 };
   }
   if (actionType === DECREMENT) {
-    return { ...state, count: action.data };
+    return { ...state, count: state.count - 1 };
   }
   return state;
 };

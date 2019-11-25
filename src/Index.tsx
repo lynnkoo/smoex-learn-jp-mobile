@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { App } from '@ctrip/crn';
+import { Provider } from 'react-redux';
 import pages from './Routers/Index';
 import { AppContext, Utils } from './Util/Index';
+import { initialiseStore, getStore } from './State/Store';
 
 const navigationBarConfig = {
   hide: true,
@@ -19,6 +21,7 @@ export default class RnCarApp extends Component {
   constructor(props) {
     super(props);
     this.initAppContext();
+    initialiseStore();
   }
 
   initAppContext = () => {
@@ -27,9 +30,9 @@ export default class RnCarApp extends Component {
 
   render() {
     return (
-      // <Provider store={store}>
-      <Car />
-      // </Provider>
+      <Provider store={getStore()}>
+        <Car />
+      </Provider>
     );
   }
 }

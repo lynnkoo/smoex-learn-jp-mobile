@@ -1,18 +1,34 @@
-`@ctrip/crn HeaderView`
-```js
-TypeError: instance.render is not a function
+## ts-jest document
+- [typescript with react native](https://facebook.github.io/react-native/blog/2018/05/07/using-typescript-with-react-native)
+ - [ts-jest config](https://kulshekhar.github.io/ts-jest/user/react-native/#jest-config)
+- [QA helper](https://segmentfault.com/a/1190000020387433)
 
-      at finishClassComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7693:31)
-      at updateClassComponent (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:7648:24)
-      at beginWork$1 (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9159:16)
-      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12981:12)
-      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12955:22)
-      at renderRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12648:11)
-      at runRootCallback (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:12420:20)
-      at node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1935:24
-      at unstable_runWithPriority (node_modules/scheduler/cjs/scheduler.development.js:643:12)
-      at runWithPriority (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:1887:10)
+`Errors`
+* `Jest: Preset 'react-native' not found` - Jest upgrade to latest version
 
-  console.error node_modules/react-test-renderer/cjs/react-test-renderer.development.js:104
-    Warning: Component(...): No `render` method found on the returned component instance: you may have forgotten to define `render`.
+
+## Environment configration
+- `package.json` dependencies
+```javascript
+    "@types/jest": "^24.0.23",
+    "@types/react": "^16.9.13",
+    "@types/react-native": "^0.60.23",
+    "@types/react-test-renderer": "^16.9.1",
+    "babel-jest": "^24.8.0",
+    "babel-preset-react-native": "^5.0.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "jest": "^24.8.0",
+    "jest-junit": "^7.0.0",
+    "jest-react-native": "^18.0.0",
+    "react-addons-test-utils": "^15.6.2",
+    "react-dom": "16.8.3",
+    "react-native-typescript-transformer": "^1.2.13",
+    "react-test-renderer": "16.8.3",
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.2"
 ```
+
+- `jest.config.js` - with `ts-jest`
+- `rn-cli.config.js` - with typescript
+- `babel.config.js` - with typescript

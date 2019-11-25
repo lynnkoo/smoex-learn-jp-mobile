@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity,
 } from 'react-native';
+import { ViewPort } from '@ctrip/crn';
 
 import CPage from '../../Components/App/CPage';
 
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
 export default class Page1 extends CPage {
   render() {
     return (
-      <View style={{ height: '100%', width: '100%' }}>
+      <ViewPort style={{ height: '100%', width: '100%' }}>
         <View style={styles.container}>
           <Text style={styles.welcome}>Welcome to Page1</Text>
           <Text style={styles.instructions}>
@@ -44,7 +45,7 @@ export default class Page1 extends CPage {
             <Text style={styles.welcome}>Go to List</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ViewPort>
     );
   }
 }

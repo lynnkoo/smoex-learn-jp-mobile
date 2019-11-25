@@ -1,28 +1,43 @@
+const { defaults: tsjPreset } = require('ts-jest/presets');
+
 module.exports = {
+  ...tsjPreset,
   preset: 'react-native',
   globals: {
     _window: {},
     __DEV__: true,
+    'ts-jest': {
+      babelConfig: true,
+      tsConfig: {
+        importHelpers: true,
+      },
+      diagnostics: false,
+    },
   },
-  setupFiles: ['./jest.setup.js'],
+  setupFiles: ['<rootDir>/__mocks__/@ctrip/crn/crn.js'],
   moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/assetsTransformer.js',
-    '\\.(css|less)$': '<rootDir>/assetsTransformer.js',
   },
   transform: {
-    '^.+\\.js$': '<rootDir>/node_modules/react-native/jest/preprocessor.js',
-    // '.*\\.(ts)$': '<rootDir>/node_modules/ts-jest/preprocessor.js',
+    ...tsjPreset.transform,
+    '\\.js$': '<rootDir>/node_modules/react-native/jest/preprocessor.js',
   },
-  testMatch: ['**/*.test.(ts|tsx|js)'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  testMatch: ['<rootDir>/src/**/*.test.(js|ts|tsx)'],
+  testPathIgnorePatterns: [
+    '\\.snap$',
+    '<rootDir>/node_modules/',
+  ],
+  cacheDirectory: '.jest/cache',
+  moduleFileExtensions: [
+    'ts',
+    'tsx',
+    'js',
+    'jsx',
+    'json',
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.js',
-    'src/**/*.ts',
-    'src/**/*.tsx',
-    '!src/pages/(activity|agreements|c2b|comments|gaotieyou|longterm|map|pick|rental_card)/**/*.js',
+    '<rootDir>/src/**/*.{js,ts,tsx}',
+    '!**/node_modules/**',
   ],
-  coverageReporters: ['text-summary', 'json-summary', 'lcov', 'html', 'clover'],
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!@ctrip|react-native)'],
+  coverageReporters: ['text-summary', 'html'],
 };

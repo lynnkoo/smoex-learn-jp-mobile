@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, TouchableOpacity,
+  StyleSheet, Text, View,
 } from 'react-native';
-import { ViewPort } from '@ctrip/crn';
+import { ViewPort, Button } from '@ctrip/crn';
 
 import CPage from '../../Components/App/CPage';
 
@@ -36,14 +36,14 @@ export default class Page1 extends CPage {
           <Text style={styles.instructions}>
             Shake or press menu button for dev menu2
           </Text>
-          <TouchableOpacity
+          <Button
             onPress={() => {
               this.push('List', { foo: 'bar' });
             }}
             style={styles.button}
           >
             <Text style={styles.welcome}>Go to List</Text>
-          </TouchableOpacity>
+          </Button>
         </View>
       </ViewPort>
     );

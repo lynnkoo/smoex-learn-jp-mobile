@@ -1,6 +1,6 @@
 import { Env } from '@ctrip/crn';
 import {
-  ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, CHANNEL_TYPE, CHANNEL_TYPE_UNION,
+  ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID,
 } from '../Constants/Platform';
 
 class Utils {
@@ -14,21 +14,28 @@ class Utils {
     return DOMAIN_URL[env] || DOMAIN_URL[ENV_TYPE.PROD];
   }
 
-  // APP Type is oneof : CTRIP_ISD & CTRIP_OSD & TRIP
-  static getAppType(): string {
+  /**
+   * APP Type is oneof : CTRIP_ISD & CTRIP_OSD & TRIP
+   * How to define App type? AppId + urlAppType is unique
+   * AppId : Enum APP_ID
+   * urlAppType : Enum APP_TYPE
+   *  37 + TRIP
+   *  999999 + CTRIP_OSD
+   *  999999 + CTRIP_ISD
+   * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=CTRIP_OSD
+   * @return {string} return Enum APP_TYPE
+   */
+  static getAppType(urlAppType: string): string {
     /* eslint-disable dot-notation */
     if (global['__crn_appId'] === APP_ID.TRIP) return APP_TYPE.TRIP;
-    if (global['__crn_productName'] === CHANNEL_TYPE.OSD) return APP_TYPE.CTRIP_OSD;
-    if (global['__crn_productName'] === CHANNEL_TYPE.ISD) return APP_TYPE.CTRIP_ISD;
+    if (urlAppType.toUpperCase() === APP_TYPE.CTRIP_OSD) return APP_TYPE.CTRIP_OSD;
+    if (urlAppType.toUpperCase() === APP_TYPE.CTRIP_ISD) return APP_TYPE.CTRIP_ISD;
     return APP_TYPE.UNKNOW;
   }
 
   // distinguish Trip and Ctrip
   // used in MCD publish channel type
-  static getChannelName(): string {
-    return global['__crn_appId'] === APP_ID.TRIP
-      ? CHANNEL_TYPE_UNION.TRIP : CHANNEL_TYPE_UNION.CTRIP;
-  }
+  static getChannelName = (): string => global['__crn_productName'];
 }
 
 export default Utils;

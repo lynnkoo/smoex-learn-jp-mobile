@@ -24,12 +24,20 @@ export const APP_ID = {
   CTRIP: '999999',
 };
 
-export const CHANNEL_TYPE = {
-  ISD: 'rn_car_isd',
-  OSD: 'rn_car_osd',
-  IBU: 'rn_ibu_car',
+export const BUSINESS_TYPE = {
+  TRIP: 34,
+  CTRIP_OSD: 34,
+  CTRIP_ISD: 35,
 };
 
+// // origin Channel type
+// export const CHANNEL_TYPE = {
+//   ISD: 'rn_car_isd',
+//   OSD: 'rn_car_osd',
+//   IBU: 'rn_ibu_car',
+// };
+
+// all-in-one new channel, distinguish Trip and Ctrip
 export const CHANNEL_TYPE_UNION = {
   CTRIP: 'rn_car_app',
   TRIP: 'rn_ibu_car_app',

@@ -44,8 +44,7 @@ class Utils {
     return APP_TYPE.UNKNOW;
   }
 
-  // distinguish Trip and Ctrip
-  // used in MCD publish channel type
+  // value oneof rn_car_app | rn_ibu_car_app
   static getChannelName(): string {
     return global['__crn_productName'];
   }

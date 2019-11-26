@@ -22,4 +22,7 @@ const getStore = () => {
     }
     throw new Error('Store is not initialised.');
 };
-export { initialiseStore, getStore, };
+const initialiseAppState = () => {
+    // store.dispatch()
+};
+export { initialiseStore, getStore, initialiseAppState, };

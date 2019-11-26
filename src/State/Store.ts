@@ -33,7 +33,12 @@ const getStore = (): Store => {
   throw new Error('Store is not initialised.');
 };
 
+const initialiseAppState = (): void => {
+  // store.dispatch()
+};
+
 export {
   initialiseStore,
   getStore,
+  initialiseAppState,
 };

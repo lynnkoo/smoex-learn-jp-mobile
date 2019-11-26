@@ -4,6 +4,8 @@ import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
 import { AppContext, AppInstance } from './Util/Index';
 import { initialiseStore, getStore } from './State/Store';
+import { ErrorBoundary } from './Components/Index';
+import appLoad from './AppLoad';
 
 const navigationBarConfig = {
   hide: true,
@@ -23,13 +25,16 @@ export default class RnCarApp extends Component {
     initialiseStore();
     AppInstance.init(props);
     AppContext.init(props);
+    appLoad();
   }
 
   render() {
     return (
-      <Provider store={getStore()}>
-        <Car />
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={getStore()}>
+          <Car />
+        </Provider>
+      </ErrorBoundary>
     );
   }
 }

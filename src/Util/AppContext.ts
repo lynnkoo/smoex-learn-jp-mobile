@@ -27,8 +27,8 @@ class AppContext {
   static MarketInfo: MarketInfoType = {
     channelId: '',
     childChannelId: '',
-    sId: Channel.sId,
-    aId: Channel.alianceId,
+    sId: Channel.sId || '',
+    aId: Channel.alianceId || '',
     visitortraceId: '',
     awakeTime: '',
   };

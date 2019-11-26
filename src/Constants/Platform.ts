@@ -13,9 +13,16 @@ export const DOMAIN_URL = {
 };
 
 export const APP_TYPE = {
-  CTRIP_ISD: 'CTRIP_ISD',
-  CTRIP_OSD: 'CTRIP_OSD',
-  TRIP: 'TRIP',
+  ISD_C_APP: 'ISD_C_APP',
+  ISD_C_H5: 'ISD_C_H5',
+  ISD_Q_APP: 'ISD_Q_APP',
+  ISD_ZUCHE_APP: 'ISD_ZUCHE_APP',
+  OSD_C_APP: 'OSD_C_APP',
+  OSD_C_H5: 'OSD_C_H5',
+  OSD_T_APP: 'OSD_T_APP',
+  OSD_T_H5: 'OSD_T_H5',
+  OSD_Q_APP: 'OSD_Q_APP',
+  OSD_ZUCHE_APP: 'OSD_ZUCHE_APP',
   UNKNOW: 'UNKNOW',
 };
 
@@ -41,20 +48,6 @@ export const SHARK_APP_ID = {
 };
 
 export const REST_SOA = 'restapi/soa2';
-
-export const SOURCE_FROM = {
-  ISD_C_APP: 'ISD_C_APP',
-  ISD_C_H5: 'ISD_C_H5',
-  ISD_Q_APP: 'ISD_Q_APP',
-  ISD_ZUCHE_APP: 'ISD_ZUCHE_APP',
-  OSD_C_APP: 'OSD_C_APP',
-  OSD_C_H5: 'OSD_C_H5',
-  OSD_T_APP: 'OSD_T_APP',
-  OSD_T_H5: 'OSD_T_H5',
-  OSD_Q_APP: 'OSD_Q_APP',
-  OSD_ZUCHE_APP: 'OSD_ZUCHE_APP',
-  UNKNOW: 'UNKNOW',
-};
 
 export const BUSINESS_TYPE = {
   ISD: '35',

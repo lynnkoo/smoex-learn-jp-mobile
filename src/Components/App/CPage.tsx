@@ -23,14 +23,14 @@ export default class CPage extends Page<IBasePageProps, any> {
   }
 
   getPageId() {
-    return ''
+    return '';
   }
 
-  getPVOption() {
+  async getPVOption() {
+    const logBasicInfo = await CarLog.logBasicInfo();
     return {
-       pageId: this.getPageId(),
-       ...CarLog.logBasicInfo()
-    }
+      ...logBasicInfo,
+    };
   }
 
   componentDidMount() {

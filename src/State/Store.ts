@@ -6,14 +6,18 @@ import {
 
 import enhancer from './Enhancer';
 
-const rootReducer = combineReducers({
+import LocationAndDateReducer from './LocationAndDate/Reducers';
+import * as LocationAndDateAction from './LocationAndDate/Actions';
 
+const rootReducer = combineReducers({
+  LocationAndDateReducer,
 });
 
 let store: Store;
 
 const initialiseStore = (): void => {
   store = createStore(rootReducer, enhancer);
+  store.dispatch(LocationAndDateAction.getCountryInfo());
 };
 
 const getStore = (): Store => {

@@ -3,7 +3,7 @@ import Utils from './Utils';
 import { REST_SOA } from '../Constants/Platform';
 
 export interface RequestType {
-  sequenceId: string;
+  sequenceId?: string;
 }
 
 export interface FetchBaseType {
@@ -41,7 +41,7 @@ class FetchBase implements FetchBaseType {
     };
   };
 
-  post = async (url: string, params: RequestType) => fetch(url, params);
+  post = (url: string, params: RequestType) => fetch(url, params);
 
   cancel = (url: string, sequenceId: string) => cancelFetch(url, { sequenceId });
 }
@@ -57,6 +57,8 @@ class CarFetch extends FetchBase {
   //    this.fetchCityList.cancel();
   //  }
   getCityList = (params: RequestType) => this.getFetchObject('1301/getCityList.json', params);
+
+  queryAppCountryId = (params: RequestType) => this.getFetchObject('14804/queryCountryId', params);
 }
 
 export default new CarFetch();

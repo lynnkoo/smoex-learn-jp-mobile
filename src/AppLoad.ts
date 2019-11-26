@@ -8,14 +8,13 @@ const initialiseAppContext = async (props) => {
   AppContext.UrlQuery = props.urlQuery;
 
   Utils.setUserInfo();
+  // init AppType
+  if (AppContext.UrlQuery.AppType) {
+    AppContext.CarEnv.AppType = Utils.getAppType(AppContext.UrlQuery.AppType);
+  }
 
   const propsUrl = JSON.parse(JSON.stringify(AppContext.UrlQuery).toLowerCase());
   const ubt = await Utils.getUBT();
-
-  // init AppType
-  if (propsUrl.AppType) {
-    AppContext.CarEnv.AppType = Utils.getAppType(propsUrl.AppType);
-  }
 
   /**
    * init channelId

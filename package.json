@@ -24,9 +24,9 @@
         "test": "jest --coverage",
         "test:fix": "npm run test -- -u",
         "clean": "watchman watch-del-all && rm -rf package-lock.json && rm -rf node_modules && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-* && npm run ctrip:install",
+        "product:ts": "rm -rf node_modules && rm -rf  package-lock.json && npm install --production",
         "install:ctrip": "npm install --registry=http://registry.npm.release.ctripcorp.com",
-        "install": "tsc",
-        "install:publish": "npm instal --production  tsc"
+        "install": "tsc"
     },
     "dependencies": {
         "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
@@ -75,11 +75,10 @@
         "ts-jest": "^24.2.0",
         "typescript": "^3.7.2"
     },
-    "devDependencies": {
-    },
+    "devDependencies": {},
     "lint-staged": {
         "src/**/*.{js,ts,tsx}": [
-            "npm run lint"
+            "npm run lint:fix"
         ]
     },
     "husky": {

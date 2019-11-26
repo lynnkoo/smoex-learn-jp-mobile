@@ -3,7 +3,7 @@ import { App } from '@ctrip/crn';
 import { Provider } from 'react-redux';
 import pages from './Routers/Index';
 import { AppContext, Utils } from './Util/Index';
-import { initialiseStore, getStore } from './State/Store';
+import { initialiseStore, initialiseAppState, getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 
 const navigationBarConfig = {
@@ -13,6 +13,7 @@ const navigationBarConfig = {
 
 const appLoad = () => {
   initialiseStore();
+  initialiseAppState();
   AppContext.CarEnv.AppType = Utils.getAppType();
 };
 

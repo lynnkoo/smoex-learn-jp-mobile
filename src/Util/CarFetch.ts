@@ -46,10 +46,6 @@ class FetchBase implements FetchBaseType {
       cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParams.sequenceId }),
     };
   };
-
-  post = (url: string, params: RequestType) => fetch(url, params);
-
-  cancel = (url: string, sequenceId: string) => cancelFetch(url, { sequenceId });
 }
 
 // example:
@@ -65,18 +61,9 @@ class FetchBase implements FetchBaseType {
 //   console.log('done2', data2, fetchInstance)
 // }
 class CarFetch extends FetchBase {
-  // example:
-  //  async componentDidMount(){
-  //    this.fetchCityList = await getCityList(params);
-  //    this.fetchCityList.post();
-  //  }
-  //
-  //  componentWillUnMount(){
-  //    this.fetchCityList.cancel();
-  //  }
   getCityList = (params: RequestType, cancelable: boolean = false) => this.getFetchObject('13589/getCategoryCity.json', params, cancelable);
 
-  queryAppCountryId = (params: RequestType) => this.getFetchObject('14804/queryCountryId', params);
+  queryAppCountryId = (params: RequestType) => this.getFetchObject('14804/queryCountryId', params, false);
 }
 
 export default new CarFetch();

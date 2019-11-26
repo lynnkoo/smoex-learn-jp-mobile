@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { App } from '@ctrip/crn';
 import { Provider } from 'react-redux';
+import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
 import { AppContext, Utils } from './Util/Index';
 import { initialiseStore, getStore } from './State/Store';
@@ -17,10 +17,11 @@ class Car extends App {
 export default class RnCarApp extends Component {
     constructor(props) {
         super(props);
-        this.initAppContext = () => {
-            AppContext.CarEnv.AppType = Utils.getAppType();
+        this.initAppContext = (props) => {
+            AppContext.CarEnv.AppType = Utils.getAppType(props.urlQuery.AppType);
         };
-        this.initAppContext();
+        this.initAppContext(props);
+        AppContext.initMarketInfo(props);
         initialiseStore();
     }
     render() {

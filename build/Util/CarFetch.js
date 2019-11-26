@@ -59,6 +59,7 @@ class CarFetch extends FetchBase {
     constructor() {
         super(...arguments);
         this.getCityList = (params, cancelable = false) => this.getFetchObject('13589/getCategoryCity.json', params, cancelable);
+        this.queryAppCountryId = (params) => this.getFetchObject('14804/queryCountryId', params, false);
     }
 }
 export default new CarFetch();

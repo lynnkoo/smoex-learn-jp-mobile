@@ -7,8 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Env } from '@ctrip/crn';
-import { ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, } from '../Constants/Platform';
+import { Env, Storage } from '@ctrip/crn';
+import { ENV_TYPE, DOMAIN_URL, APP_TYPE, APP_ID, BUSINESS_TYPE, } from '../Constants/Platform';
+import AppContext from './AppContext';
 class Utils {
     static getEnvType() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21,28 +22,96 @@ class Utils {
         return DOMAIN_URL[env] || DOMAIN_URL[ENV_TYPE.PROD];
     }
     /**
-     * APP Type is oneof : CTRIP_ISD & CTRIP_OSD & TRIP
-     * How to define App type? AppId + urlAppType is unique
-     * AppId : Enum APP_ID
-     * urlAppType : Enum APP_TYPE
-     *  37 + TRIP
-     *  999999 + CTRIP_OSD
-     *  999999 + CTRIP_ISD
-     * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=CTRIP_OSD
-     * @return {string} return Enum APP_TYPE
-     */
+    * APP Type is oneof : ISD_C_APP & OSD_C_APP & OSD_T_APP
+    * How to define App type? AppId + urlAppType is unique
+    * AppId : Enum APP_ID
+    * urlAppType : Enum APP_TYPE
+    * 37 + OSD_T_APP
+    * 999999 + OSD_C_APP
+    * 999999 + ISD_C_APP
+    * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=CTRIP_OSD
+    * @return {string} return Enum APP_TYPE
+    */
     static getAppType(urlAppType = '') {
         /* eslint-disable dot-notation */
         if (global['__crn_appId'] === APP_ID.TRIP)
-            return APP_TYPE.TRIP;
-        if (urlAppType.toUpperCase() === APP_TYPE.CTRIP_OSD)
-            return APP_TYPE.CTRIP_OSD;
-        if (urlAppType.toUpperCase() === APP_TYPE.CTRIP_ISD)
-            return APP_TYPE.CTRIP_ISD;
+            return APP_TYPE.OSD_T_APP;
+        if (urlAppType.toUpperCase() === APP_TYPE.OSD_C_APP)
+            return APP_TYPE.OSD_C_APP;
+        if (urlAppType.toUpperCase() === APP_TYPE.ISD_C_APP)
+            return APP_TYPE.ISD_C_APP;
         return APP_TYPE.UNKNOW;
     }
+    // distinguish Trip and Ctrip
+    // used in MCD publish channel type
+    static getChannelName() {
+        return global['__crn_productName'];
+    }
+    static getBusinessType() {
+        switch (AppContext.CarEnv.AppType) {
+            case APP_TYPE.OSD_C_APP:
+                return BUSINESS_TYPE.OSD;
+            case APP_TYPE.ISD_C_APP:
+                return BUSINESS_TYPE.ISD;
+            case APP_TYPE.OSD_T_APP:
+                return BUSINESS_TYPE.IBU;
+            default:
+                return BUSINESS_TYPE.UNKNOW;
+        }
+    }
+    static isZucheApp() {
+        return global['__crn_appId'] === APP_ID.ZUCHE;
+    }
+    static isQunarApp() {
+        return AppContext.CarEnv.AppType === APP_TYPE.OSD_Q_APP;
+    }
+    static loadStoragePromise(params) {
+        return new Promise((resolve) => {
+            Storage.load(params, (result) => {
+                resolve(result);
+            });
+        });
+    }
+    // get ubt info
+    static getUBT() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ubt = yield Utils.loadStoragePromise({
+                key: 'CTRIP_UBT_M',
+                domain: 'fx.ubt',
+            });
+            return ubt ? JSON.parse(ubt) : {};
+        });
+    }
+    /**
+     * 将一个回调函数 Promise 化, 由于 callback 回调在参数中的位置并不固定，所以在传入回调函数的地方需要传入字符串 'callback' 标识， 如果回调函数有多个值返回，则会包装为一个数组返回
+     * @param { Function } asyncFunc 异步方法
+     * @return { any } 任何值
+     */
+    static promisable(asyncFunc) {
+        return (...args) => new Promise((resolve) => {
+            const callback = (...cargs) => {
+                let data;
+                if (cargs && cargs.length === 1) {
+                    const [first] = cargs;
+                    data = first;
+                }
+                else {
+                    data = cargs;
+                }
+                resolve(data);
+            };
+            const newArgs = args;
+            if (args.length) {
+                const index = args.findIndex(p => p === 'callback');
+                if (index > -1) {
+                    newArgs[index] = callback;
+                }
+            }
+            else {
+                newArgs[0] = callback;
+            }
+            asyncFunc(...newArgs);
+        });
+    }
 }
-// distinguish Trip and Ctrip
-// used in MCD publish channel type
-Utils.getChannelName = () => global['__crn_productName'];
 export default Utils;

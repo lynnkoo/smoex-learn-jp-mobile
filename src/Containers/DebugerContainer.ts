@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import Debug from '../Pages/Debug/Index';
+import Debug from '../Pages/Debug/Debug';
 import { debugDecrement, debugIncrement } from '../State/Debug/Actions';
 import { getCount } from '../State/Debug/Selectors';
 

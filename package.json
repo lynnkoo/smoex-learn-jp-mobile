@@ -27,20 +27,30 @@
         "ctrip:install": "npm install --registry=http://registry.npm.release.ctripcorp.com"
     },
     "dependencies": {
-        "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/8.16",
+        "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
+        "lodash": "^4.17.15",
         "react": "16.9.0",
         "react-native": "0.61.2",
         "redux": "^4.0.4",
         "redux-logic": "^2.1.1",
-        "lodash": "^4.17.15"
+        "uuid": "^3.3.3"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
         "@babel/runtime": "^7.6.2",
         "@react-native-community/eslint-config": "^0.0.5",
+        "@types/jest": "^24.0.23",
+        "@types/react": "^16.9.13",
+        "@types/react-native": "^0.60.23",
+        "@types/react-test-renderer": "^16.9.1",
+        "@types/uuid": "^3.4.6",
         "@typescript-eslint/parser": "^2.4.0",
         "babel-eslint": "^10.0.3",
+        "babel-jest": "^24.8.0",
+        "babel-preset-react-native": "^5.0.1",
         "bpk-tokens": "^29.2.2",
+        "enzyme": "^3.10.0",
+        "enzyme-adapter-react-16": "^1.14.0",
         "eslint": "^5.10.0",
         "eslint-config-airbnb": "^17.1.0",
         "eslint-config-skyscanner": "^3.0.0",
@@ -51,23 +61,15 @@
         "eslint-plugin-skyscanner-dates": "^1.0.9",
         "eslint-plugin-typescript": "^0.14.0",
         "husky": "^3.0.9",
-        "lerna": "^3.10.7",
-        "lint-staged": "^8.1.0",
-        "metro-react-native-babel-preset": "^0.56.0",
-        "react-intl": "^3.6.0",
-        "@types/jest": "^24.0.23",
-        "@types/react": "^16.9.13",
-        "@types/react-native": "^0.60.23",
-        "@types/react-test-renderer": "^16.9.1",
-        "babel-jest": "^24.8.0",
-        "babel-preset-react-native": "^5.0.1",
-        "enzyme": "^3.10.0",
-        "enzyme-adapter-react-16": "^1.14.0",
         "jest": "^24.8.0",
         "jest-junit": "^7.0.0",
         "jest-react-native": "^18.0.0",
+        "lerna": "^3.10.7",
+        "lint-staged": "^8.1.0",
+        "metro-react-native-babel-preset": "^0.56.0",
         "react-addons-test-utils": "^15.6.2",
         "react-dom": "16.8.3",
+        "react-intl": "^3.6.0",
         "react-native-typescript-transformer": "^1.2.13",
         "react-test-renderer": "16.8.3",
         "ts-jest": "^24.2.0",
@@ -75,7 +77,7 @@
     },
     "lint-staged": {
         "src/**/*.{js,ts,tsx}": [
-            "npm run lint:js:staged --"
+            "npm run lint"
         ]
     },
     "husky": {

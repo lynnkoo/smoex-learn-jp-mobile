@@ -41,10 +41,19 @@ class AppContext {
 
   static SharkKeys: SharkKeysType = {};
 
-  static initMarketInfo = async (props) => {
+  static UserInfo = { data: undefined };
+
+  static init = async (props) => {
+    Utils.setUserInfo();
     if (props && props.urlQuery) {
       const propsUrl = JSON.parse(JSON.stringify(props.urlQuery).toLowerCase());
       const ubt = await Utils.getUBT();
+
+      // init AppType
+      if (propsUrl.AppType) {
+        AppContext.CarEnv.AppType = Utils.getAppType(propsUrl.AppType);
+      }
+
       /**
        * init channelId
        * level 1: urlQuery

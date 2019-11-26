@@ -1,8 +1,9 @@
-import { SET_COUNTRY_INFO, GET_COUNTRY_INFO } from './Types';
-export const setCountryInfo = data => ({
-    type: SET_COUNTRY_INFO,
+import { SET_DATE_INFO, SET_LOCATION_INFO } from './Types';
+export const setDateInfo = data => ({
+    type: SET_DATE_INFO,
     data,
 });
-export const getCountryInfo = () => ({
-    type: GET_COUNTRY_INFO,
+export const setLocationInfo = data => ({
+    type: SET_LOCATION_INFO,
+    data,
 });

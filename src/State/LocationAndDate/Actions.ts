@@ -1,15 +1,16 @@
-import { SET_COUNTRY_INFO, GET_COUNTRY_INFO } from './Types';
+import { SET_DATE_INFO, SET_LOCATION_INFO } from './Types';
 import { ActionType } from '../../Types/ActiontType';
 
 export interface LocationAndDateActionType extends ActionType {
-  data?: Object;
+  data?: Object
 }
 
-export const setCountryInfo = data => ({
-  type: SET_COUNTRY_INFO,
+export const setDateInfo = data => ({
+  type: SET_DATE_INFO,
   data,
 });
 
-export const getCountryInfo = () => ({
-  type: GET_COUNTRY_INFO,
+export const setLocationInfo = data => ({
+  type: SET_LOCATION_INFO,
+  data,
 });

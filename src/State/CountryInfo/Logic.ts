@@ -41,8 +41,8 @@ export const setCommonCountryInfo = createLogic({
         };
       }
       await dispatch(setCountryInfo(countryInfo));
-      done();
     }
+    done();
   },
 });
 

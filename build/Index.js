@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
-import { AppContext, Utils } from './Util/Index';
+import { AppContext, AppInstance } from './Util/Index';
 import { initialiseStore, getStore } from './State/Store';
 const navigationBarConfig = {
     hide: true,
@@ -17,12 +17,9 @@ class Car extends App {
 export default class RnCarApp extends Component {
     constructor(props) {
         super(props);
-        this.initAppContext = (props) => {
-            AppContext.CarEnv.AppType = Utils.getAppType(props.urlQuery.AppType);
-        };
-        this.initAppContext(props);
-        AppContext.initMarketInfo(props);
         initialiseStore();
+        AppInstance.init(props);
+        AppContext.init(props);
     }
     render() {
         return (<Provider store={getStore()}>

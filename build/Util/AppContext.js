@@ -25,10 +25,16 @@ AppContext.QConfig = {};
 AppContext.Cache = {};
 AppContext.CarEnv = { BuildTime, AppType: '' };
 AppContext.SharkKeys = {};
-AppContext.initMarketInfo = (props) => __awaiter(void 0, void 0, void 0, function* () {
+AppContext.UserInfo = { data: undefined };
+AppContext.init = (props) => __awaiter(void 0, void 0, void 0, function* () {
+    Utils.setUserInfo();
     if (props && props.urlQuery) {
         const propsUrl = JSON.parse(JSON.stringify(props.urlQuery).toLowerCase());
         const ubt = yield Utils.getUBT();
+        // init AppType
+        if (propsUrl.AppType) {
+            AppContext.CarEnv.AppType = Utils.getAppType(propsUrl.AppType);
+        }
         /**
          * init channelId
          * level 1: urlQuery

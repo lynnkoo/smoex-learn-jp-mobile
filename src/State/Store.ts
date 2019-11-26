@@ -7,19 +7,23 @@ import {
 import enhancer from './Enhancer';
 import debug from './Debug/Reducers';
 
+import CountryInfoReducer from './CountryInfo/Reducers';
 import LocationAndDateReducer from './LocationAndDate/Reducers';
-import * as LocationAndDateAction from './LocationAndDate/Actions';
+import AgeReducer from './Age/Reducers';
+import * as CountryInfoAction from './CountryInfo/Actions';
 
 const rootReducer = combineReducers({
   debug,
+  CountryInfoReducer,
   LocationAndDateReducer,
+  AgeReducer,
 });
 
 let store: Store;
 
 const initialiseStore = (): void => {
   store = createStore(rootReducer, enhancer);
-  store.dispatch(LocationAndDateAction.getCountryInfo());
+  store.dispatch(CountryInfoAction.getCountryInfo());
 };
 
 const getStore = (): Store => {

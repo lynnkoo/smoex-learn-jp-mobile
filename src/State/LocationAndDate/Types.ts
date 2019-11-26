@@ -1,2 +1,2 @@
-export const SET_COUNTRY_INFO = 'LocationaAndDate/SET_COUNTRY_INFO';
-export const GET_COUNTRY_INFO = 'LocationaAndDate/GET_COUNTRY_INFO';
+export const SET_DATE_INFO = 'LocationaAndDate/SET_DATE_INFO';
+export const SET_LOCATION_INFO = 'LocationaAndDate/SET_LOCATION_INFO';

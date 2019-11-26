@@ -4,6 +4,9 @@ import { AppContext } from '../Util/Index';
 import PageIdIsd from './PageId/PageId.CTRIP_ISD';
 import PageIdOsd from './PageId/PageId.CTRIP_OSD';
 import PageIdTrip from './PageId/PageId.TRIP';
+import AgeConfig from './AgeConfig';
+import ClickKey from './ClickKey';
+import LogKey from './LogKey';
 // /* eslint-disable global-require */
 // const getPageId = () => {
 //   switch (Utils.getAppType()) {
@@ -35,4 +38,4 @@ const getPageId = () => {
     }
 };
 const PageId = getPageId();
-export { Platform, TranslationKeys, PageId, };
+export { Platform, TranslationKeys, PageId, AgeConfig, ClickKey, LogKey, };

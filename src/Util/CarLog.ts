@@ -1,29 +1,57 @@
-import { Channel, Application } from '@ctrip/crn';
+import { Channel, Application, Log } from '@ctrip/crn';
 import moment from 'moment';
 import Utils from './Utils';
 import AppContext from './AppContext';
 import CarI18n from './CarI18n';
 import Locale from './Locale';
 import { getStore } from '../State/Store';
+import {
+  AgeConfig, ClickKey, LogKey, Platform,
+} from '../Constants/Index';
+
+export interface LogCodeType {
+  pageId: string,
+  enName: string,
+  name?: string
+}
+
+export interface LogTraceType {
+  key: string,
+  info?: any
+}
+
+export interface LogMetricType {
+  key: string,
+  value: number,
+  info?: any
+}
 
 class CarLog {
+  // Get the return time and location information
   static getLocationAndDateInfo = () => {
     const state = getStore().getState();
-    const { countryId, countryCode, countryName } = state.LocationAndDateReducer;
+    const { countryId, countryCode, countryName } = state.CountryInfoReducer;
+    const { rentalLocation, rentalDate } = state.LocationAndDateReducer;
+    const pickupTime = moment(rentalDate.pickUp.dateTime, moment.ISO_8601).format(
+      'YYYY-MM-DD HH:mm:ss',
+    );
+    const dropOffTime = moment(rentalDate.dropOff.dateTime, moment.ISO_8601).format(
+      'YYYY-MM-DD HH:mm:ss',
+    );
     return {
-      pickupCityId: '',
-      pickupCityName: '',
-      pickupLocationCode: '',
-      pickupLocationType: '',
-      pickupLocationName: '',
-      pickupDateTime: '',
-      dropOffCityId: '',
-      dropOffCityName: '',
-      dropOffLocationCode: '',
-      dropOffLocationType: '',
-      dropOffLocationName: '',
-      dropOffDateTime: '',
-      isOneWay: '',
+      pickupCityId: rentalLocation.pickUp.cid,
+      pickupCityName: rentalLocation.pickUp.cname,
+      pickupLocationCode: rentalLocation.pickUp.area.id,
+      pickupLocationType: rentalLocation.pickUp.area.type,
+      pickupLocationName: rentalLocation.pickUp.area.name,
+      pickupDateTime: pickupTime,
+      dropOffCityId: rentalLocation.dropOff.cid,
+      dropOffCityName: rentalLocation.dropOff.cname,
+      dropOffLocationCode: rentalLocation.dropOff.area.id,
+      dropOffLocationType: rentalLocation.dropOff.area.type,
+      dropOffLocationName: rentalLocation.dropOff.area.name,
+      dropOffDateTime: dropOffTime,
+      isOneWay: rentalLocation.isOneWay,
       isSendCar: '2',
       isPickupCar: '2',
       residency: `${countryId}` || '66',
@@ -32,8 +60,16 @@ class CarLog {
     };
   }
 
-  // language、currency and other IBU information
+  // Get language and currency information
   static getLanguageInfo = async () => {
+    if (Utils.getChannelName() === Platform.CHANNEL_TYPE_UNION.CTRIP) {
+      return {
+        language: '',
+        locale: '',
+        site: '',
+        currency: '',
+      };
+    }
     const { locale } = await CarI18n.getCurrentLocale();
     const { code: currency } = await CarI18n.getCurrentCurrency('callback');
     const localeInstance = new Locale(locale);
@@ -56,6 +92,8 @@ class CarLog {
     const languageInfo = await CarLog.getLanguageInfo();
     const locationAndDateInfo = await CarLog.getLocationAndDateInfo();
     const curDate = new Date();
+    const state = getStore().getState();
+    const { age } = state.AgeReducer;
     return {
       sourceFrom: AppContext.CarEnv.AppType,
       businessType: Utils.getBusinessType(),
@@ -65,35 +103,58 @@ class CarLog {
       allianceId: AppContext.MarketInfo.aId,
       visitortraceId: AppContext.MarketInfo.visitortraceId,
       sourceId: Channel.sourceId || '',
-      vid: '',
-      pvid: '',
-      abVersion: '',
+      abVersion: '', // todo
       partialVersion: AppContext.CarEnv.BuildTime,
       crnVersion: Application.version || '',
-      uId: '',
+      uId: AppContext.UserInfo.data ? AppContext.UserInfo.data.UserID : '',
       telephone: Channel.telephone || '',
       currentTime: moment(curDate, moment.ISO_8601).format('YYYY-MM-DD HH:mm:ss'),
       beijingTime: moment(curDate)
         .utcOffset(8)
         .format('YYYY-MM-DD HH:mm:ss'),
-      create: AppContext.MarketInfo.awakeTime,
-      age: '',
-      defaultAge: '',
+      awakeTime: AppContext.MarketInfo.awakeTime,
+      age,
+      defaultAge: age === AgeConfig.DEFAULT_AGE.val,
       ...languageInfo,
       ...locationAndDateInfo,
     };
   }
 
-  static LogCode = () => {
-
+  static LogCode = async (data: LogCodeType) => {
+    const logBasicInfo = await CarLog.logBasicInfo();
+    const newData = data;
+    if (!data.name && ClickKey[data.enName]) newData.name = ClickKey[data.enName].NAME;
+    const codeData = {
+      ...logBasicInfo, ...newData,
+    };
+    console.log('测试+++codeData', codeData);
+    Log.logCode(LogKey.CLICK_KEY, codeData);
   }
 
-  static LogTrace = () => {
-
+  static LogTrace = async (data: LogTraceType) => {
+    const { key, info = {} } = data;
+    if (key) {
+      const logBasicInfo = await CarLog.logBasicInfo();
+      const traceData = {
+        ...logBasicInfo, ...info,
+      };
+      console.log('测试+++traceData++key', key);
+      console.log('测试+++traceData', traceData);
+      Log.logTrace(key, traceData);
+    }
   }
 
-  static LogMetric = () => {
-
+  static LogMetric = async (data: LogMetricType) => {
+    const { key, value, info = {} } = data;
+    if (key) {
+      const logBasicInfo = await CarLog.logBasicInfo();
+      const metricData = {
+        ...logBasicInfo, ...info,
+      };
+      console.log('测试+++metricData++key', key);
+      console.log('测试+++metricData', metricData);
+      Log.logMetric(key, value, metricData);
+    }
   }
 }
 

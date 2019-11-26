@@ -1,4 +1,4 @@
-import { Env, Storage } from '@ctrip/crn';
+import { Env, Storage, User } from '@ctrip/crn';
 import {
   ENV_TYPE,
   DOMAIN_URL,
@@ -33,10 +33,10 @@ class Utils {
   * 37 + OSD_T_APP
   * 999999 + OSD_C_APP
   * 999999 + ISD_C_APP
-  * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=CTRIP_OSD
+  * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=OSD_C_APP
   * @return {string} return Enum APP_TYPE
   */
-  static getAppType(urlAppType: string = ''): string {
+  static getAppType(urlAppType: string): string {
     /* eslint-disable dot-notation */
     if (global['__crn_appId'] === APP_ID.TRIP) return APP_TYPE.OSD_T_APP;
     if (urlAppType.toUpperCase() === APP_TYPE.OSD_C_APP) return APP_TYPE.OSD_C_APP;
@@ -89,11 +89,6 @@ class Utils {
     return ubt ? JSON.parse(ubt) : {};
   }
 
-  /**
-   * 将一个回调函数 Promise 化, 由于 callback 回调在参数中的位置并不固定，所以在传入回调函数的地方需要传入字符串 'callback' 标识， 如果回调函数有多个值返回，则会包装为一个数组返回
-   * @param { Function } asyncFunc 异步方法
-   * @return { any } 任何值
-   */
   static promisable(asyncFunc: Function): any {
     return (...args: any[]) => new Promise((resolve) => {
       const callback = (...cargs: any[]) => {
@@ -117,6 +112,25 @@ class Utils {
         newArgs[0] = callback;
       }
       asyncFunc(...newArgs);
+    });
+  }
+
+  static dateTimeFormat = (str: string): string => {
+    let result = '';
+    if (str !== null && str !== undefined && str.length === 14) {
+      result = `${str.substr(0, 4)}-${str.substr(4, 2)}-${str.substr(6, 2)} ${str.substr(
+        8,
+        2,
+      )}:${str.substr(10, 2)}:${str.substr(12, 2)}`;
+    }
+    return result;
+  }
+
+  static setUserInfo = () => {
+    User.getUserInfo((result, info) => {
+      if (info && info.data) {
+        AppContext.UserInfo.data = info.data;
+      }
     });
   }
 }

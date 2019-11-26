@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, } from 'react-native';
 import { ViewPort, HeaderView } from '@ctrip/crn';
-import AppContext from '../../Util/AppContext';
+import { AppContext, CarLog } from '../../Util/Index';
 import CPage from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
 const styles = StyleSheet.create({
@@ -70,6 +70,18 @@ export default class MagicGate extends CPage {
             </TouchableOpacity>
             <TouchableOpacity style={styles.btn} onPress={() => this.props.debugDecrement()}>
               <Text>decrement</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.container2}>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogCode({ enName: 'test-click', pageId: this.getPageId() })}>
+              <Text>测试点击埋点</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogTrace({ key: '000', info: { eventResult: true } })}>
+              <Text>测试trace埋点</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogMetric({ key: '002', value: 500, info: { pageId: this.getPageId() } })}>
+              <Text>测试metric埋点</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

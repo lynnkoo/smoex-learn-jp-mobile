@@ -34,9 +34,7 @@
         "react-native": "0.61.2",
         "redux": "^4.0.4",
         "redux-logic": "^2.1.1",
-        "uuid": "^3.3.3"
-    },
-    "devDependencies": {
+        "uuid": "^3.3.3",
         "@babel/core": "^7.6.2",
         "@babel/runtime": "^7.6.2",
         "@react-native-community/eslint-config": "^0.0.5",
@@ -75,6 +73,8 @@
         "react-test-renderer": "16.8.3",
         "ts-jest": "^24.2.0",
         "typescript": "^3.7.2"
+    },
+    "devDependencies": {
     },
     "lint-staged": {
         "src/**/*.{js,ts,tsx}": [

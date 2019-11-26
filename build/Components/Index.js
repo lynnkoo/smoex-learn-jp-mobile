@@ -1,3 +1,4 @@
 import CPage from './App/CPage';
-export { CPage };
+import ErrorBoundary from './Error/ErrorBoundary';
+export { CPage, ErrorBoundary };
 export default CPage;

@@ -12,7 +12,10 @@
  */
 
 module.exports = {
-  env: { jest: true },
+  env: {
+    jest: true,
+    es6: true,
+  },
   parser: "babel-eslint",
   extends: ["airbnb", "plugin:skyscanner-dates/warn"],
   plugins: ["skyscanner-dates", "react", "typescript"],

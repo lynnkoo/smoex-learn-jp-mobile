@@ -5,11 +5,13 @@ import {
 } from 'redux';
 
 import enhancer from './Enhancer';
+import debug from './Debug/Reducers';
 
 import LocationAndDateReducer from './LocationAndDate/Reducers';
 import * as LocationAndDateAction from './LocationAndDate/Actions';
 
 const rootReducer = combineReducers({
+  debug,
   LocationAndDateReducer,
 });
 

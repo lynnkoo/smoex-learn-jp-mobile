@@ -36,7 +36,7 @@ class Utils {
   * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=CTRIP_OSD
   * @return {string} return Enum APP_TYPE
   */
-  static getAppType(urlAppType: string): string {
+  static getAppType(urlAppType: string = ''): string {
     /* eslint-disable dot-notation */
     if (global['__crn_appId'] === APP_ID.TRIP) return APP_TYPE.OSD_T_APP;
     if (urlAppType.toUpperCase() === APP_TYPE.OSD_C_APP) return APP_TYPE.OSD_C_APP;

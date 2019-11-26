@@ -2,7 +2,7 @@ import { createLogicMiddleware } from 'redux-logic';
 
 import { CarFetch } from '../Util/Index';
 
-import debugLogic from './Debug/Logic';
+import debug from './Debug/Logic';
 
 import locationAndDateLogic from './LocationAndDate/Logic';
 
@@ -11,7 +11,7 @@ const dependencies = {
 };
 
 export const rootLogics = [
-  ...debugLogic,
+  ...debug,
   ...locationAndDateLogic,
 ];
 

@@ -2,9 +2,9 @@ import React from 'react';
 import {
   StyleSheet, Text, View,
 } from 'react-native';
-import { ViewPort, Button } from '@ctrip/crn';
+import { ViewPort, Button, IBasePageProps } from '@ctrip/crn';
 
-import CPage from '../../Components/App/CPage';
+import CPage, { IStateType } from '../../Components/App/CPage';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Page1 extends CPage {
+export default class Page1 extends CPage<IBasePageProps, IStateType> {
   render() {
     return (
       <ViewPort style={{ height: '100%', width: '100%' }}>

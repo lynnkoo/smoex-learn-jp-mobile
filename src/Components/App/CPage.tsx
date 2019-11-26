@@ -20,10 +20,10 @@ export interface IStateType {
 export default class CPage<P extends IBasePageProps, S extends IStateType> extends Page<P, S> {
   constructor(prop: P) {
     super(prop);
-    this.state = {
-      lang: '',
-      messages: null,
-    };
+    // this.state = {
+    //   lang: '',
+    //   messages: null,
+    // };
   }
 
   componentDidMount() {

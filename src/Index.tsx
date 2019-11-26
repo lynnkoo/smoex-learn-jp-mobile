@@ -2,19 +2,13 @@ import React, { Component } from 'react';
 import { App } from '@ctrip/crn';
 import { Provider } from 'react-redux';
 import pages from './Routers/Index';
-import { AppContext, Utils } from './Util/Index';
-import { initialiseStore, initialiseAppState, getStore } from './State/Store';
+import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
+import appLoad from './AppLoad';
 
 const navigationBarConfig = {
   hide: true,
   backgroundColor: 'rgb(9, 159, 222)', // todo: use token value
-};
-
-const appLoad = () => {
-  initialiseStore();
-  initialiseAppState();
-  AppContext.CarEnv.AppType = Utils.getAppType();
 };
 
 class Car extends App {

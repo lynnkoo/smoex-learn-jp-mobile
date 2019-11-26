@@ -56,3 +56,4 @@ metro.config.js
 
 crnwebconf.js
 .jest
+build/

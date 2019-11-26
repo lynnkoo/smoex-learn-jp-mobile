@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { SET_DATE_INFO, SET_LOCATION_INFO } from './Types';
+import { SET_DATE_INFO, SET_LOCATION_INFO, GET_LOCATION_DATE_INFO } from './Types';
 const datePickup = moment()
     .startOf('hour')
     .add(7, 'd')
@@ -85,6 +85,8 @@ export default function LocationAndDateReducer(state = initalState, action = { t
             return setDateInfo(state, action);
         case SET_LOCATION_INFO:
             return setLocationInfo(state, action);
+        case GET_LOCATION_DATE_INFO:
+            return state;
         default:
             return state;
     }

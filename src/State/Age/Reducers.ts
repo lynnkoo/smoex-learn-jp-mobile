@@ -1,4 +1,4 @@
-import { SET_AGE } from './Types';
+import { SET_AGE, GET_AGE } from './Types';
 import { AgeActionType } from './Actions';
 
 const getInitalState = () => (
@@ -24,6 +24,8 @@ export default function AgeReducer(state = initalState, action: AgeActionType = 
   switch (action.type) {
     case SET_AGE:
       return setAge(state, action);
+    case GET_AGE:
+      return state;
     default:
       return state;
   }

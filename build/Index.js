@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
-import { AppContext, AppInstance } from './Util/Index';
-import { initialiseStore, getStore } from './State/Store';
+import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 import appLoad from './AppLoad';
 const navigationBarConfig = {
@@ -19,10 +18,7 @@ class Car extends App {
 export default class RnCarApp extends Component {
     constructor(props) {
         super(props);
-        initialiseStore();
-        AppInstance.init(props);
-        AppContext.init(props);
-        appLoad();
+        appLoad(props);
     }
     render() {
         return (<ErrorBoundary>

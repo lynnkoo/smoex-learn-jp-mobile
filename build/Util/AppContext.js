@@ -26,9 +26,10 @@ AppContext.Cache = {};
 AppContext.CarEnv = { BuildTime, AppType: '' };
 AppContext.SharkKeys = {};
 AppContext.UserInfo = { data: undefined };
+AppContext.Url = '';
 AppContext.init = (props) => __awaiter(void 0, void 0, void 0, function* () {
     Utils.setUserInfo();
-    if (props && props.urlQuery) {
+    if (AppContext.UrlQuery) {
         const propsUrl = JSON.parse(JSON.stringify(props.urlQuery).toLowerCase());
         const ubt = yield Utils.getUBT();
         // init AppType

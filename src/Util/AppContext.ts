@@ -23,6 +23,10 @@ export interface CarEnvType {
 
 export interface SharkKeysType { }
 
+export interface UrlQuery {
+  age?: string
+}
+
 class AppContext {
   static MarketInfo: MarketInfoType = {
     channelId: '',
@@ -43,9 +47,13 @@ class AppContext {
 
   static UserInfo = { data: undefined };
 
+  static UrlQuery;
+
+  static Url: string = '';
+
   static init = async (props) => {
     Utils.setUserInfo();
-    if (props && props.urlQuery) {
+    if (AppContext.UrlQuery) {
       const propsUrl = JSON.parse(JSON.stringify(props.urlQuery).toLowerCase());
       const ubt = await Utils.getUBT();
 

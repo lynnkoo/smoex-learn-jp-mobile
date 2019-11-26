@@ -3,14 +3,14 @@ import {
   combineReducers,
   Store,
 } from 'redux';
-
 import enhancer from './Enhancer';
 import debug from './Debug/Reducers';
-
 import CountryInfoReducer from './CountryInfo/Reducers';
 import LocationAndDateReducer from './LocationAndDate/Reducers';
 import AgeReducer from './Age/Reducers';
 import * as CountryInfoAction from './CountryInfo/Actions';
+import * as LocationAndDateAction from './LocationAndDate/Actions';
+import * as AgeAction from './Age/Actions';
 
 const rootReducer = combineReducers({
   debug,
@@ -23,7 +23,6 @@ let store: Store;
 
 const initialiseStore = (): void => {
   store = createStore(rootReducer, enhancer);
-  store.dispatch(CountryInfoAction.getCountryInfo());
 };
 
 const getStore = (): Store => {
@@ -34,7 +33,9 @@ const getStore = (): Store => {
 };
 
 const initialiseAppState = (): void => {
-  // store.dispatch()
+  store.dispatch(CountryInfoAction.getCountryInfo());
+  store.dispatch(LocationAndDateAction.getLocationAndDateInfo());
+  store.dispatch(AgeAction.getAge());
 };
 
 export {

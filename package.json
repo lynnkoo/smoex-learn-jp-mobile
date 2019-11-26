@@ -77,8 +77,10 @@
     },
     "lint-staged": {
         "src/**/*.{js,ts,tsx}": [
-            "npm run lint",
-            "npm run build:version"
+            "npm run lint"
+        ],
+        "*.*":[
+          "npm run build:version"
         ]
     },
     "husky": {

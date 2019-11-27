@@ -62,6 +62,10 @@ class FetchBase implements FetchBaseType {
 // }
 class CarFetch extends FetchBase {
   getCityList = (params: RequestType, cancelable: boolean = false) => this.getFetchObject('13589/getCategoryCity.json', params, cancelable);
+
+  queryAppCountryId = params => this.getFetchObject('14804/queryCountryId', params, false);
+
+  getRouterAdapter = params => this.getFetchObject('/13589/getRoute.json', params, false);
 }
 
 export default new CarFetch();

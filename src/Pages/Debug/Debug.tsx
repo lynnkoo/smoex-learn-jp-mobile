@@ -99,6 +99,10 @@ export default class MagicGate extends CPage<PropsType, StateType> {
             <TouchableOpacity style={styles.btn} onPress={() => this.props.debugDecrement()}>
               <Text>decrement</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btn} onPress={() => this.push('Demo')}>
+              <Text>to Demo</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </ViewPort>

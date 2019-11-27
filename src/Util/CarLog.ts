@@ -27,12 +27,11 @@ export interface LogMetricType {
 }
 
 class CarLog {
-
   static languageInfo = {
     language: '',
     locale: '',
     site: '',
-    currency: ''
+    currency: '',
   };
 
   // Get the return time and location information

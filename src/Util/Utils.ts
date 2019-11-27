@@ -71,7 +71,7 @@ class Utils {
   }
 
   // get ubt info
-  static async getUBT(): Promise<Object> {
+  static async getUBT(): Promise<{sid?: string}> {
     const ubt = await Storage.loadSync({
       key: 'CTRIP_UBT_M',
       domain: 'fx.ubt',

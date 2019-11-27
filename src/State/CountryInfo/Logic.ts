@@ -26,13 +26,15 @@ export const getCountryInfo = createLogic({
       };
 
       const countryId = result && result.isSuccessful && result.countryId;
-      let countryInfo = InitCountryInfo;
+      let countryInfo;
       if (countryId) {
         countryInfo = {
           countryId,
           countryCode: curResidency.countryCode,
           countryName: curResidency.localizationName,
         };
+      } else {
+        countryInfo = InitCountryInfo;
       }
       dispatch(setCountryInfo(countryInfo));
     }

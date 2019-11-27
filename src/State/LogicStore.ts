@@ -4,7 +4,7 @@ import { CarFetch } from '../Util/Index';
 
 import debug from './Debug/Logic';
 
-import CountryInfoLogic from './CountryInfo/Logic';
+import CountryLogic from './CountryInfo/Logic';
 
 const dependencies = {
   CarFetch,
@@ -12,7 +12,7 @@ const dependencies = {
 
 export const rootLogics = [
   ...debug,
-  ...CountryInfoLogic,
+  ...CountryLogic,
 ];
 
 export const logicMiddleware = createLogicMiddleware(rootLogics, dependencies);

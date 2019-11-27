@@ -73,7 +73,7 @@ class CarLog {
       abVersion: '', // todo
       partialVersion: AppContext.CarEnv.BuildTime,
       crnVersion: Application.version || '',
-      uId: AppContext.UserInfo.data ? AppContext.UserInfo.data.UserID : '',
+      uId: AppContext.UserInfo.UserID || '',
       telephone: Channel.telephone || '',
       currentTime: moment(curDate, moment.ISO_8601).format('YYYY-MM-DD HH:mm:ss'),
       beijingTime: moment(curDate)
@@ -93,14 +93,9 @@ class CarLog {
     Log.logCode(LogKey.CLICK_KEY, { ...CarLog.logBasicInfo(), ...newData });
   }
 
-  static LogTrace = async (data: LogTraceType) => {
-    const { info = {} } = data;
-    Log.logTrace(data.key, { ...CarLog.logBasicInfo(), ...info });
-  }
+  static LogTrace = async (data: LogTraceType) => { Log.logTrace(data.key, { ...CarLog.logBasicInfo(), ...data.info }); }
 
-  static LogMetric = (data: LogMetricType) => {
-    Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info });
-  }
+  static LogMetric = (data: LogMetricType) => { Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info }); }
 }
 
 export default CarLog;

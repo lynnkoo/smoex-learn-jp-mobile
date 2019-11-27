@@ -1,5 +1,5 @@
 import { Business } from '@ctrip/crn';
-import { AppContext, Utils } from './Util/Index';
+import { AppContext, Utils, User } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 
@@ -14,7 +14,7 @@ const initialiseAppContext = async () => {
   AppContext.initLanguageInfo();
 
   // init UserInfo
-  Utils.setUserInfo();
+  User.isLogin();
 
   // init AppType
   if (AppContext.UrlQuery.AppType) {

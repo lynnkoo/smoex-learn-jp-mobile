@@ -1,10 +1,10 @@
 import { SET_AGE, GET_AGE } from './Types';
 import { AgeActionType } from './Actions';
+import { AgeConfig } from '../../Constants/Index';
 
 const getInitalState = () => (
   {
-    age: '30-60',
-    defaultAge: true,
+    age: AgeConfig.DEFAULT_AGE.val
   }
 );
 

@@ -14,6 +14,9 @@ export interface QConfigType { }
 
 export interface CacheType { }
 
+export interface UserInfo {
+}
+
 export interface CarEnvType {
   BuildTime: string;
   AppType: string;
@@ -26,7 +29,7 @@ export interface UrlQuery {
 }
 
 class AppContext {
-  static MarketInfo: MarketInfoType = {
+  MarketInfo: MarketInfoType = {
     channelId: '',
     childChannelId: '',
     sId: Channel.sId || '',
@@ -35,19 +38,32 @@ class AppContext {
     awakeTime: '',
   };
 
-  static QConfig: QConfigType = {};
+  QConfig: QConfigType = {};
 
-  static Cache: CacheType = {};
+  Cache: CacheType = {};
 
-  static CarEnv: CarEnvType = { BuildTime, AppType: '' };
+  CarEnv: CarEnvType = { BuildTime, AppType: '' };
 
-  static SharkKeys: SharkKeysType = {};
+  SharkKeys: SharkKeysType = {};
 
-  static UserInfo = { data: undefined };
+  UrlQuery;
 
-  static UrlQuery;
+  Url: string = '';
 
-  static Url: string = '';
+  $UserInfo: UserInfo = {};
+
+  get UserInfo() {
+    return this.$UserInfo;
+  }
+
+  set UserInfo(userInfo: any) {
+    const $userInfo = userInfo || {};
+    if ($userInfo.data && $userInfo.data.UserId && !$userInfo.data.UserID) {
+      // android：uInfo.UserId，ios：uInfo.UserID
+      $userInfo.data.UserID = $userInfo.data.UserId;
+    }
+    this.$UserInfo = $userInfo.data;
+  }
 }
 
-export default AppContext;
+export default new AppContext();

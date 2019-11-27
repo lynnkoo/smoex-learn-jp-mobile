@@ -5,18 +5,18 @@ import {
 } from 'redux';
 import enhancer from './Enhancer';
 import debug from './Debug/Reducers';
-import CountryInfoReducer from './CountryInfo/Reducers';
-import LocationAndDateReducer from './LocationAndDate/Reducers';
-import AgeReducer from './Age/Reducers';
-import * as CountryInfoAction from './CountryInfo/Actions';
-import * as LocationAndDateAction from './LocationAndDate/Actions';
-import * as AgeAction from './Age/Actions';
+import CountryInfo from './CountryInfo/Reducers';
+import LocationAndDate from './LocationAndDate/Reducers';
+import DriverAge from './DriverAge/Reducers';
+import { getCountryInfo } from './CountryInfo/Actions';
+import { getLocationAndDateInfo } from './LocationAndDate/Actions';
+import { getDriverAge } from './DriverAge/Actions';
 
 const rootReducer = combineReducers({
   debug,
-  CountryInfoReducer,
-  LocationAndDateReducer,
-  AgeReducer,
+  CountryInfo,
+  LocationAndDate,
+  DriverAge,
 });
 
 let store: Store;
@@ -33,9 +33,9 @@ const getStore = (): Store => {
 };
 
 const initialiseAppState = (): void => {
-  store.dispatch(CountryInfoAction.getCountryInfo());
-  store.dispatch(LocationAndDateAction.getLocationAndDateInfo());
-  store.dispatch(AgeAction.getAge());
+  store.dispatch(getCountryInfo());
+  store.dispatch(getLocationAndDateInfo());
+  store.dispatch(getDriverAge());
 };
 
 export {

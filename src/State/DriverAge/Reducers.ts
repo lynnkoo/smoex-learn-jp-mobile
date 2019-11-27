@@ -12,7 +12,7 @@ const initalState = getInitalState();
 
 const setAge = (state, action) => ({ ...state, age: action.data.age || state.age });
 
-export default function AgeReducer(state = initalState, action: AgeActionType = { type: '' }) {
+export default function DriverAge(state = initalState, action: AgeActionType = { type: '' }) {
   switch (action.type) {
     case SET_AGE:
       return setAge(state, action);

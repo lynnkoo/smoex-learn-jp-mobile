@@ -29,7 +29,22 @@ npm run ios:trip
 * `npm run test` - run jest unit test    
 * `npm run test:fix` - run jest unit test and update local snapshot cache
 
+## Coding Standard
 
+* `Package structure`
+```sh
+ --- rn_car_app
+ ------ src
+ --------- Index.tsx
+ --------- Index.test.tsx
+ --------- Components
+ ------ package.json
+```
+
+* `src` - all lowercase
+* `src/*` - *`folder`* - camel rules and capitalization of the initial letter 
+* `src/*` - *`file`* - camel rules and capitalization of the initial letter 
+* `*.test.*` - the test file should be at the same level as the master file
 
 ## Fork by Skycanner Hercules
 - [hercules](http://git.dev.sh.ctripcorp.com/carosd/hercules)    

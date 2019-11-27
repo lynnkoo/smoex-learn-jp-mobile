@@ -4,7 +4,7 @@ import {
   Page,
   ViewPort,
   LoadingView,
-  // IBUSharkUtil,
+  IBUSharkUtil,
   IBasePageProps,
 } from '@ctrip/crn';
 // import { IntlProvider } from 'react-intl';
@@ -34,28 +34,28 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   componentDidMount() {
-    // if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
-    //   // const startTime = new Date().getTime();
-    //   IBUSharkUtil.fetchSharkData(this.getSharkConfig())
-    //     .then(({ lang, messages }) => {
-    //       this.setAppContextSharkKeys(lang, messages);
-    //       this.setState({ lang, messages });
-    //       this.sharkFetchDidFinish();
-    //       // const costTime = new Date().getTime() - startTime;
-    //       // IBULog.trace("key.crn.ibupage.load.keys.time", {
-    //       //   keys_time: costTime
-    //       // });
-    //     })
-    //     .catch(() => {
-    //       this.setAppContextSharkKeys('', {});
-    //       this.setState({ lang: '', messages: {} });
-    //       this.sharkFetchDidFinish();
-    //     });
-    // } else {
-    //   this.setAppContextSharkKeys('', {});
-    //   this.setState({ lang: '', messages: {} });
-    //   this.sharkFetchDidFinish();
-    // }
+    if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
+      // const startTime = new Date().getTime();
+      IBUSharkUtil.fetchSharkData(this.getSharkConfig())
+        .then(({ lang, messages }) => {debugger;
+          this.setAppContextSharkKeys(lang, messages);
+          this.setState({ lang, messages });
+          this.sharkFetchDidFinish();
+          // const costTime = new Date().getTime() - startTime;
+          // IBULog.trace("key.crn.ibupage.load.keys.time", {
+          //   keys_time: costTime
+          // });
+        })
+        .catch(() => {debugger;
+          this.setAppContextSharkKeys('', {});
+          this.setState({ lang: '', messages: {} });
+          this.sharkFetchDidFinish();
+        });
+    } else {
+      this.setAppContextSharkKeys('', {});
+      this.setState({ lang: '', messages: {} });
+      this.sharkFetchDidFinish();
+    }
   }
 
   componentWillUnmount() { }

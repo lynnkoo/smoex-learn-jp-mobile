@@ -1,16 +1,7 @@
 import moment from 'moment';
 import { SET_DATE_INFO, SET_LOCATION_INFO, GET_LOCATION_DATE_INFO } from './Types';
 import { LocationAndDateActionType } from './Actions';
-
-const datePickup = moment()
-  .startOf('hour')
-  .add(7, 'd')
-  .hours(10);
-const dateDropoff = moment()
-  .startOf('hour')
-  .add(14, 'd')
-  .hours(10);
-
+import { initDatePickup, initDateDropoff } from '../../__datas__/LocationAndDate';
 
 const getInitalState = () => (
   {
@@ -44,8 +35,8 @@ const getInitalState = () => (
       isOneWay: false,
     },
     rentalDate: {
-      pickUp: { dateTime: datePickup },
-      dropOff: { dateTime: dateDropoff },
+      pickUp: { dateTime: initDatePickup },
+      dropOff: { dateTime: initDateDropoff },
     },
   }
 );

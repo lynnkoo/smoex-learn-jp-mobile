@@ -27,6 +27,13 @@ export interface LogMetricType {
 }
 
 class CarLog {
+  static languageInfo = {
+    language: '',
+    locale: '',
+    site: '',
+    currency: '',
+  };
+
   // Get the return time and location information
   static getLocationAndDateInfo = () => {
     const state = getStore().getState();
@@ -61,36 +68,28 @@ class CarLog {
   }
 
   // Get language and currency information
-  static getLanguageInfo = async () => {
-    if (Utils.getChannelName() === Platform.CHANNEL_TYPE_UNION.CTRIP) {
-      return {
-        language: '',
-        locale: '',
-        site: '',
-        currency: '',
+  static initLanguageInfo = async () => {
+    if (AppContext.CarEnv.AppType === Platform.APP_TYPE.OSD_T_APP) {
+      const { locale } = await CarI18n.getCurrentLocale();
+      const { code: currency } = await CarI18n.getCurrentCurrency('callback');
+      const localeInstance = new Locale(locale);
+      let language = localeInstance.getLanguage().toUpperCase();
+      const traditional = ['hk', 'tw'];
+      // 如果是香港台湾等类中文语言，统一传 CN
+      if (traditional.includes(language)) {
+        language = 'CN';
+      }
+      CarLog.languageInfo = {
+        language,
+        locale: localeInstance.getLocale(),
+        site: language,
+        currency,
       };
     }
-    const { locale } = await CarI18n.getCurrentLocale();
-    const { code: currency } = await CarI18n.getCurrentCurrency('callback');
-    const localeInstance = new Locale(locale);
-    let language = localeInstance.getLanguage().toUpperCase();
-    const traditional = ['hk', 'tw'];
-    // 如果是香港台湾等类中文语言，统一传 CN
-    if (traditional.includes(language)) {
-      language = 'CN';
-    }
-
-    return {
-      language,
-      locale: localeInstance.getLocale(),
-      site: language,
-      currency,
-    };
   }
 
-  static logBasicInfo = async () => {
-    const languageInfo = await CarLog.getLanguageInfo();
-    const locationAndDateInfo = await CarLog.getLocationAndDateInfo();
+  static logBasicInfo = () => {
+    const locationAndDateInfo = CarLog.getLocationAndDateInfo();
     const curDate = new Date();
     const state = getStore().getState();
     const { age } = state.AgeReducer;
@@ -115,17 +114,16 @@ class CarLog {
       awakeTime: AppContext.MarketInfo.awakeTime,
       age,
       defaultAge: age === AgeConfig.DEFAULT_AGE.val,
-      ...languageInfo,
+      ...CarLog.languageInfo,
       ...locationAndDateInfo,
     };
   }
 
   static LogCode = async (data: LogCodeType) => {
-    const logBasicInfo = await CarLog.logBasicInfo();
     const newData = data;
     if (!data.name && ClickKey[data.enName]) newData.name = ClickKey[data.enName].NAME;
     const codeData = {
-      ...logBasicInfo, ...newData,
+      ...CarLog.logBasicInfo(), ...newData,
     };
     console.log('log+++codeData', codeData);
     Log.logCode(LogKey.CLICK_KEY, codeData);
@@ -134,9 +132,8 @@ class CarLog {
   static LogTrace = async (data: LogTraceType) => {
     const { key, info = {} } = data;
     if (key) {
-      const logBasicInfo = await CarLog.logBasicInfo();
       const traceData = {
-        ...logBasicInfo, ...info,
+        ...CarLog.logBasicInfo(), ...info,
       };
       console.log('log+++traceData++key', key);
       console.log('log+++traceData', traceData);
@@ -144,12 +141,11 @@ class CarLog {
     }
   }
 
-  static LogMetric = async (data: LogMetricType) => {
+  static LogMetric = (data: LogMetricType) => {
     const { key, value, info = {} } = data;
     if (key) {
-      const logBasicInfo = await CarLog.logBasicInfo();
       const metricData = {
-        ...logBasicInfo, ...info,
+        ...CarLog.logBasicInfo(), ...info,
       };
       console.log('log+++metricData++key', key);
       console.log('log+++metricData', metricData);

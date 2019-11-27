@@ -1,5 +1,5 @@
 import { Business } from '@ctrip/crn';
-import { AppContext, Utils } from './Util/Index';
+import { AppContext, Utils, CarLog } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 
@@ -76,6 +76,7 @@ const appLoad = (props) => {
   initialiseStore();
   initialiseAppState();
   initialiseAppContext();
+  CarLog.initLanguageInfo();
 };
 
 export default appLoad;

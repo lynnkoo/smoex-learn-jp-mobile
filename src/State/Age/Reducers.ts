@@ -10,15 +10,7 @@ const getInitalState = () => (
 
 const initalState = getInitalState();
 
-const setAge = (state, action) => {
-  const newAge = action.data.age || state.age;
-  return {
-    ...state,
-    ...{
-      age: newAge,
-    },
-  };
-};
+const setAge = (state, action) => ({ ...state, age: action.data.age || state.age });
 
 export default function AgeReducer(state = initalState, action: AgeActionType = { type: '' }) {
   switch (action.type) {

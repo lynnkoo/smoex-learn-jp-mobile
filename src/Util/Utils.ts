@@ -124,12 +124,11 @@ class Utils {
     return result;
   }
 
-  static setUserInfo = () => {
-    User.getUserInfo((result, info) => {
-      if (info && info.data) {
-        AppContext.UserInfo.data = info.data;
-      }
-    });
+  static setUserInfo = async () => {
+    const info = await User.getUserInfoSync();
+    if (info && info.data) {
+      AppContext.UserInfo.data = info.data;
+    }
   }
 
   static convertKeysToLowerCase = (param) => {

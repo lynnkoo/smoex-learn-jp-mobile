@@ -4,7 +4,7 @@ import { GET_COUNTRY_INFO } from './Types';
 import { setCountryInfo } from './Actions';
 import { Utils } from '../../Util/Index';
 
-export const setCommonCountryInfo = createLogic({
+export const getCountryInfo = createLogic({
   type: GET_COUNTRY_INFO,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
@@ -44,5 +44,5 @@ export const setCommonCountryInfo = createLogic({
 });
 
 export default [
-  setCommonCountryInfo,
+  getCountryInfo,
 ];

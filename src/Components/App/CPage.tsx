@@ -26,10 +26,9 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     // };
   }
 
-  async getPVOption() {
-    const logBasicInfo = await CarLog.logBasicInfo();
+  getPVOption() {
     return {
-      ...logBasicInfo,
+      ...CarLog.logBasicInfo()
     };
   }
 
@@ -37,7 +36,8 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
       // const startTime = new Date().getTime();
       IBUSharkUtil.fetchSharkData(this.getSharkConfig())
-        .then(({ lang, messages }) => {debugger;
+        .then(({ lang, messages }) => {
+          debugger;
           this.setAppContextSharkKeys(lang, messages);
           this.setState({ lang, messages });
           this.sharkFetchDidFinish();
@@ -46,7 +46,8 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
           //   keys_time: costTime
           // });
         })
-        .catch(() => {debugger;
+        .catch(() => {
+          debugger;
           this.setAppContextSharkKeys('', {});
           this.setState({ lang: '', messages: {} });
           this.sharkFetchDidFinish();

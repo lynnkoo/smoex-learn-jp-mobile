@@ -3,7 +3,7 @@ import moment from 'moment';
 import { GET_LOCATION_DATE_INFO } from './Types';
 import { setDateInfo, setLocationInfo } from './Actions';
 import { Utils } from '../../Util/Index';
-
+import { initRentalLocation, initDatePickup, initDateDropoff } from '../../__datas__/LocationAndDate';
 
 export const setCommonDateInfo = createLogic({
   type: GET_LOCATION_DATE_INFO,
@@ -14,38 +14,10 @@ export const setCommonDateInfo = createLogic({
     // const res = await CarFetch.getRouterAdapter(param);
     // test
     const testRes = {
-      rentalLocation: {
-        pickUp: {
-          cid: 347,
-          cname: '洛杉矶',
-          country: '美国',
-          realcountry: '美国',
-          area: {
-            id: 'LAX',
-            name: '洛杉矶国际机场',
-            lat: 33.941589,
-            lng: -118.40853,
-            type: '1',
-          },
-        },
-        dropOff: {
-          cid: 347,
-          cname: '洛杉矶',
-          country: '美国',
-          realcountry: '美国',
-          area: {
-            id: 'LAX',
-            name: '洛杉矶国际机场',
-            lat: 33.941589,
-            lng: -118.40853,
-            type: '1',
-          },
-        },
-        isOneWay: false,
-      },
+      rentalLocation: initRentalLocation,
       rentalDate: {
-        pickUp: { dateTime: 20191127100000 },
-        dropOff: { dateTime: 20191204100000 },
+        pickUp: { dateTime: initDatePickup },
+        dropOff: { dateTime: initDateDropoff },
       },
     };
     const res = {

@@ -12,21 +12,12 @@ const getInitalState = () => (
 const initalState = getInitalState();
 // const initalStateClone = JSON.stringify(initalState);
 
-const setCountryInfo = (state, action) => {
-  const { countryId, countryCode, countryName } = action.data;
-
-  const newCountryId = countryId || state.countryId;
-  const newCountryCode = countryCode || state.countryCode;
-  const newCountryName = countryName || state.countryName;
-  return {
-    ...state,
-    ...{
-      countryId: newCountryId,
-      countryCode: newCountryCode,
-      countryName: newCountryName,
-    },
-  };
-};
+const setCountryInfo = (state, action) => ({
+  ...state,
+  countryId: action.data.countryId || state.countryId,
+  countryCode: action.data.countryCode || state.countryCode,
+  countryName: action.data.countryName || state.countryName,
+});
 
 export default function CountryInfoReducer(state = initalState, action: CountryInfoActionType = { type: '' }) {
   switch (action.type) {

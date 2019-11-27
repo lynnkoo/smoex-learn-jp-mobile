@@ -18,20 +18,19 @@ export const setCommonCountryInfo = createLogic({
     process({}, dispatch, done) {
         return __awaiter(this, void 0, void 0, function* () {
             const curResidency = yield Utils.promisable(IBUCountry.getCurrentCountry)('callback');
-            console.log('测试+++curResidency', curResidency);
             if (curResidency) {
                 // const param = {
                 //   countryCode: curResidency.countryCode,
                 // };
-                // 待办
+                // todo
                 // const fetchAppCountryId = await CarFetch.queryAppCountryId(param);
                 // const result = await fetchAppCountryId.post();
-                // 测试
+                // test
                 const result = {
                     isSuccessful: true,
                     countryId: 66,
                 };
-                console.log('测试+++result', result);
+                console.log('setCountryInfo+++result', result);
                 const countryId = result && result.isSuccessful && result.countryId;
                 let countryInfo = {
                     countryId: 66,

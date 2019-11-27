@@ -127,7 +127,7 @@ class CarLog {
     const codeData = {
       ...logBasicInfo, ...newData,
     };
-    console.log('测试+++codeData', codeData);
+    console.log('log+++codeData', codeData);
     Log.logCode(LogKey.CLICK_KEY, codeData);
   }
 
@@ -138,8 +138,8 @@ class CarLog {
       const traceData = {
         ...logBasicInfo, ...info,
       };
-      console.log('测试+++traceData++key', key);
-      console.log('测试+++traceData', traceData);
+      console.log('log+++traceData++key', key);
+      console.log('log+++traceData', traceData);
       Log.logTrace(key, traceData);
     }
   }
@@ -151,8 +151,8 @@ class CarLog {
       const metricData = {
         ...logBasicInfo, ...info,
       };
-      console.log('测试+++metricData++key', key);
-      console.log('测试+++metricData', metricData);
+      console.log('log+++metricData++key', key);
+      console.log('log+++metricData', metricData);
       Log.logMetric(key, value, metricData);
     }
   }

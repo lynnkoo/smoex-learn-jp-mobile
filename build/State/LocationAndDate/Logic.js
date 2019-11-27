@@ -17,9 +17,10 @@ export const setCommonDateInfo = createLogic({
     /* eslint-disable no-empty-pattern */
     process({}, dispatch, done) {
         return __awaiter(this, void 0, void 0, function* () {
+            // todo
             // const param = { landingUrl: AppContext.url };
             // const res = await CarFetch.getRouterAdapter(param);
-            // 测试
+            // test
             const testRes = {
                 rentalLocation: {
                     pickUp: {

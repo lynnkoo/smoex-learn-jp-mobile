@@ -87,7 +87,7 @@ CarLog.LogCode = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!data.name && ClickKey[data.enName])
         newData.name = ClickKey[data.enName].NAME;
     const codeData = Object.assign(Object.assign({}, logBasicInfo), newData);
-    console.log('测试+++codeData', codeData);
+    console.log('log+++codeData', codeData);
     Log.logCode(LogKey.CLICK_KEY, codeData);
 });
 CarLog.LogTrace = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -95,8 +95,8 @@ CarLog.LogTrace = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (key) {
         const logBasicInfo = yield CarLog.logBasicInfo();
         const traceData = Object.assign(Object.assign({}, logBasicInfo), info);
-        console.log('测试+++traceData++key', key);
-        console.log('测试+++traceData', traceData);
+        console.log('log+++traceData++key', key);
+        console.log('log+++traceData', traceData);
         Log.logTrace(key, traceData);
     }
 });
@@ -105,8 +105,8 @@ CarLog.LogMetric = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (key) {
         const logBasicInfo = yield CarLog.logBasicInfo();
         const metricData = Object.assign(Object.assign({}, logBasicInfo), info);
-        console.log('测试+++metricData++key', key);
-        console.log('测试+++metricData', metricData);
+        console.log('log+++metricData++key', key);
+        console.log('log+++metricData', metricData);
         Log.logMetric(key, value, metricData);
     }
 });

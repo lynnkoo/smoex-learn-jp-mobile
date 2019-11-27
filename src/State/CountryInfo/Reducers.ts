@@ -13,18 +13,18 @@ const initalState = getInitalState();
 // const initalStateClone = JSON.stringify(initalState);
 
 const setCountryInfo = (state, action) => {
-  let curState = { ...state };
-  if (action.data.countryId) {
-    curState = Object.assign({}, curState, { countryId: action.data.countryId });
-  }
-  if (action.data.countryCode) {
-    curState = Object.assign({}, curState, { countryCode: action.data.countryCode });
-  }
-  if (action.data.countryName) {
-    curState = Object.assign({}, curState, { countryName: action.data.countryName });
-  }
+  const { countryId, countryCode, countryName } = action.data;
+
+  const newCountryId = countryId || state.countryId;
+  const newCountryCode = countryCode || state.countryCode;
+  const newCountryName = countryName || state.countryName;
   return {
-    ...curState,
+    ...state,
+    ...{
+      countryId: newCountryId,
+      countryCode: newCountryCode,
+      countryName: newCountryName,
+    },
   };
 };
 
@@ -33,7 +33,6 @@ export default function CountryInfoReducer(state = initalState, action: CountryI
     case SET_COUNTRY_INFO:
       return setCountryInfo(state, action);
     case GET_COUNTRY_INFO:
-      return state;
     default:
       return state;
   }

@@ -3,17 +3,22 @@ import { AppContext, Utils } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 
-const initialiseAppContext = async (props) => {
-  AppContext.Url = props.url;
-  AppContext.UrlQuery = props.urlQuery;
+const initialisePropsUrl = (props) => {
+  const { url, urlQuery } = props;
+  AppContext.Url = url;
+  AppContext.UrlQuery = urlQuery;
+};
 
+const initialiseAppContext = async () => {
+  // init UserInfo
   Utils.setUserInfo();
+
   // init AppType
   if (AppContext.UrlQuery.AppType) {
     AppContext.CarEnv.AppType = Utils.getAppType(AppContext.UrlQuery.AppType);
   }
 
-  const propsUrl = JSON.parse(JSON.stringify(AppContext.UrlQuery).toLowerCase());
+  const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
   const ubt = await Utils.getUBT();
 
   /**
@@ -67,9 +72,10 @@ const initialiseAppContext = async (props) => {
 };
 
 const appLoad = (props) => {
+  initialisePropsUrl(props);
   initialiseStore();
   initialiseAppState();
-  initialiseAppContext(props);
+  initialiseAppContext();
 };
 
 export default appLoad;

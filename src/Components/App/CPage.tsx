@@ -26,10 +26,6 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     // };
   }
 
-  getPageId() {
-    return '';
-  }
-
   async getPVOption() {
     const logBasicInfo = await CarLog.logBasicInfo();
     return {

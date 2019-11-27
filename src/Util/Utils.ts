@@ -93,8 +93,7 @@ class Utils {
       const callback = (...cargs: any[]) => {
         let data;
         if (cargs && cargs.length === 1) {
-          const [first] = cargs;
-          data = first;
+          data = cargs[0];
         } else {
           data = cargs;
         }
@@ -131,6 +130,14 @@ class Utils {
         AppContext.UserInfo.data = info.data;
       }
     });
+  }
+
+  static convertKeysToLowerCase = (param) => {
+    try {
+      return JSON.parse(JSON.stringify(param).toLowerCase());
+    } catch (ex) {
+      return {};
+    }
   }
 }
 

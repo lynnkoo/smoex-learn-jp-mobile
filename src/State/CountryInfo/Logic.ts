@@ -24,8 +24,6 @@ export const setCommonCountryInfo = createLogic({
         countryId: 66,
       };
 
-      console.log('setCountryInfo+++result', result);
-
       const countryId = result && result.isSuccessful && result.countryId;
       let countryInfo = {
         countryId: 66,

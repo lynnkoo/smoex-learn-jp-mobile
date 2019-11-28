@@ -9,7 +9,7 @@ import {
 } from '@ctrip/crn';
 import { IntlProvider } from 'react-intl';
 import { Text } from 'react-native';
-import { AppContext } from '../../Util/Index';
+import { AppContext, CarLog } from '../../Util/Index';
 import { Platform, TranslationKeys } from '../../Constants/Index';
 
 export interface IStateType {
@@ -32,6 +32,12 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     //   lang: '',
     //   messages: null,
     // };
+  }
+
+  getPVOption() {
+    return {
+      ...CarLog.logBasicInfo()
+    };
   }
 
   pageDidAppear() {

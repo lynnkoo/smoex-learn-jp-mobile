@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { App } from '@ctrip/crn';
 import { Provider } from 'react-redux';
+import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
 import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
@@ -21,7 +21,7 @@ class Car extends App {
 export default class RnCarApp extends Component {
   constructor(props) {
     super(props);
-    appLoad();
+    appLoad(props);
   }
 
   render() {

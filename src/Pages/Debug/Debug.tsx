@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { ViewPort, HeaderView, IBasePageProps } from '@ctrip/crn';
-import AppContext from '../../Util/AppContext';
+import { AppContext, CarLog } from '../../Util/Index';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
 
@@ -102,6 +102,18 @@ export default class MagicGate extends CPage<PropsType, StateType> {
 
             <TouchableOpacity style={styles.btn} onPress={() => this.push('Demo')}>
               <Text>to Demo</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.container2}>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogCode({ enName: 'test-click', pageId: this.getPageId() })}>
+              <Text>测试点击埋点</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogTrace({ key: '000', info: { eventResult: true } })}>
+              <Text>测试trace埋点</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogMetric({ key: '002', value: 500, info: { pageId: this.getPageId() } })}>
+              <Text>测试metric埋点</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

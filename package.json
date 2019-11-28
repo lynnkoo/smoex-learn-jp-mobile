@@ -6,8 +6,8 @@
   "scripts": {
     "patch": "crn-cli run-patch",
     "start": "crn-cli start --port 5389",
-    "android": "crn-cli run-android --port 5389 --app-version 8.14",
-    "ios": "crn-cli run-ios --port 5389 --app-version 8.14",
+    "android": "crn-cli run-android --app-version 8.14 --port 5389",
+    "ios": "crn-cli run-ios --app-version 8.14 --port 5389",
     "start:trip": "crn-cli start --port 5388",
     "android:trip": "crn-cli run-android --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --port 5388",
     "ios:trip": "crn-cli run-ios --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --reset --port 5388",

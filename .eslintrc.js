@@ -46,7 +46,8 @@ module.exports = {
       "components": ["Link"],
       "specialLink": ["to"],
       "aspects": ["noHref", "invalidHref", "preferButton"],
-    }]
+    }],
+    "prefer-destructuring": ["error", {"object": true, "array": false}]
   },
   settings: {
     "import/resolver": {

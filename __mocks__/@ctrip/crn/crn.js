@@ -22,6 +22,9 @@ jest.mock('@ctrip/crn', () => {
       sId: '',
       alianceId: '',
     },
+    I18n: {
+      getCurrentLocale: () => { }
+    },
     Device: {
       setStatusBarStyle() { },
       deviceInfo: {

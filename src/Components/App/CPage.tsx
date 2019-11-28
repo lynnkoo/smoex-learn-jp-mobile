@@ -10,7 +10,7 @@ import {
 import { IntlProvider } from 'react-intl';
 import { Text } from 'react-native';
 import { AppContext, CarLog } from '../../Util/Index';
-import { Platform, TranslationKeys } from '../../Constants/Index';
+import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
 
 export interface IStateType {
   lang?: string,
@@ -48,6 +48,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   pageDidDisappear() {
     const activeTime = +new Date() - +this.pageLastActiveTime;
     this.isPageAppear = false;
+    CarLog.LogMetric({ key: LogKey.METRIC_PAGE_ACTIVE_TIME, value: activeTime, info: {} });
   }
 
   push(name) {

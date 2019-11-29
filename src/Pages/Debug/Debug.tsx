@@ -11,6 +11,7 @@ import { ViewPort, HeaderView, IBasePageProps } from '@ctrip/crn';
 import { AppContext, CarLog } from '../../Util/Index';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
+import { TextWithLogCode, TouchableOpacityWithLogCode } from '../../Components/Index';
 
 const styles = StyleSheet.create({
   container: {
@@ -115,6 +116,21 @@ export default class MagicGate extends CPage<PropsType, StateType> {
             <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogMetric({ key: '002', value: 500, info: { pageId: this.getPageId() } })}>
               <Text>测试metric埋点</Text>
             </TouchableOpacity>
+          </View>
+          <View style={styles.container2}>
+            <TextWithLogCode pageId={this.getPageId()} enName="test textLogCode" logOtherInfo={{ code: 1 }} onPress={() => { console.log('test withLogCode'); }}>
+              {'测试TextWithLogCode组件'}
+            </TextWithLogCode>
+          </View>
+
+          <View style={styles.container2}>
+            <TouchableOpacityWithLogCode
+              pageId={this.getPageId()}
+              enName="test TouchableOpacityLogCode"
+              onPress={() => { console.log('test TouchableOpacityLogCode'); }}
+            >
+              <Text>测试TouchableOpacityWithLogCode组件</Text>
+            </TouchableOpacityWithLogCode>
           </View>
         </ScrollView>
       </ViewPort>

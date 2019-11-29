@@ -19,10 +19,10 @@ const rootReducer = combineReducers({
   DriverAge,
 });
 
-let store: Store;
+let store: Store = null;
 
 const initialiseStore = (): void => {
-  store = createStore(rootReducer, enhancer);
+  store = store || createStore(rootReducer, enhancer);
 };
 
 const getStore = (): Store => {

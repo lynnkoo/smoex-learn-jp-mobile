@@ -18,6 +18,7 @@ export interface QConfigType { }
 export interface CacheType { }
 
 export interface UserInfoType {
+  UserID?: string
 }
 
 export interface CarEnvType {
@@ -95,6 +96,10 @@ const setUrlQuery = (urlQuery) => {
   appContext.UrlQuery = urlQuery;
 };
 
+const setSharkKeys = (value: SharkKeysType) => {
+  appContext.SharkKeys = value;
+};
+
 const initLanguage = async () => {
   /* eslint-disable dot-notation */
   if (global['__crn_appId'] === APP_ID.TRIP) {
@@ -155,6 +160,7 @@ const AppContext = {
   setUserInfo,
   setUrl,
   setUrlQuery,
+  setSharkKeys,
 };
 
 export default AppContext;

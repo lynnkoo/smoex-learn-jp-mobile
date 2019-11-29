@@ -25,7 +25,10 @@ export interface CarEnvType {
   AppType: string;
 }
 
-export interface SharkKeysType { }
+export interface SharkKeysType {
+  lang: any,
+  messages: any,
+}
 
 export interface UrlQueryType {
   age?: string,
@@ -57,7 +60,7 @@ const appContext = {
   QConfig: {},
   Cache: {},
   CarEnv: { BuildTime, AppType: '' },
-  SharkKeys: {},
+  SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',
     locale: '',
@@ -116,6 +119,11 @@ const initLanguage = async () => {
   }
 };
 
+const setSharkKeys = (lang, messages) => {
+  appContext.SharkKeys.lang = lang;
+  appContext.SharkKeys.messages = messages;
+};
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -155,6 +163,7 @@ const AppContext = {
   setUserInfo,
   setUrl,
   setUrlQuery,
+  setSharkKeys,
 };
 
 export default AppContext;

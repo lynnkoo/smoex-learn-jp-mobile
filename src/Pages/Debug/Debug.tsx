@@ -74,6 +74,11 @@ export default class MagicGate extends CPage<PropsType, StateType> {
     return PageId.Index.ID;
   }
 
+  componentDidMount() {
+    super.componentDidMount();
+    super.logPagePerformance();
+  }
+
   getAppContext = () => {
     const contexts = Object.keys(AppContext)
       .map((name): string => `${name}:${JSON.stringify(AppContext[name])}`);

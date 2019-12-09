@@ -83,7 +83,7 @@ const setLocationInfo = (state, action) => {
   };
 };
 
-export default function LocationAndDateReducer(state = initalState, action: LocationAndDateActionType = { type: '' }) {
+export default (state = initalState, action: LocationAndDateActionType = { type: '' }) => {
   switch (action.type) {
     case SET_DATE_INFO:
       return setDateInfo(state, action);
@@ -93,4 +93,4 @@ export default function LocationAndDateReducer(state = initalState, action: Loca
     default:
       return state;
   }
-}
+};

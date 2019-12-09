@@ -1,7 +1,7 @@
 import { Business } from '@ctrip/crn';
 import { AppContext, Utils, User } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
-import { initialiseABTesting } from './Util/ABTesting';
+// import { initialiseABTesting } from './Util/ABTesting';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 
 const initialisePropsUrl = (props) => {
@@ -78,7 +78,7 @@ const initialiseAppContext = async () => {
 const appLoad = (props) => {
   initialisePropsUrl(props);
   initialiseStore();
-  initialiseABTesting();
+  // initialiseABTesting();
   initialiseAppState();
   initialiseAppContext();
 };

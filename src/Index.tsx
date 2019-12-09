@@ -28,7 +28,7 @@ export default class RnCarApp extends Component {
     return (
       <ErrorBoundary>
         <Provider store={getStore()}>
-          <Car />
+          <Car {...this.props} />
         </Provider>
       </ErrorBoundary>
     );

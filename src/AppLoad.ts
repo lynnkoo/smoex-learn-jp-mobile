@@ -1,17 +1,21 @@
 import { Business } from '@ctrip/crn';
-import { AppContext, Utils, CarLog } from './Util/Index';
+import { AppContext, Utils, User } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
+import { initialiseABTesting } from './Util/ABTesting';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 
 const initialisePropsUrl = (props) => {
   const { url, urlQuery } = props;
-  AppContext.Url = url;
-  AppContext.UrlQuery = urlQuery;
+  AppContext.setUrl(url);
+  AppContext.setUrlQuery(urlQuery);
 };
 
 const initialiseAppContext = async () => {
+  // init languageInfo
+  AppContext.initLanguageInfo();
+
   // init UserInfo
-  Utils.setUserInfo();
+  User.isLogin();
 
   // init AppType
   if (AppContext.UrlQuery.AppType) {
@@ -74,9 +78,9 @@ const initialiseAppContext = async () => {
 const appLoad = (props) => {
   initialisePropsUrl(props);
   initialiseStore();
+  initialiseABTesting();
   initialiseAppState();
   initialiseAppContext();
-  CarLog.initLanguageInfo();
 };
 
 export default appLoad;

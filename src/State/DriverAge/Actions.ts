@@ -10,6 +10,6 @@ export const setAge = data => ({
   data,
 });
 
-export const getAge = () => ({
+export const getDriverAge = () => ({
   type: GET_AGE,
 });

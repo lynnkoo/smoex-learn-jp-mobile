@@ -42,7 +42,6 @@ const getInitalState = () => (
 );
 
 const initalState = getInitalState();
-// const initalStateClone = JSON.stringify(initalState);
 
 const setDateInfo = (state, action) => {
   const { rentalDate } = state;
@@ -91,7 +90,6 @@ export default function LocationAndDateReducer(state = initalState, action: Loca
     case SET_LOCATION_INFO:
       return setLocationInfo(state, action);
     case GET_LOCATION_DATE_INFO:
-      return state;
     default:
       return state;
   }

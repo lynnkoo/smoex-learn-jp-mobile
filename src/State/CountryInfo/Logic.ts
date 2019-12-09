@@ -3,6 +3,7 @@ import { createLogic } from 'redux-logic';
 import { GET_COUNTRY_INFO } from './Types';
 import { setCountryInfo } from './Actions';
 import { Utils } from '../../Util/Index';
+import * as InitCountryInfo from '../../__datas__/CountryInfo';
 
 export const getCountryInfo = createLogic({
   type: GET_COUNTRY_INFO,
@@ -25,19 +26,17 @@ export const getCountryInfo = createLogic({
       };
 
       const countryId = result && result.isSuccessful && result.countryId;
-      let countryInfo = {
-        countryId: 66,
-        countryCode: 'US',
-        countryName: 'United States',
-      };
+      let countryInfo;
       if (countryId) {
         countryInfo = {
           countryId,
           countryCode: curResidency.countryCode,
           countryName: curResidency.localizationName,
         };
+      } else {
+        countryInfo = InitCountryInfo;
       }
-      await dispatch(setCountryInfo(countryInfo));
+      dispatch(setCountryInfo(countryInfo));
     }
     done();
   },

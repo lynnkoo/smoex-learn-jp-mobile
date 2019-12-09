@@ -2,12 +2,8 @@ import { Channel, Application, Log } from '@ctrip/crn';
 import moment from 'moment';
 import Utils from './Utils';
 import AppContext from './AppContext';
-import CarI18n from './CarI18n';
-import Locale from './Locale';
 import { getStore } from '../State/Store';
-import {
-  AgeConfig, ClickKey, LogKey, Platform,
-} from '../Constants/Index';
+import { AgeConfig, ClickKey, LogKey } from '../Constants/Index';
 
 export interface LogCodeType {
   pageId: string,
@@ -17,28 +13,21 @@ export interface LogCodeType {
 
 export interface LogTraceType {
   key: string,
-  info?: any
+  info: Object
 }
 
 export interface LogMetricType {
   key: string,
   value: number,
-  info?: any
+  info: Object
 }
 
 class CarLog {
-  static languageInfo = {
-    language: '',
-    locale: '',
-    site: '',
-    currency: '',
-  };
-
   // Get the return time and location information
   static getLocationAndDateInfo = () => {
     const state = getStore().getState();
-    const { countryId, countryCode, countryName } = state.CountryInfoReducer;
-    const { rentalLocation, rentalDate } = state.LocationAndDateReducer;
+    const { countryId, countryCode, countryName } = state.CountryInfo;
+    const { rentalLocation, rentalDate } = state.LocationAndDate;
     const pickupTime = moment(rentalDate.pickUp.dateTime, moment.ISO_8601).format(
       'YYYY-MM-DD HH:mm:ss',
     );
@@ -67,32 +56,11 @@ class CarLog {
     };
   }
 
-  // Get language and currency information
-  static initLanguageInfo = async () => {
-    if (AppContext.CarEnv.AppType === Platform.APP_TYPE.OSD_T_APP) {
-      const { locale } = await CarI18n.getCurrentLocale();
-      const { code: currency } = await CarI18n.getCurrentCurrency('callback');
-      const localeInstance = new Locale(locale);
-      let language = localeInstance.getLanguage().toUpperCase();
-      const traditional = ['hk', 'tw'];
-      // 如果是香港台湾等类中文语言，统一传 CN
-      if (traditional.includes(language)) {
-        language = 'CN';
-      }
-      CarLog.languageInfo = {
-        language,
-        locale: localeInstance.getLocale(),
-        site: language,
-        currency,
-      };
-    }
-  }
-
   static logBasicInfo = () => {
     const locationAndDateInfo = CarLog.getLocationAndDateInfo();
     const curDate = new Date();
     const state = getStore().getState();
-    const { age } = state.AgeReducer;
+    const { age } = state.DriverAge;
     return {
       sourceFrom: AppContext.CarEnv.AppType,
       businessType: Utils.getBusinessType(),
@@ -105,7 +73,7 @@ class CarLog {
       abVersion: '', // todo
       partialVersion: AppContext.CarEnv.BuildTime,
       crnVersion: Application.version || '',
-      uId: AppContext.UserInfo.data ? AppContext.UserInfo.data.UserID : '',
+      uId: AppContext.UserInfo.UserID || '',
       telephone: Channel.telephone || '',
       currentTime: moment(curDate, moment.ISO_8601).format('YYYY-MM-DD HH:mm:ss'),
       beijingTime: moment(curDate)
@@ -114,44 +82,20 @@ class CarLog {
       awakeTime: AppContext.MarketInfo.awakeTime,
       age,
       defaultAge: age === AgeConfig.DEFAULT_AGE.val,
-      ...CarLog.languageInfo,
+      ...AppContext.LanguageInfo,
       ...locationAndDateInfo,
     };
   }
 
-  static LogCode = async (data: LogCodeType) => {
+  static LogCode = (data: LogCodeType) => {
     const newData = data;
     if (!data.name && ClickKey[data.enName]) newData.name = ClickKey[data.enName].NAME;
-    const codeData = {
-      ...CarLog.logBasicInfo(), ...newData,
-    };
-    console.log('log+++codeData', codeData);
-    Log.logCode(LogKey.CLICK_KEY, codeData);
+    Log.logCode(LogKey.CLICK_KEY, { ...CarLog.logBasicInfo(), ...newData });
   }
 
-  static LogTrace = async (data: LogTraceType) => {
-    const { key, info = {} } = data;
-    if (key) {
-      const traceData = {
-        ...CarLog.logBasicInfo(), ...info,
-      };
-      console.log('log+++traceData++key', key);
-      console.log('log+++traceData', traceData);
-      Log.logTrace(key, traceData);
-    }
-  }
+  static LogTrace = async (data: LogTraceType) => { Log.logTrace(data.key, { ...CarLog.logBasicInfo(), ...data.info }); }
 
-  static LogMetric = (data: LogMetricType) => {
-    const { key, value, info = {} } = data;
-    if (key) {
-      const metricData = {
-        ...CarLog.logBasicInfo(), ...info,
-      };
-      console.log('log+++metricData++key', key);
-      console.log('log+++metricData', metricData);
-      Log.logMetric(key, value, metricData);
-    }
-  }
+  static LogMetric = (data: LogMetricType) => { Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info }); }
 }
 
 export default CarLog;

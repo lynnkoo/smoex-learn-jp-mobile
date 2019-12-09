@@ -7,10 +7,10 @@ import {
   IBUSharkUtil,
   IBasePageProps,
 } from '@ctrip/crn';
-// import { IntlProvider } from 'react-intl';
-// import { Text } from 'react-native';
+import { IntlProvider } from 'react-intl';
+import { Text } from 'react-native';
 import { AppContext, CarLog } from '../../Util/Index';
-import { Platform, TranslationKeys } from '../../Constants/Index';
+import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
 
 export interface IStateType {
   lang?: string,
@@ -18,8 +18,16 @@ export interface IStateType {
 }
 
 export default class CPage<P extends IBasePageProps, S extends IStateType> extends Page<P, S> {
+  pageInitialiseTime: Date = null;
+  pageLastActiveTime: Date = null;
+  pageAppearCount: Number = null;
+  isPageAppear: Boolean = true;
+
   constructor(prop: P) {
     super(prop);
+    this.pageInitialiseTime = new Date();
+    this.pageLastActiveTime = new Date();
+    this.pageAppearCount = 0;
     // this.state = {
     //   lang: '',
     //   messages: null,
@@ -32,19 +40,33 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     };
   }
 
+  pageDidAppear() {
+    this.pageLastActiveTime = new Date();
+    this.isPageAppear = true;
+  }
+
+  pageDidDisappear() {
+    const activeTime = +new Date() - +this.pageLastActiveTime;
+    this.isPageAppear = false;
+    CarLog.LogMetric({ key: LogKey.METRIC_PAGE_ACTIVE_TIME, value: activeTime, info: {} });
+  }
+
+  push(name) {
+    super.push(name);
+  }
+
+  pop(name) {
+    super.pop(name);
+  }
+
   componentDidMount() {
     if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
-      // const startTime = new Date().getTime();
       IBUSharkUtil.fetchSharkData(this.getSharkConfig())
         .then(({ lang, messages }) => {
           debugger;
           this.setAppContextSharkKeys(lang, messages);
           this.setState({ lang, messages });
           this.sharkFetchDidFinish();
-          // const costTime = new Date().getTime() - startTime;
-          // IBULog.trace("key.crn.ibupage.load.keys.time", {
-          //   keys_time: costTime
-          // });
         })
         .catch(() => {
           debugger;
@@ -66,7 +88,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   setAppContextSharkKeys(lang, messages) {
-    AppContext.SharkKeys = { lang, messages };
+    AppContext.setSharkKeys(lang, messages);
   }
 
   /* eslint-disable class-methods-use-this */
@@ -94,16 +116,15 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   render() {
-    // const { lang, messages } = this.state;
-    // const loading = this.getLoadingState();
-    return this.renderPageContent();
-    // if (lang && messages && !loading) {
-    // return (
-    // <IntlProvider locale={lang} messages={messages} textComponent={Text}>
-    // {this.renderPageContent()}
-    // </IntlProvider>
-    // );
-    // }
-    // return this.renderPageLoading();
+    const { lang, messages } = this.state;
+    const loading = this.getLoadingState();
+    if (lang && messages && !loading) {
+      return (
+        <IntlProvider locale={lang} messages={messages} textComponent={Text}>
+          {this.renderPageContent()}
+        </IntlProvider>
+      );
+    }
+    return this.renderPageLoading();
   }
 }

@@ -1,4 +1,4 @@
-import { Env, Storage, User } from '@ctrip/crn';
+import { Env, Storage } from '@ctrip/crn';
 import {
   ENV_TYPE,
   DOMAIN_URL,
@@ -70,17 +70,9 @@ class Utils {
     return AppContext.CarEnv.AppType === APP_TYPE.OSD_Q_APP;
   }
 
-  static loadStoragePromise(params: storageLoadParamType): any {
-    return new Promise((resolve) => {
-      Storage.load(params, (result) => {
-        resolve(result);
-      });
-    });
-  }
-
   // get ubt info
-  static async getUBT(): Promise<any> {
-    const ubt = await Utils.loadStoragePromise({
+  static async getUBT(): Promise<{sid?: string}> {
+    const ubt = await Storage.loadSync({
       key: 'CTRIP_UBT_M',
       domain: 'fx.ubt',
     });
@@ -122,13 +114,6 @@ class Utils {
       )}:${str.substr(10, 2)}:${str.substr(12, 2)}`;
     }
     return result;
-  }
-
-  static setUserInfo = async () => {
-    const info = await User.getUserInfoSync();
-    if (info && info.data) {
-      AppContext.UserInfo.data = info.data;
-    }
   }
 
   static convertKeysToLowerCase = (param) => {

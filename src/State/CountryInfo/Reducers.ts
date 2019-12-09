@@ -1,16 +1,9 @@
 import { SET_COUNTRY_INFO, GET_COUNTRY_INFO } from './Types';
 import { CountryInfoActionType } from './Actions';
 
-const getInitalState = () => (
-  {
-    countryId: '',
-    countryCode: '',
-    countryName: '',
-  }
-);
+const getInitalState = () => ({ countryId: '', countryCode: '', countryName: '' });
 
 const initalState = getInitalState();
-// const initalStateClone = JSON.stringify(initalState);
 
 const setCountryInfo = (state, action) => ({
   ...state,

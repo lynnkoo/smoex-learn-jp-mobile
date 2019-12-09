@@ -19,13 +19,9 @@ export const toLogin = (options = {}) => new Promise((resolve) => {
   );
 });
 
-export const isLogin = () => new Promise((resolve) => {
-  User.getUserInfo((status, userInfo) => {
-    if (userInfo && userInfo.data && userInfo.data.Auth) {
-      AppContext.UserInfo = userInfo;
-      resolve(true);
-    } else {
-      resolve(false);
-    }
-  });
-});
+export const isLogin = async () => {
+  const userInfo = await User.getUserInfoSync();
+  if (userInfo && userInfo.data && userInfo.data.Auth) {
+    AppContext.UserInfo = userInfo;
+  }
+};

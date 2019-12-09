@@ -6,7 +6,7 @@ import CPage from '../../Components/App/CPage';
 
 export interface PropsType extends IBasePageProps {
   landingto: string,
-  loadMarket?: Function,
+  loadMarket: Function,
 }
 
 class Market extends CPage<PropsType, any> {

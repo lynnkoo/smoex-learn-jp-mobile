@@ -22,7 +22,7 @@ export interface UserInfoType {
 
 export interface CarEnvType {
   BuildTime: string;
-  AppType: string;
+  apptype: string;
 }
 
 export interface SharkKeysType {
@@ -32,7 +32,7 @@ export interface SharkKeysType {
 
 export interface UrlQueryType {
   age?: string,
-  AppType?: any,
+  apptype?: any,
   data?: any,
   landingto?: string,
   fromurl?: string,
@@ -63,7 +63,7 @@ const baseContext = {
   },
   QConfig: {},
   Cache: {},
-  CarEnv: { BuildTime, AppType: '' },
+  CarEnv: { BuildTime, apptype: '' },
   SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',

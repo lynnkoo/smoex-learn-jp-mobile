@@ -17,9 +17,9 @@ const initialiseAppContext = async () => {
   // init UserInfo
   User.isLogin();
 
-  // init AppType
-  if (AppContext.UrlQuery.AppType) {
-    AppContext.CarEnv.AppType = Utils.getAppType(AppContext.UrlQuery.AppType);
+  // init apptype
+  if (AppContext.UrlQuery.apptype) {
+    AppContext.CarEnv.apptype = Utils.getAppType(AppContext.UrlQuery.apptype);
   }
 
   const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);

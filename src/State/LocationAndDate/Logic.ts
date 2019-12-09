@@ -3,7 +3,9 @@ import moment from 'moment';
 import { GET_LOCATION_DATE_INFO } from './Types';
 import { setDateInfo, setLocationInfo } from './Actions';
 import { Utils } from '../../Util/Index';
-import { initRentalLocation, initDatePickup, initDateDropoff } from '../../__datas__/LocationAndDate';
+import {
+  initRentalLocation, initDatePickup, initDateDropoff,
+} from '../../__datas__/LocationAndDate';
 
 export const setCommonDateInfo = createLogic({
   type: GET_LOCATION_DATE_INFO,

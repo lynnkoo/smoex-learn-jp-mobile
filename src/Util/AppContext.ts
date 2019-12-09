@@ -22,7 +22,7 @@ export interface UserInfoType {
 
 export interface CarEnvType {
   BuildTime: string;
-  AppType: string;
+  apptype: string;
 }
 
 export interface SharkKeysType {
@@ -32,7 +32,11 @@ export interface SharkKeysType {
 
 export interface UrlQueryType {
   age?: string,
-  AppType?: any,
+  apptype?: any,
+  data?: any,
+  landingto?: string,
+  fromurl?: string,
+  st?: string,
 }
 
 export interface ABTestingType {
@@ -47,7 +51,7 @@ export interface LanguageInfoType {
   currency: string;
 }
 
-const appContext = {
+const baseContext = {
   ABTesting: { trace: '', datas: {} },
   MarketInfo: {
     channelId: '',
@@ -59,7 +63,7 @@ const appContext = {
   },
   QConfig: {},
   Cache: {},
-  CarEnv: { BuildTime, AppType: '' },
+  CarEnv: { BuildTime, apptype: '' },
   SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',
@@ -71,6 +75,11 @@ const appContext = {
   UrlQuery: {},
   Url: '',
 };
+
+const getAppContext = () => Object.assign({}, baseContext);
+
+let appContext = getAppContext();
+
 
 const setABTesting = (value) => {
   const datas = { ...appContext.ABTesting.datas, ...value };
@@ -124,6 +133,10 @@ const setSharkKeys = (lang, messages) => {
   appContext.SharkKeys.messages = messages;
 };
 
+const reset = () => {
+  appContext = getAppContext();
+};
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -164,6 +177,7 @@ const AppContext = {
   setUrl,
   setUrlQuery,
   setSharkKeys,
+  reset,
 };
 
 export default AppContext;

@@ -51,7 +51,8 @@ export const AbTestingKey = {
   },
 };
 
-const getActiveAbs = (isSync: boolean) => Object.keys(AbTestingKey).filter(m => AbTestingKey[m].isActive && AbTestingKey[m].isSync === isSync);
+const getActiveAbs = (isSync: boolean) => Object.keys(AbTestingKey)
+  .filter(m => AbTestingKey[m].isActive && AbTestingKey[m].isSync === isSync);
 
 const getABsExpCodes = (keys: Array<string>) => {
   const expDatas = [];
@@ -92,7 +93,9 @@ export const getAbBoolean = (AbInfo: AbItemType) => {
   return AbIsTrue(Ab, AbInfo);
 };
 
-export const getAbExpVersion = (AbInfo: AbItemType) => AppContext.ABTesting.datas[AbInfo.key].ExpVersion;
+export const getAbExpVersion = (AbInfo: AbItemType) => (
+  AppContext.ABTesting.datas[AbInfo.key].ExpVersion
+);
 
 export const initialiseABTesting = () => {
   // sync

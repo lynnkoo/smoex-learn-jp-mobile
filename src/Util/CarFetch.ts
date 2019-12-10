@@ -36,7 +36,6 @@ class FetchBase implements FetchBaseType {
   getFetchObject = async (url: string, params, cancelable: boolean) => {
     const tmpParams = this.mixinSequenceId(params);
     const requestUrl = await this.getRequestUrl(url);
-    console.log('vv', tmpParams);
     if (!cancelable) {
       return fetch(requestUrl, tmpParams);
     }
@@ -61,7 +60,9 @@ class FetchBase implements FetchBaseType {
 //   console.log('done2', data2, fetchInstance)
 // }
 class CarFetch extends FetchBase {
-  getCityList = (params: RequestType, cancelable: boolean = false) => this.getFetchObject('13589/getCategoryCity.json', params, cancelable);
+  getCityList = (params: RequestType, cancelable: boolean = false) => (
+    this.getFetchObject('13589/getCategoryCity.json', params, cancelable)
+  );
 
   queryAppCountryId = params => this.getFetchObject('14804/queryCountryId', params, false);
 

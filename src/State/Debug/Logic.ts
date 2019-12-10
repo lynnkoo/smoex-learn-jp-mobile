@@ -6,9 +6,9 @@ import { INCREMENT, DECREMENT } from './Types';
 export const increment = createLogic({
   type: INCREMENT,
   /* eslint-disable no-empty-pattern */
-  async process({ getState }, dispatch, done) {
+  async process({ }, dispatch, done) {
     // logics
-    console.log('INCREMENT', getState());
+    // console.log('INCREMENT', getState());
     done();
   },
 });

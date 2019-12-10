@@ -17,8 +17,8 @@ module.exports = {
     es6: true,
   },
   parser: "babel-eslint",
-  extends: ["airbnb", "plugin:skyscanner-dates/warn"],
-  plugins: ["skyscanner-dates", "react", "typescript"],
+  extends: ["airbnb"],
+  plugins: ["react", "typescript", "react-hooks"],
   rules: {
     "import/no-extraneous-dependencies": [0],
     "valid-jsdoc": ["error"],
@@ -47,7 +47,9 @@ module.exports = {
       "specialLink": ["to"],
       "aspects": ["noHref", "invalidHref", "preferButton"],
     }],
-    "prefer-destructuring": ["error", {"object": true, "array": false}]
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   settings: {
     "import/resolver": {

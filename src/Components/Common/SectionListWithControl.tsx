@@ -9,6 +9,7 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { isIos } = BbkUtils;
 
+// @ts-ignore
 interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
   threshold?: number;
@@ -51,6 +52,12 @@ const styles = StyleSheet.create({
 });
 
 export default class SectionListWithControl extends Component<SectionListWithControlProps, SectionListWithControlState> {
+  refreshControl = null;
+
+  loadControl = null;
+
+  scoller = null;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,9 +65,6 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       onLoading: false,
       refreshResult: null,
     };
-    this.refreshControl = null;
-    this.loadControl = null;
-    this.scoller = null;
   }
 
   onScrollThrottle = () => {
@@ -167,12 +171,14 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         // }}
         // refreshControl={
         ListHeaderComponent={(
+          // @ts-ignore
           <RefreshControl
             style={styles.controlWrap}
             iconStyle={styles.iconStyle}
             textStyle={styles.textStyle}
-            // eslint-disable-next-line
-            ref={ref => this.refreshControl = ref}
+            // @ts-ignore
+            ref={ref => this.refreshControl = ref} // eslint-disable-line
+            // @ts-ignore
             isRefreshing={refreshing}
             refreshResult={refreshResult}
             pullIcon={pullIcon}

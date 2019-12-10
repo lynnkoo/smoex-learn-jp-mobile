@@ -122,7 +122,7 @@ const baseVendorLabel = {
   noBg: true,
 };
 
-export const vendorLabelItems = {
+export const vendorLabelItems: any = {
   distance: {
     ...baseVendorLabel,
     text: 'Direct distance from MTR Station 40 m',

@@ -7,8 +7,8 @@ import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 import appLoad from './AppLoad';
 
-/* eslint-disable-next-line */
-if (global.__crn_appId === '37') {
+// @ts-ignore
+if (global.__crn_appId === '37') { // eslint-disable-line
   BbkChannel.setChannel('TRIP');
 } else {
   BbkChannel.setChannel('CTRIP');

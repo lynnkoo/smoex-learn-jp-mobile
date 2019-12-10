@@ -39,6 +39,14 @@ interface VehicleListDemoState {
 }
 
 export default class VehicleListDemo extends Component<any, VehicleListDemoState> {
+  cacheList = [];
+
+  cacheData = allData;
+
+  scrollerRef = {};
+
+  isScrolling = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -47,10 +55,6 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
       isDark: false,
       translateYAnim: new Animated.Value(0),
     };
-    this.cacheList = [];
-    this.cacheData = allData;
-    this.scrollerRef = {};
-    this.isScrolling = false;
   }
 
   getButtons(theme) {

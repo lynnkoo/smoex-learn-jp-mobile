@@ -23,14 +23,21 @@ export interface UserInfoType {
 
 export interface CarEnvType {
   BuildTime: string;
-  AppType: string;
+  apptype: string;
 }
 
-export interface SharkKeysType { }
+export interface SharkKeysType {
+  lang: any,
+  messages: any,
+}
 
 export interface UrlQueryType {
   age?: string,
-  AppType?: any,
+  apptype?: any,
+  data?: any,
+  landingto?: string,
+  fromurl?: string,
+  st?: string,
 }
 
 export interface ABTestingType {
@@ -45,7 +52,7 @@ export interface LanguageInfoType {
   currency: string;
 }
 
-const appContext = {
+const baseContext = {
   ABTesting: { trace: '', datas: {} },
   MarketInfo: {
     channelId: '',
@@ -57,8 +64,8 @@ const appContext = {
   },
   QConfig: {},
   Cache: {},
-  CarEnv: { BuildTime, AppType: '' },
-  SharkKeys: {},
+  CarEnv: { BuildTime, apptype: '' },
+  SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',
     locale: '',
@@ -69,6 +76,11 @@ const appContext = {
   UrlQuery: {},
   Url: '',
 };
+
+const getAppContext = () => Object.assign({}, baseContext);
+
+let appContext = getAppContext();
+
 
 const setABTesting = (value) => {
   const datas = { ...appContext.ABTesting.datas, ...value };
@@ -96,10 +108,6 @@ const setUrlQuery = (urlQuery) => {
   appContext.UrlQuery = urlQuery;
 };
 
-const setSharkKeys = (value: SharkKeysType) => {
-  appContext.SharkKeys = value;
-};
-
 const initLanguage = async () => {
   /* eslint-disable dot-notation */
   if (global['__crn_appId'] === APP_ID.TRIP) {
@@ -119,6 +127,15 @@ const initLanguage = async () => {
       currency,
     };
   }
+};
+
+const setSharkKeys = (lang, messages) => {
+  appContext.SharkKeys.lang = lang;
+  appContext.SharkKeys.messages = messages;
+};
+
+const reset = () => {
+  appContext = getAppContext();
 };
 
 const AppContext = {
@@ -161,6 +178,7 @@ const AppContext = {
   setUrl,
   setUrlQuery,
   setSharkKeys,
+  reset,
 };
 
 export default AppContext;

@@ -64,10 +64,12 @@ class CarLog {
     const state = getStore().getState();
     const { age } = state.DriverAge;
     return {
-      sourceFrom: AppContext.CarEnv.AppType,
+      sourceFrom: AppContext.CarEnv.apptype,
       businessType: Utils.getBusinessType(),
-      distibutionChannelId: Utils.isQunarApp() ? AppContext.MarketInfo.childChannelId : AppContext.MarketInfo.channelId,
-      channelId: Utils.isQunarApp() ? AppContext.MarketInfo.channelId : AppContext.MarketInfo.childChannelId,
+      distibutionChannelId: Utils.isQunarApp()
+        ? AppContext.MarketInfo.childChannelId : AppContext.MarketInfo.channelId,
+      channelId: Utils.isQunarApp()
+        ? AppContext.MarketInfo.channelId : AppContext.MarketInfo.childChannelId,
       sId: AppContext.MarketInfo.sId,
       allianceId: AppContext.MarketInfo.aId,
       visitortraceId: AppContext.MarketInfo.visitortraceId,
@@ -95,9 +97,13 @@ class CarLog {
     Log.logCode(LogKey.CLICK_KEY, { ...CarLog.logBasicInfo(), ...newData });
   }
 
-  static LogTrace = async (data: LogTraceType) => { Log.logTrace(data.key, { ...CarLog.logBasicInfo(), ...data.info }); }
+  static LogTrace = async (data: LogTraceType) => {
+    Log.logTrace(data.key, { ...CarLog.logBasicInfo(), ...data.info });
+  }
 
-  static LogMetric = (data: LogMetricType) => { Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info }); }
+  static LogMetric = (data: LogMetricType) => {
+    Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info });
+  }
 }
 
 export default CarLog;

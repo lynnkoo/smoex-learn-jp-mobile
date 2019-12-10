@@ -3,6 +3,7 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
 import { View, TouchableOpacity, Animated } from 'react-native';
+import { ReadStream } from 'fs';
 
 configure({ adapter: new Adapter() });
 
@@ -179,3 +180,5 @@ jest.mock('@ctrip/crn', () => {
     },
   };
 });
+
+jest.mock('../../../src/Components/App/CPage', () => React.Component);

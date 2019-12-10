@@ -99,26 +99,48 @@ export default class MagicGate extends CPage<PropsType, StateType> {
           </View>
           <View style={styles.container2}>
             <Text>{this.props.count}</Text>
-            <TouchableOpacity style={styles.btn} onPress={() => this.props.debugIncrement()}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => this.props.debugIncrement()}
+            >
               <Text>increment</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={() => this.props.debugDecrement()}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => this.props.debugDecrement()}
+            >
               <Text>decrement</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => this.push('Demo')}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => this.push('Demo')}
+            >
               <Text>to Demo</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.container2}>
-            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogCode({ enName: 'test-click', pageId: this.getPageId() })}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => CarLog.LogCode({ enName: 'test-click', pageId: this.getPageId() })}
+            >
               <Text>测试点击埋点</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogTrace({ key: '000', info: { eventResult: true } })}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => CarLog.LogTrace({ key: '000', info: { eventResult: true } })}
+            >
               <Text>测试trace埋点</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={() => CarLog.LogMetric({ key: '002', value: 500, info: { pageId: this.getPageId() } })}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={
+                () => CarLog.LogMetric({
+                  key: '002', value: 500, info: { pageId: this.getPageId() },
+                })
+              }
+            >
               <Text>测试metric埋点</Text>
             </TouchableOpacity>
           </View>

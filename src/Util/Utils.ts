@@ -33,7 +33,7 @@ class Utils {
   * 37 + OSD_T_APP
   * 999999 + OSD_C_APP
   * 999999 + ISD_C_APP
-  * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&AppType=OSD_C_APP
+  * @param {string} urlAppType from url CRNModuleName=rn_car_app&CRNType=1&apptype=OSD_C_APP
   * @return {string} return Enum APP_TYPE
   */
   static getAppType(urlAppType: string): string {
@@ -50,7 +50,7 @@ class Utils {
   }
 
   static getBusinessType(): String {
-    switch (AppContext.CarEnv.AppType) {
+    switch (AppContext.CarEnv.apptype) {
       case APP_TYPE.OSD_C_APP:
         return BUSINESS_TYPE.OSD;
       case APP_TYPE.ISD_C_APP:
@@ -71,7 +71,7 @@ class Utils {
   }
 
   static isQunarApp(): boolean {
-    return AppContext.CarEnv.AppType === APP_TYPE.OSD_Q_APP;
+    return AppContext.CarEnv.apptype === APP_TYPE.OSD_Q_APP;
   }
 
   // get ubt info

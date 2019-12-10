@@ -34,7 +34,7 @@ import LogKey from './LogKey';
 
 /* eslint-disable global-require */
 const getPageId = () => {
-  switch (AppContext.CarEnv.AppType) {
+  switch (AppContext.CarEnv.apptype) {
     case Platform.APP_TYPE.ISD_C_APP: return PageIdIsd;
     case Platform.APP_TYPE.OSD_C_APP: return PageIdOsd;
     case Platform.APP_TYPE.OSD_T_APP:

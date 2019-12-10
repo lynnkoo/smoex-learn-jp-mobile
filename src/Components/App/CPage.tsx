@@ -11,6 +11,7 @@ import { IntlProvider } from 'react-intl';
 import { Text } from 'react-native';
 import { AppContext, CarLog } from '../../Util/Index';
 import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
+import AppUnLoad from '../../AppUnLoad';
 
 export interface IStateType {
   lang?: string,
@@ -64,18 +65,20 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     super.pop(name);
   }
 
+  replace(name) {
+    super.replace(name);
+  }
+
   componentDidMount() {
     this.pageShowTime = new Date();
     if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
       IBUSharkUtil.fetchSharkData(this.getSharkConfig())
         .then(({ lang, messages }) => {
-          debugger;
           this.setAppContextSharkKeys(lang, messages);
           this.setState({ lang, messages });
           this.sharkFetchDidFinish();
         })
         .catch(() => {
-          debugger;
           this.setAppContextSharkKeys('', {});
           this.setState({ lang: '', messages: {} });
           this.sharkFetchDidFinish();
@@ -87,7 +90,9 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     }
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {
+    AppUnLoad();
+  }
 
   /* eslint-disable class-methods-use-this */
   sharkFetchDidFinish() {

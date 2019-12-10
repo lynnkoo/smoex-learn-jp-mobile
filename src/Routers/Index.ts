@@ -1,8 +1,9 @@
-// import { lazyRequire } from '@ctrip/crn';
+import { lazyRequire } from '@ctrip/crn';
 
-import Demo from '../Pages/Demo/Page1';
-import Debug from '../Containers/DebugerContainer';
-import Market from '../Containers/MarketContainer';
+const Demo = lazyRequire('../Pages/Demo/Page1');
+const Debug = lazyRequire('../Containers/DebugerContainer');
+const Market = lazyRequire('../Containers/MarketContainer');
+const List = lazyRequire('../Pages/List/TestDragEnd');
 
 // const Demo = lazyRequire('../Pages/Demo/Page1');
 // const Debug = lazyRequire('../Containers/DebugerContainer');
@@ -26,6 +27,13 @@ const Pages: Array<PageRouteType> = [
   {
     component: Debug,
     name: 'Debug',
+    // isInitialPage: true,
+  },
+  {
+    component: List,
+    // name: PageId.List.EN,
+    name: 'List',
+    isInitialPage: true,
   },
 ];
 

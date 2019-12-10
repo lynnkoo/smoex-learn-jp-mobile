@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { App } from '@ctrip/crn';
+import { BbkChannel } from '@ctrip/bbk-utils';
 import pages from './Routers/Index';
 import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 import appLoad from './AppLoad';
+
+/* eslint-disable-next-line */
+if (global.__crn_appId === '37') {
+  BbkChannel.setChannel('TRIP');
+} else {
+  BbkChannel.setChannel('CTRIP');
+}
 
 const navigationBarConfig = {
   hide: true,

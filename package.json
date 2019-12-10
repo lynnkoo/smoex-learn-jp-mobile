@@ -17,8 +17,8 @@
     "lint:js:staged": "eslint . --ignore-path .eslintignore",
     "lint:js:fix": "npm run lint:js -- --fix",
     "lint:js:fix:staged": "eslint . --ignore-path .eslintignore --fix",
-    "build:ts": "tsc",
-    "watch:ts": "tsc -w",
+    "ts:build": "tsc",
+    "ts:watch": "tsc -w",
     "build:version": "sh ./scripts/BuildVersion.sh",
     "precommit": "lint-staged",
     "test": "jest --coverage",
@@ -29,15 +29,12 @@
     "install": "tsc"
   },
   "dependencies": {
-    "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
-    "lodash": "^4.17.15",
-    "react": "16.9.0",
-    "react-native": "0.61.2",
-    "redux": "^4.0.4",
-    "redux-logic": "^2.1.1",
-    "uuid": "^3.3.3",
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
+    "@ctrip/bbk-tokens": "0.0.12",
+    "@ctrip/bbk-utils": "0.0.8",
+    "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
+    "@ctrip/bbk-component-horizontal-nav": "^0.0.27",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.23",
     "@types/react": "^16.9.13",
@@ -49,14 +46,20 @@
     "babel-jest": "^24.8.0",
     "babel-preset-react-native": "^5.0.1",
     "bpk-tokens": "^29.2.2",
+    "lodash": "^4.17.15",
     "metro-react-native-babel-preset": "^0.56.0",
+    "react": "16.9.0",
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "16.8.3",
     "react-intl": "^3.6.0",
+    "react-native": "0.61.2",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.8.3",
+    "redux": "^4.0.4",
+    "redux-logic": "^2.1.1",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "enzyme": "^3.10.0",
@@ -86,5 +89,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "iconFont": [
+    "crn_font_cars_v7"
+  ]
 }

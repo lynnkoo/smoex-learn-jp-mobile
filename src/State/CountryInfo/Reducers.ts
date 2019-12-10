@@ -12,7 +12,7 @@ const setCountryInfo = (state, action) => ({
   countryName: action.data.countryName || state.countryName,
 });
 
-export default function CountryInfoReducer(state = initalState, action: CountryInfoActionType = { type: '' }) {
+export default (state = initalState, action: CountryInfoActionType = { type: '' }) => {
   switch (action.type) {
     case SET_COUNTRY_INFO:
       return setCountryInfo(state, action);
@@ -20,4 +20,4 @@ export default function CountryInfoReducer(state = initalState, action: CountryI
     default:
       return state;
   }
-}
+};

@@ -1,5 +1,6 @@
 import { Page } from '../TranslationKeys/Index';
 
 export default {
-  Index: { EN: 'List', NAME: Page.LIST.defaultMessage, ID: '10650034983' },
+  Index: { EN: 'Demo', NAME: Page.LIST.defaultMessage, ID: '10650034981' },
+  Debug: { EN: 'Debug', NAME: Page.LIST.defaultMessage, ID: '10650034981' },
 };

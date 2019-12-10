@@ -3,6 +3,9 @@ import {
   border, space, tokenType, font, icon,
 } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
+import {
+  listDay, days, Reviews, total,
+} from './Texts';
 
 const { getPixel, htmlDecode } = BbkUtils;
 
@@ -208,8 +211,8 @@ export const priceDescProps = {
     price: 205000000000,
     currency: 'AUD',
   },
-  totolText: 'Total',
-  dayText: '/day',
+  totolText: total,
+  dayText: `/${listDay}`,
 };
 
 const vendorHeaderProps = {
@@ -219,7 +222,7 @@ const vendorHeaderProps = {
   score: '4.5',
   totalScore: '5',
   scoreDesc: 'Excellent Car Condition Excellent Car Condition',
-  commentDesc: '500 comments',
+  commentDesc: `500 ${Reviews}`,
 };
 
 export const priceDescTotalProps = {
@@ -231,7 +234,7 @@ export const priceDescTotalProps = {
     price: 205,
     currency: 'AUD',
   },
-  totolText: '7 day(s)',
+  totolText: days(7),
 };
 
 const vendorListData = [
@@ -255,7 +258,7 @@ const vendorListData = [
     },
   },
   {
-    priceDescProps: priceDescTotalProps,
+    priceDescProps,
     vendorHeaderProps,
     vendorLabelItems,
     distance: 'distanceDiff',

@@ -13,6 +13,7 @@ import BbkCarImage from '@ctrip/bbk-component-car-image';
 import SectionListWithControl from '../Common/SectionListWithControl';
 import { style } from '../../Pages/List/mock';
 import VerdorHeader from './VendorHeader';
+import { listShowMore } from '../../Pages/List/Texts';
 
 const { selector } = BbkUtils;
 
@@ -137,8 +138,9 @@ const VehicleDom = withTheme(
         }
 
         {
-          item.map(data => (
-            <VendorDom key={data.vendorHeaderProps.title} {...data} />
+          item.map((data, index) => (
+            // eslint-disable-next-line
+            <VendorDom key={index} {...data} />
           ))
         }
       </View>
@@ -172,7 +174,7 @@ const VehicleFooter = withTheme(
       moreNumber,
       <BbkTouchable onPress={() => { console.log('=======more'); }}>
         <BbkCarRightIcon
-          text={`查看剩余${moreNumber}个价格`}
+          text={listShowMore(moreNumber)}
           style={[style.more, style.vehicleMarginBottom, {
             backgroundColor: theme.backgroundColor,
             borderBottomColor: theme.grayBorder,

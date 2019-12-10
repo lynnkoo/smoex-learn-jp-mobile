@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { space, font } from '@ctrip/bbk-tokens';
+import { space, font, color } from '@ctrip/bbk-tokens';
 import BbkText from '@ctrip/bbk-component-text';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
-import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import BbkCarVendorLogo from '@ctrip/bbk-component-vendor-logo';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkCarScoreLabel from '@ctrip/bbk-component-score-label';
@@ -28,6 +27,9 @@ export const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingBottom: space.spaceL,
+  },
+  comment: {
+    color: color.fontSubDark,
   },
 });
 
@@ -69,11 +71,7 @@ const VerdorHeader = (props: VerdorHeaderProps) => {
       <View style={[style.scoreDescWrap]}>
         <BbkText style={scoreDescStyle}>
           {scoreDesc}
-          <BbkCarRightIcon
-            text={` ${commentDesc} >`}
-            plainText
-            // iconContent={' '}
-          />
+          <BbkText style={style.comment}>{` ${commentDesc} >`}</BbkText>
         </BbkText>
       </View>
     </BbkTouchable>

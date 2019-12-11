@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   controlWrap: {
     position: 'absolute',
     // refreshControl 的默认高度
-    top: -35,
+    top: isIos ? -35 : 0,
     width: '100%',
   },
   iconStyle: {
@@ -72,25 +72,56 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     return isIos ? this.onScroll : _.throttle(this.onScroll, throttle, { trailing: false });
   }
 
+  triggerScroll = (event, debugInfo) => {
+    const { threshold } = this.props;
+    const { y } = event.nativeEvent.contentOffset;
+    const { height } = event.nativeEvent.layoutMeasurement;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    let load = false;
+    let refresh = false;
+
+    console.log(`${debugInfo}-->`, y + height, contentHeight);
+
+    if (isIos) {
+      if (y + height > contentHeight + threshold) {
+        load = true;
+      }
+      if (y < -threshold) {
+        refresh = true;
+      }
+    } else {
+      if (y + height > contentHeight - threshold) {
+        load = true;
+      }
+      if (y < threshold) {
+        refresh = true;
+      }
+    }
+
+    return {
+      load,
+      refresh,
+    };
+  }
+
   onScroll = (event) => {
     const { onLoading, refreshing } = this.state;
     if (onLoading || refreshing) {
       return;
     }
 
-    const { threshold } = this.props;
-    const { y } = event.nativeEvent.contentOffset;
-    const { height } = event.nativeEvent.layoutMeasurement;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    if (y + height > contentHeight + threshold) {
-      console.log('onScroll-->', y, height, contentHeight);
+    const {
+      load,
+      refresh,
+    } = this.triggerScroll(event, 'onScroll');
+
+    if (load) {
       this.setState({
         onLoading: true,
       });
     }
 
-    if (y < -threshold) {
-      console.log('onScroll-->', y, height, contentHeight);
+    if (refresh) {
       this.setState({
         refreshing: true,
       });
@@ -98,24 +129,32 @@ export default class SectionListWithControl extends Component<SectionListWithCon
   }
 
   onScrollEndDrag = (event) => {
-    const { threshold } = this.props;
-    const { y } = event.nativeEvent.contentOffset;
-    const { height } = event.nativeEvent.layoutMeasurement;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    console.log(`onScrollEndDrag-->${y}${height}`, contentHeight - threshold);
-    if (y + height > contentHeight + threshold) {
+    const {
+      load,
+      refresh,
+    } = this.triggerScroll(event, 'onScrollEndDrag');
+
+    if (load) {
       this.props.onLoadMore(() => {
         this.setState({
           onLoading: false,
         });
       });
+    } else {
+      this.setState({
+        onLoading: false,
+      });
     }
 
-    if (y < -threshold) {
+    if (refresh) {
       this.props.onRefresh(() => {
         this.setState({
           refreshing: false,
         });
+      });
+    } else {
+      this.setState({
+        refreshing: false,
       });
     }
   }

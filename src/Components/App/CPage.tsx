@@ -52,8 +52,8 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     CarLog.LogMetric({ key: LogKey.METRIC_PAGE_ACTIVE_TIME, value: activeTime, info: {} });
   }
 
-  push(name) {
-    super.push(name);
+  push(name, ...args) {
+    super.push(name, args);
   }
 
   pop(name) {

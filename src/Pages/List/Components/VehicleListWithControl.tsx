@@ -7,48 +7,52 @@ import BbkThemeProvider from '@ctrip/bbk-theming';
 import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
 import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
 import { color } from '@ctrip/bbk-tokens';
-import { themeLight, themeDark } from './Theme';
-import { listData } from './mock';
-import VehicleList from '../../Components/List/VehicleList';
+import { themeLight, themeDark } from '../Theme';
+import VehicleList from './VehicleList';
+import { getVehicleListData } from '../composeData';
+import mockServer from '../mockServer';
 
-const { height } = Dimensions.get('window');
-const scrollViewHeight = height - 40;
-
-const getSections = index => listData.map(item => ({
-  ...item,
-  vehicleHeader: {
-    ...item.vehicleHeader,
-    vehicleName: `scroll ${index} : ${item.vehicleHeader.vehicleName}`,
-  },
-}));
-
-const maxIndex = 5;
-const minIndex = 1;
-const initIndex = 3;
-
-const allData = {};
-for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
-  allData[i] = getSections(i);
+interface VehicleListWithControlProps {
+  maxIndex?: number;
+  minIndex?: number;
+  initIndex?: number;
+  cacheData?: any;
+  initialNumToRender?: number;
+  theme?: any;
+  height?: number;
+  threshold?: number;
 }
 
-interface VehicleListDemoState {
+interface VehicleListWithControlState {
   index: number;
   initIndex: number;
   isDark: boolean;
   translateYAnim: any;
 }
 
-export default class VehicleListDemo extends Component<any, VehicleListDemoState> {
-  cacheList = [];
+export default class VehicleListWithControl extends Component<VehicleListWithControlProps, VehicleListWithControlState> {
+  static defaultProps = {
+    maxIndex: 5,
+    minIndex: 1,
+    initIndex: 3,
+    cacheData: getVehicleListData(mockServer),
+    initialNumToRender: 5,
+    theme: {},
+    height: Dimensions.get('window').height,
+    threshold: 40,
+  };
 
-  cacheData = allData;
+  cacheList = [];
 
   scrollerRef = {};
 
   isScrolling = false;
 
+  cachePlaceHolder = null;
+
   constructor(props) {
     super(props);
+    const { initIndex } = props;
     this.state = {
       index: initIndex,
       initIndex,
@@ -58,6 +62,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
   }
 
   getButtons(theme) {
+    const { maxIndex } = this.props;
     return new Array(maxIndex).fill(1).map((item, index) => (
       /* eslint-disable-next-line */
       <TouchableOpacity style={{ width: 70, alignItems: 'center' }} onPress={() => this.tabScroll(index + 1)} key={index}>
@@ -73,6 +78,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
 
     console.log('---------onRefreshSection');
     const { index } = this.state;
+    const { minIndex } = this.props;
 
     if (index <= 1) {
       return null;
@@ -90,6 +96,8 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
 
   animate = (index, callback = () => {}) => {
     const { translateYAnim, initIndex: initIdx } = this.state;
+    const { height, threshold } = this.props;
+    const scrollViewHeight = height - threshold;
     Animated.timing(
       translateYAnim,
       {
@@ -106,6 +114,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
 
   onLoadMore = (callback) => {
     const { index } = this.state;
+    const { maxIndex } = this.props;
     if (this.isScrolling) {
       return Toast.show('正在加载');
     }
@@ -124,10 +133,19 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
     return null;
   }
 
+  // eslint-disable-next-line
   renderVehicleListDom = (index, style, reset) => {
+    const {
+      cacheData, minIndex, maxIndex, initialNumToRender, theme,
+    } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
     }
+
+    // todo: 优化
+    // if (placeHolder) {
+    //   return <View style={style}/>;
+    // }
 
     const isTop = index === minIndex;
     const noRefresh = isTop && '到顶了～';
@@ -140,8 +158,6 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
     const pullContinueContent = noRefresh || `松开${refreshTip}`;
     const noMore = index >= maxIndex;
 
-    // console.log('-----------')
-
     const cache = this.cacheList[index];
     if (!cache) {
       this.cacheList[index] = (
@@ -153,7 +169,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
           style={style}
           key={index}
           index={index}
-          sections={this.cacheData[index]}
+          sections={cacheData[index]}
 
           onRefresh={this.onRefreshSection}
           pullIcon={pullIcon}
@@ -167,6 +183,9 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
           noticeContent={noticeContent}
           loadingContent={loadingContent}
           noMoreContent="到底了～"
+
+          initialNumToRender={initialNumToRender}
+          endFillColor={theme.scrollBackgroundColor || color.grayBg}
         />
       );
     } else if (reset) {
@@ -199,6 +218,10 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
     const dom = [];
     const reset = $index !== undefined;
     const index = $index || this.state.index;
+    const {
+      minIndex, maxIndex, threshold, height,
+    } = this.props;
+    const scrollViewHeight = height - threshold;
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
       const offset = i - index;
       const style = {
@@ -207,6 +230,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
         height: scrollViewHeight,
         width: '100%',
       };
+      // const placeHolder = Math.abs(offset) > 1;
       dom[i] = this.renderVehicleListDom(i, style, reset);
     }
 
@@ -217,6 +241,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
     const {
       isDark, translateYAnim,
     } = this.state;
+    const { threshold } = this.props;
     const theme = isDark ? {
       ...TripDark,
       ...themeDark,
@@ -242,7 +267,7 @@ export default class VehicleListDemo extends Component<any, VehicleListDemoState
                 top: 0,
                 width: '100%',
                 zIndex: 10,
-                height: 40,
+                height: threshold,
                 justifyContent: 'center',
                 alignContent: 'center',
                 backgroundColor: color.greenBg,

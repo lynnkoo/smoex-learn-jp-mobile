@@ -15,6 +15,7 @@ export const style = StyleSheet.create({
   vendorLogoWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: space.spaceL,
   },
   scoreLabel: {
     marginLeft: space.spaceM,

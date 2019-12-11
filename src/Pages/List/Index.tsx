@@ -6,6 +6,7 @@ import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import BbkComponentCarHeader from '@ctrip/bbk-component-car-header';
+import VehicleListWithControl from './Components/VehicleListWithControl';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import VehGroupNav from './Components/VehGroupNav';
 import { PageId } from '../../Constants/Index';
@@ -191,6 +192,7 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
 
         {/** tip */}
         {/** 供应商报价 */}
+        <VehicleListWithControl />
       </ViewPort>
     );
   }

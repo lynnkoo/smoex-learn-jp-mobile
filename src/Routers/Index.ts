@@ -1,7 +1,9 @@
-import Demo from '../Pages/Demo/Page1';
-import Debug from '../Containers/DebugerContainer';
-import Market from '../Containers/MarketContainer';
-import List from '../Pages/List/Index';
+import { lazyRequire } from '@ctrip/crn';
+
+const Demo = lazyRequire('../Pages/Demo/Page1');
+const Debug = lazyRequire('../Containers/DebugerContainer');
+const Market = lazyRequire('../Containers/MarketContainer');
+const List = lazyRequire('../Pages/List/Index');
 
 export interface PageRouteType {
   component: any,

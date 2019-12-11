@@ -191,12 +191,17 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       noticeContent,
       loadingContent,
       noMoreContent,
+
+      initialNumToRender,
+      endFillColor,
     } = this.props;
 
     return (
       <SectionList
         style={[style]}
         ref={this.refFn}
+        initialNumToRender={initialNumToRender}
+        endFillColor={endFillColor}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         renderSectionFooter={renderSectionFooter}

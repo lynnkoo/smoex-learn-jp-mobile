@@ -28,16 +28,28 @@
     "install:ctrip": "npm install --registry=http://registry.npm.release.ctripcorp.com",
     "install": "tsc"
   },
+  "peerDependencies": {
+    "@ctrip/bbk-tokens": "^0.0.34",
+    "@ctrip/bbk-theming": "^0.0.35",
+    "@ctrip/bbk-utils": "^0.0.26"
+  },
   "dependencies": {
-    "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
-    "lodash": "^4.17.15",
-    "react": "16.9.0",
-    "react-native": "0.61.2",
-    "redux": "^4.0.4",
-    "redux-logic": "^2.1.1",
-    "uuid": "^3.3.3",
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
+    "@ctrip/bbk-component-car-image": "0.0.6",
+    "@ctrip/bbk-component-car-price-desc": "0.0.11",
+    "@ctrip/bbk-component-car-vehicle-describe": "0.0.25",
+    "@ctrip/bbk-component-car-vehicle-name": "0.0.28",
+    "@ctrip/bbk-component-label": "0.0.33",
+    "@ctrip/bbk-component-right-icon": "0.0.15",
+    "@ctrip/bbk-component-score-label": "0.0.15",
+    "@ctrip/bbk-component-text": "0.0.36",
+    "@ctrip/bbk-component-touchable": "0.0.27",
+    "@ctrip/bbk-component-vendor-logo": "0.0.14",
+    "@ctrip/bbk-theming": "0.0.37",
+    "@ctrip/bbk-tokens": "0.0.36",
+    "@ctrip/bbk-utils": "0.0.26",
+    "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.23",
     "@types/react": "^16.9.13",
@@ -49,12 +61,17 @@
     "babel-jest": "^24.8.0",
     "babel-preset-react-native": "^5.0.1",
     "bpk-tokens": "^29.2.2",
+    "lodash": "^4.17.15",
     "metro-react-native-babel-preset": "^0.56.0",
+    "react": "16.9.0",
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "16.8.3",
     "react-intl": "^3.6.0",
+    "react-native": "0.61.2",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.8.3",
+    "redux": "^4.0.4",
+    "redux-logic": "^2.1.1",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2",
     "reselect": "^4.0.0"
@@ -88,5 +105,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "iconFont": [
+    "crn_font_cars_v7"
+  ]
 }

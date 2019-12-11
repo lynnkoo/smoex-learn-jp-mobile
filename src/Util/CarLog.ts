@@ -19,7 +19,9 @@ export interface LogTraceType {
 export interface LogMetricType {
   key: string,
   value: number,
-  info: Object
+  info: {
+    pageId: string
+  }
 }
 
 class CarLog {

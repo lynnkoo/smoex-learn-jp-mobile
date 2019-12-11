@@ -38,7 +38,7 @@ export default class Page1 extends CPage<IBasePageProps, IStateType> {
           </Text>
           <Button
             onPress={() => {
-              this.push('List', { foo: 'bar' });
+              this.push('List');
             }}
             style={styles.button}
           >

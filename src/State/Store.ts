@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
   Market,
 });
 
-let store: Store;
+let store: Store = null;
 
 const initialiseStore = (): void => {
   store = store || createStore(rootReducer, enhancer);

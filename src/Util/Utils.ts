@@ -62,6 +62,10 @@ class Utils {
     }
   }
 
+  static isTrip(): boolean {
+    return global['__crn_appId'] === APP_ID.TRIP;
+  }
+
   static isZucheApp(): boolean {
     return global['__crn_appId'] === APP_ID.ZUCHE;
   }
@@ -71,7 +75,7 @@ class Utils {
   }
 
   // get ubt info
-  static async getUBT(): Promise<{sid?: string}> {
+  static async getUBT(): Promise<{ sid?: string }> {
     const ubt = await Storage.loadSync({
       key: 'CTRIP_UBT_M',
       domain: 'fx.ubt',

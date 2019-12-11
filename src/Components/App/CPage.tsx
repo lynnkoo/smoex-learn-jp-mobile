@@ -99,7 +99,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   setAppContextSharkKeys(lang, messages) {
-    AppContext.setSharkKeys({ lang, messages });
+    AppContext.setSharkKeys(lang, messages);
   }
 
   /* eslint-disable class-methods-use-this */

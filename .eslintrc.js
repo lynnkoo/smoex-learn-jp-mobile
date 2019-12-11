@@ -49,7 +49,8 @@ module.exports = {
     }],
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "import/extensions": [0]
   },
   settings: {
     "import/resolver": {

@@ -77,6 +77,7 @@ const getAbsExpCodesSync = getIsSyncAbs(true);
 
 const getAbs = () => {
   const expCodes = getAbsExpCodes();
+  // @ts-ignore
   ABTesting.getMultiABTestingInfo(expCodes, (result) => {
     AppContext.setABTesting(result);
   });
@@ -84,6 +85,7 @@ const getAbs = () => {
 
 const getAbsSync = () => {
   const expCodes = getAbsExpCodesSync();
+  // @ts-ignore
   const result = ABTesting.getMultiABTestingInfoSync(expCodes);
   AppContext.setABTesting(result);
 };

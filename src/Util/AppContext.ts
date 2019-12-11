@@ -18,7 +18,7 @@ export interface QConfigType { }
 export interface CacheType { }
 
 export interface UserInfoType {
-  UserID?: string
+  UserID?: string;
 }
 
 export interface CarEnvType {

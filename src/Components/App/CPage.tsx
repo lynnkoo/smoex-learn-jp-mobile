@@ -21,6 +21,7 @@ export interface IStateType {
 export default class CPage<P extends IBasePageProps, S extends IStateType> extends Page<P, S> {
   pageInitialiseTime: Date = null;
   pageLastActiveTime: Date = null;
+  pageShowTime: Date = null;
   pageAppearCount: Number = null;
   isPageAppear: Boolean = true;
 
@@ -33,6 +34,10 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     //   lang: '',
     //   messages: null,
     // };
+  }
+
+  getPageId() {
+    return '';
   }
 
   getPVOption() {
@@ -49,7 +54,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   pageDidDisappear() {
     const activeTime = +new Date() - +this.pageLastActiveTime;
     this.isPageAppear = false;
-    CarLog.LogMetric({ key: LogKey.METRIC_PAGE_ACTIVE_TIME, value: activeTime, info: {} });
+    CarLog.LogMetric({ key: LogKey.METRIC_PAGE_ACTIVE_TIME, value: activeTime, info: { pageId: this.getPageId() } });
   }
 
   push(name, ...args) {
@@ -65,6 +70,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   componentDidMount() {
+    this.pageShowTime = new Date();
     if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
       IBUSharkUtil.fetchSharkData(this.getSharkConfig())
         .then(({ lang, messages }) => {
@@ -106,6 +112,11 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
 
   getLoadingState() {
     return false;
+  }
+
+  logPagePerformance() {
+    const interactiveTime = +new Date() - +this.pageLastActiveTime;
+    CarLog.LogMetric({ key: LogKey.METRIC_PAGE_INTERACTIVE_TIME, value: interactiveTime, info: { pageId: this.getPageId() } });
   }
 
   renderPageLoading() {

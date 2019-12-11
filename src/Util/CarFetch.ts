@@ -2,6 +2,7 @@ import { fetch, cancelFetch } from '@ctrip/crn';
 import uuid from 'uuid';
 import Utils from './Utils';
 import { REST_SOA } from '../Constants/Platform';
+import AppContext from './AppContext';
 
 export interface RequestType {
   sequenceId?: string;
@@ -33,16 +34,27 @@ class FetchBase implements FetchBaseType {
   mixinSequenceId = (params: RequestType): RequestType => (params.sequenceId
     ? params : { ...params, sequenceId: uuid() });
 
+  getBaseRequest = (params) => {
+    const curParam = Object.assign({}, params);
+    const requestId = curParam.requestId || uuid();
+    const parentRequestId = curParam.parentRequestId || '';
+    return {
+      sourceFrom: AppContext.CarEnv.apptype,
+      requestId,
+      parentRequestId,
+    };
+  }
+
   getFetchObject = async (url: string, params, cancelable: boolean) => {
-    const tmpParams = this.mixinSequenceId(params);
     const requestUrl = await this.getRequestUrl(url);
+    const tmpParams = { ...params, baseRequest: this.getBaseRequest(params) };
     if (!cancelable) {
       return fetch(requestUrl, tmpParams);
     }
 
     return {
       post: () => fetch(requestUrl, tmpParams),
-      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParams.sequenceId }),
+      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParams.baseRequest.requestId }),
     };
   };
 }

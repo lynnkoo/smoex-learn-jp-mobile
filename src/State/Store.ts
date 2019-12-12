@@ -10,6 +10,7 @@ import LocationAndDate from './LocationAndDate/Reducers';
 import DriverAge from './DriverAge/Reducers';
 import Market from './Market/Reducers';
 import ListVehGroup from './ListVehGroup/Reducer';
+import ListStatus from './ListStatus/Reducer';
 import { getCountryInfo } from './CountryInfo/Actions';
 import { getLocationAndDateInfo } from './LocationAndDate/Actions';
 import { getDriverAge } from './DriverAge/Actions';
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   DriverAge,
   Market,
   ListVehGroup,
+  ListStatus,
 });
 
 let store: Store = null;

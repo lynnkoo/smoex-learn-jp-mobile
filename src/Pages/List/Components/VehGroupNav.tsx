@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkHorizontalNav, { BbkHorizontalNavItem } from '@ctrip/bbk-component-horizontal-nav';
 // import { WithLogCode } from '../../../Components/Index';
 // import { ClickKey } from '../../../Constants/Index';
+import ListProgress from '../../../Containers/ListProgressContainer';
 
 interface VehGroupNavPropsType {
   pageId: string;
   activeGroupId: string;
   vehGroupList: any[];
+  setActiveGroupId: (data: { activeGroupId: string }) => void;
 }
 
 interface VehGroupNavStateType {
@@ -18,9 +20,12 @@ interface VehGroupNavStateType {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: BbkUtils.getPixel(88),
+    backgroundColor: color.white,
+    overflow: 'hidden',
+  },
   mainWrap: {
-    height: BbkUtils.getPixel(84),
-    paddingHorizontal: BbkUtils.getPixel(8),
     borderBottomWidth: 0,
   },
   topBorder: {
@@ -34,35 +39,18 @@ const styles = StyleSheet.create({
 });
 
 export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGroupNavStateType> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeGroupId: props.activeGroupId,
-      groupList: props.vehGroupList,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(
-      {
-        activeGroupId: nextProps.activeGroupId,
-        groupList: nextProps.vehGroupList,
-      },
-    );
-  }
-
   onPressNav = (gId: string) => {
-    const { activeGroupId } = this.state;
+    const { activeGroupId } = this.props;
     if (gId !== activeGroupId) {
-      this.setState({ activeGroupId: gId });
+      this.props.setActiveGroupId({ activeGroupId: gId });
     }
   }
 
   renderVehGroup = (): React.ReactNode[] => {
     const vehGroupNavList = [];
-    const { groupList } = this.state;
+    const { vehGroupList, activeGroupId } = this.props;
     // const { pageId } = this.props;
-    groupList.forEach((item) => {
+    vehGroupList.forEach((item) => {
       // todo
       // const BbkHorizontalNavItemWithLogCode = WithLogCode(BbkHorizontalNavItem);
       // const obj = {
@@ -79,12 +67,15 @@ export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGrou
       //   />,
       // );
       const { gId, title } = item;
+      const isSelect = gId === activeGroupId;
       vehGroupNavList.push(
         <BbkHorizontalNavItem
           key={BbkUtils.uuid()}
           id={gId}
           title={title}
           style={styles.navItemWrap}
+          selected={isSelect}
+          disabled={false} // todo
           onPress={() => { this.onPressNav(gId); }}
         />,
       );
@@ -95,15 +86,20 @@ export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGrou
 
   render() {
     const vehGroupNav = this.renderVehGroup();
-    const { activeGroupId } = this.state;
+    const { activeGroupId } = this.props;
     return (
-      <BbkHorizontalNav
-        style={[styles.mainWrap, styles.topBorder]}
-        indicatorWidth={BbkUtils.getPixel(40)}
-        selectedId={activeGroupId}
-      >
-        {vehGroupNav}
-      </BbkHorizontalNav>
+      <View style={styles.container}>
+        <BbkHorizontalNav
+          style={[styles.mainWrap, styles.topBorder]}
+          indicatorWidth={BbkUtils.getPixel(40)}
+          indicatorHeight={BbkUtils.getPixel(3)}
+          selectedId={activeGroupId}
+        >
+          {vehGroupNav}
+        </BbkHorizontalNav>
+
+        <ListProgress />
+      </View>
     );
   }
 }

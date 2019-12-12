@@ -3,6 +3,8 @@ import { Provider } from 'react-redux';
 import { App } from '@ctrip/crn';
 import pages from './Routers/Index';
 import { getStore } from './State/Store';
+import BBkThemingProvider from '@ctrip/bbk-theming';
+import BbkChannel from '@ctrip/bbk-utils';
 import { ErrorBoundary } from './Components/Index';
 import appLoad from './AppLoad';
 
@@ -28,7 +30,9 @@ export default class RnCarApp extends Component {
     return (
       <ErrorBoundary>
         <Provider store={getStore()}>
-          <Car {...this.props} />
+          <BBkThemingProvider channel={BbkChannel.getChannel()}>
+            <Car {...this.props} />
+          </BBkThemingProvider>
         </Provider>
       </ErrorBoundary>
     );

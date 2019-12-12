@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { App } from '@ctrip/crn';
-import pages from './Routers/Index';
-import { getStore } from './State/Store';
 import BBkThemingProvider from '@ctrip/bbk-theming';
 import BbkChannel from '@ctrip/bbk-utils';
+import pages from './Routers/Index';
+import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 import appLoad from './AppLoad';
 

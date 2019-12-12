@@ -13,8 +13,8 @@ export const getFilterBarProps = (pressCallback) => {
   };
   filterItemList.push(sort);
   // 第二步 获取服务端返回的热门项的状态
-  const listRes = ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes);
-  const { popularFilterItems } = listRes;
+  const listRes = ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {};
+  const { popularFilterItems = [] } = listRes;
   popularFilterItems.forEach((m) => {
     const item = {
       text: m.name,

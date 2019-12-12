@@ -3,7 +3,7 @@ import { lazyRequire } from '@ctrip/crn';
 const Demo = lazyRequire('../Pages/Demo/Page1');
 const Debug = lazyRequire('../Containers/DebugerContainer');
 const Market = lazyRequire('../Containers/MarketContainer');
-const List = lazyRequire('../Pages/List/Index');
+const List = lazyRequire('../Containers/ListPageContainer');
 
 export interface PageRouteType {
   component: any,

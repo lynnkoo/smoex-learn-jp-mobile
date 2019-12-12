@@ -50,6 +50,7 @@
     "@ctrip/bbk-component-label": "0.0.34",
     "@ctrip/bbk-component-list-no-match": "0.0.10",
     "@ctrip/bbk-component-modal": "0.0.32",
+    "@ctrip/bbk-component-progress-bar": "0.0.15",
     "@ctrip/bbk-component-right-icon": "0.0.16",
     "@ctrip/bbk-component-score-label": "0.0.16",
     "@ctrip/bbk-component-search-panel": "0.0.17",

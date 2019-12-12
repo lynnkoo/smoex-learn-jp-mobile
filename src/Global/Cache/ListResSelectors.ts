@@ -25,3 +25,9 @@ export const getVehGroupList = () => {
 
   return vehGroupList;
 };
+
+// 获取所有车型个数
+export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;
+
+// 获取所有报价个数
+export const getAllVendorPriceCount = () => getBaseResData().allVendorPriceCount || 0;

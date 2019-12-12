@@ -1,4 +1,5 @@
 import { Env, Storage } from '@ctrip/crn';
+import _ from 'lodash';
 import {
   ENV_TYPE,
   DOMAIN_URL,
@@ -126,6 +127,14 @@ class Utils {
     } catch (ex) {
       return {};
     }
+  }
+
+  static fullImgProtocal = (imgUrl) => {
+    if (_.startsWith(imgUrl, '//')) {
+      return `https:${imgUrl}`;
+    }
+
+    return imgUrl;
   }
 }
 

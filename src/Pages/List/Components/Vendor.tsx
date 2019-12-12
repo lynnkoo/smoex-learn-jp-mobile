@@ -28,7 +28,7 @@ export default withTheme(
 
     const getLabelWrapStyle = (type) => {
       const rowTypes = ['normal', 'feature'];
-      return [rowTypes.indexOf(type) > -1 && style.flexRow];
+      return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
     };
 
     const getLabelProps = (labelProps, type) => {

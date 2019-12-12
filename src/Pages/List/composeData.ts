@@ -1,122 +1,118 @@
 import _ from 'lodash';
 import {
-  tokenType, icon,
+  tokenType,
 } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
+import { Utils } from '../../Util/Index';
 import {
   listDay, Reviews, total,
 } from './Texts';
 import { VehicleListStyle as style } from './Styles';
 
-const { getPixel, htmlDecode } = BbkUtils;
-
-const showMax = 2;
+const { getPixel } = BbkUtils;
+let count = 0;
 
 // todo: memoize
-const getVehicleItemData = _.memoize(
-  (vehicleList, vehicleCode) => {
-    const vehicle = _.find(vehicleList, {
-      vehicleCode,
-    }) || {};
-    const {
-      name,
+const getVehicleItemData = (vehicleList, vehicleCode) => {
+  const vehicle = _.find(vehicleList, {
+    vehicleCode,
+  }) || {};
+  const {
+    name,
+    groupName,
+    isHot,
+    brandEName,
+    passengerNo,
+    luggageNo,
+    doorNo,
+    transmissionName,
+    displacement,
+    imageList = [],
+    isSpecialized,
+  } = vehicle;
+  count += 1;
+  const vehicleLabels = [
+    displacement && {
+      text: displacement,
+      icon: {
+        iconContent: '\uee81',
+      },
+    },
+    {
+      // todo: 加字段
+      text: 'Air Conditioning',
+      icon: {
+        iconContent: '\uee7c',
+      },
+    },
+    {
+      text: transmissionName,
+      icon: {
+        iconContent: '\uee7d',
+      },
+    },
+  ];
+  return {
+    vehicleHeader: {
+      // todo: test
+      vehicleName: `${name} ${count}`,
+      // vehicleName: name,
       groupName,
-      isHot,
-      brandEName,
-      passengerNo,
-      luggageNo,
-      doorNo,
-      transmissionName,
-      imageList = [],
-    } = vehicle;
-    return {
-      vehicleHeader: {
-        // todo
-        vehicleName: name,
-        groupName,
-        // todo
-        isSimilar: true,
-        isHotLabel: isHot,
-      },
-      vehicleDesc: {
-        // todo
-        imgUrl: `http:${imageList[0]}`,
-        // todo
-        vehicleImageLabel: brandEName,
-        vehicleLabelsHorizontal: [
-          {
-            text: passengerNo,
-            icon: {
-              iconContent: '\uee86',
-            },
+      isSimilar: !isSpecialized,
+      isHotLabel: isHot,
+    },
+    vehicleDesc: {
+      imgUrl: Utils.fullImgProtocal(imageList[0]),
+      vehicleImageLabel: brandEName,
+      vehicleLabelsHorizontal: [
+        {
+          text: passengerNo,
+          icon: {
+            iconContent: '\uee86',
           },
-          {
-            text: luggageNo,
-            icon: {
-              iconContent: '\uee82',
-            },
+        },
+        {
+          text: luggageNo,
+          icon: {
+            iconContent: '\uee82',
           },
-          {
-            text: doorNo,
-            icon: {
-              iconContent: '\uee7f',
-            },
+        },
+        {
+          text: doorNo,
+          icon: {
+            iconContent: '\uee7f',
           },
-        ],
-        vehicleLabels: [
-          {
-            // todo: 排量?
-            text: '1.5L',
-            icon: {
-              iconContent: '\uee81',
-            },
-          },
-          {
-            // todo: 空调？
-            text: 'Air Conditioning',
-            icon: {
-              iconContent: '\uee7c',
-            },
-          },
-          {
-            text: transmissionName,
-            icon: {
-              iconContent: '\uee7d',
-            },
-          },
-        ],
-      },
-    };
-  },
-);
+        },
+      ],
+      vehicleLabels: vehicleLabels.filter(v => v),
+    },
+  };
+};
 
 const getPriceDescProps = (priceInfo) => {
   const {
-    currentOriginalDailyPrice, currentTotalPrice, currentCurrencyCode,
+    currentOriginalDailyPrice, currentTotalPrice, currentCurrencyCode, currentDailyPrice,
   } = priceInfo;
+  // 国内资源可能没有天价，因为异地还车费不确定
   return {
     totalPrice: {
       price: currentTotalPrice,
       currency: currentCurrencyCode,
     },
     dayPrice: {
-      price: 200000000000,
-      currency: 'AUD',
+      price: currentDailyPrice,
+      currency: currentCurrencyCode,
     },
     originPrice: {
+      // todo: 没有日价时需要取总价
       price: currentOriginalDailyPrice,
       currency: currentCurrencyCode,
     },
     totolText: total,
-    dayText: `/${listDay}`,
-    // todo: 日价和总价
-    // originPrice: {
-    //   price: 205,
-    //   currency: 'AUD',
-    // },
+    // todo: 没有日价时需要取总价
     // totolText: days(7),
-    // todo: ?
-    saleLabel: '62% OFF TODAY',
+    dayText: `/${listDay}`,
+    // saleLabel: '62% OFF TODAY',
   };
 };
 
@@ -130,82 +126,100 @@ const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: str
       fontSize: getPixel(32),
     },
     iconContent,
+    iconType,
   },
   text,
   colorType,
   size: tokenType.LabelSize.L,
   noBg,
-  iconType,
 });
 
-const getSoldOutLabel = () => getVendorLabel()({
-  // todo: shark
-  text: 'Will be sold out !',
-  iconContent: htmlDecode(icon.default.circleWithSighFilled),
-});
+// const getSoldOutLabel = () => getVendorLabel()({
+//   text: 'Will be sold out !',
+//   iconContent: htmlDecode(icon.default.circleWithSighFilled),
+// });
+
+interface labelList {
+  distance: {};
+  provider?: {};
+  normal?: {};
+  feature?: {};
+  promotion?: {};
+}
 
 const getVendorLabelItems = (vendor) => {
-  const { pStoreRouteDesc, rStoreRouteDesc } = vendor;
+  // todo: 异地取还
+  const isDiff = false;
+  const {
+    pStoreRouteDesc, rStoreRouteDesc, positiveTagList, platformName,
+  } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);
-  const getFeatureVendorLabel = getVendorLabel();
-  const getPromotionVendorLabel = getVendorLabel(null, false, 'primary');
 
-  return {
-    // todo: vendorTag、serviceTagList、extendServiceTagList、positiveTagList、negativeTagList、evaluation 评分标签？
+  const tagType = {
+    0: {
+      typeKey: 'normal',
+      args: [tokenType.ColorType.BlueGray],
+    },
+    1: {
+      typeKey: 'feature',
+      args: [],
+    },
+    2: {
+      typeKey: 'promotion',
+      args: [null, false, 'primary'],
+    },
+  };
+
+  const labels: labelList = {
     distance: [
       getNormalVendorLabel({
-        text: `${pStoreRouteDesc}${rStoreRouteDesc ? `\n${rStoreRouteDesc}` : ''}`,
+        text: `${pStoreRouteDesc}${isDiff ? `\n${rStoreRouteDesc}` : ''}`,
         iconContent: '\uee78',
       }),
     ],
-    normal: [
-      getNormalVendorLabel({
-        text: 'Unlimited Mileage',
-        iconContent: '\uef60',
-      }),
-      getNormalVendorLabel({
-        text: 'No Deductible',
-        iconContent: '\uee85',
-      }),
-    ],
-    feature: [
-      getFeatureVendorLabel({
-        text: 'Free Cancellation',
-        iconContent: '\uf2bf',
-      }),
-    ],
-    promotion: [
-      getPromotionVendorLabel({
-        text: 'Trip.com Flyer Exclusive',
-        iconContent: '\uee8c',
-      }),
-    ],
-    provider: [
-      getNormalVendorLabel({
-        text: 'service provided by Rentalcars',
-      }),
-    ],
   };
+
+  if (platformName) {
+    labels.provider = [
+      getNormalVendorLabel({
+        text: platformName,
+      }),
+    ];
+  }
+
+  positiveTagList.forEach((tag) => {
+    const { type, title = 'Free Cancellation', icon = '\uf2bf' } = tag;
+    const params = tagType[type] || {};
+    const getVendorLabelFn = getVendorLabel(...params.args);
+    labels[params.typeKey] = labels[params.typeKey] || [];
+    labels[params.typeKey].push(getVendorLabelFn({
+      text: title,
+      iconContent: icon,
+    }));
+  });
+
+  return labels;
 };
 
 const getVendorHeaderProps = (vendor) => {
   const {
-    vendorLogo, vendorName, vendorTag = {}, commentInfo = {},
+    vendorLogo, vendorName, vendorTag = {}, commentInfo = {}, evaluation = {},
   } = vendor;
   const {
-    commentCount, vendorDesc = 'test',
+    commentCount, vendorDesc = 'test', overallRating = 'test', level = 'test',
   } = commentInfo;
+  // 评分标签 type 1表示正向 蓝色  2负向 灰色
+  const { type } = evaluation;
   return {
     vendorLogo,
     vendorName,
     title: vendorTag.title,
     scoreDesc: vendorDesc,
     commentDesc: `${commentCount} ${Reviews}`,
-    // todo: 低评分
-    score: '4.5',
-    totalScore: '5',
-    // scoreLow: true,
+    score: level,
+    totalScore: overallRating,
+    scoreLow: type > 1,
   };
 };
 
@@ -213,12 +227,13 @@ const getVendorItemData = (vendor) => {
   const { priceInfo } = vendor;
   const priceDescProps = getPriceDescProps(priceInfo);
   const vendorLabelItems = getVendorLabelItems(vendor);
-  const soldOutLabel = getSoldOutLabel();
+  // const soldOutLabel = getSoldOutLabel();
   const vendorHeaderProps = getVendorHeaderProps(vendor);
   return {
     priceDescProps,
     vendorLabelItems,
-    soldOutLabel,
+    // todo: 国内资源才有库存
+    // soldOutLabel,
     vendorHeaderProps,
   };
 };
@@ -228,7 +243,7 @@ const getVendorListData = vendorPriceList => _.map(vendorPriceList, (vendor) => 
   return vendorItemData;
 });
 
-export const getVehicleListData = (mockServer) => {
+export const getVehicleListData = (mockServer, showMax) => {
   const { productGroups, vehicleList } = mockServer;
   const groupListData = productGroups.map((group) => {
     const { productList } = group;
@@ -238,15 +253,15 @@ export const getVehicleListData = (mockServer) => {
       const vendorListData = getVendorListData(vendorPriceList);
       return {
         ...vehicleItemData,
-        moreNumber: vendorPriceList.length - showMax,
-        // todo?
-        recommendDesc: '',
-        data: [vendorListData.splice(0, 5)],
+        moreNumber: Math.max(vendorPriceList.length - showMax, 0),
+        // todo: 加字段
+        recommendDesc: '“test”',
+        data: [vendorListData.slice(0, 5)],
       };
     });
     return vehicleListData;
   });
-  return groupListData.splice(0, 5);
+  return groupListData.slice(0, 5);
   // return groupListData;
 };
 

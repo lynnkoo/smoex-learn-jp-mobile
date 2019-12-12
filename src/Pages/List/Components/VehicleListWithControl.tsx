@@ -12,6 +12,8 @@ import VehicleList from './VehicleList';
 import { getVehicleListData } from '../composeData';
 import mockServer from '../mockServer';
 
+const showMax = 2;
+
 interface VehicleListWithControlProps {
   maxIndex?: number;
   minIndex?: number;
@@ -32,14 +34,14 @@ interface VehicleListWithControlState {
 
 export default class VehicleListWithControl extends Component<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
-    maxIndex: 5,
-    minIndex: 1,
-    initIndex: 3,
-    cacheData: getVehicleListData(mockServer),
-    initialNumToRender: 5,
+    maxIndex: 4,
+    minIndex: 0,
+    initIndex: 2,
+    cacheData: getVehicleListData(mockServer, showMax),
+    initialNumToRender: 10,
     theme: {},
     height: Dimensions.get('window').height,
-    threshold: 40,
+    threshold: 100,
   };
 
   cacheList = [];
@@ -69,6 +71,20 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
         <Text style={{ color: theme.black, lineHeight: 40 }}>{index + 1}</Text>
       </TouchableOpacity>
     ));
+  }
+
+  getTheme() {
+    const {
+      isDark,
+    } = this.state;
+
+    return isDark ? {
+      ...TripDark,
+      ...themeDark,
+    } : {
+      ...TripLight,
+      ...themeLight,
+    };
   }
 
   onRefreshSection = (callback) => {
@@ -134,18 +150,13 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   }
 
   // eslint-disable-next-line
-  renderVehicleListDom = (index, style, reset) => {
+  renderVehicleListDom = (index, style, reset, placeHolder) => {
     const {
       cacheData, minIndex, maxIndex, initialNumToRender, theme,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
     }
-
-    // todo: 优化
-    // if (placeHolder) {
-    //   return <View style={style}/>;
-    // }
 
     const isTop = index === minIndex;
     const noRefresh = isTop && '到顶了～';
@@ -160,6 +171,9 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
 
     const cache = this.cacheList[index];
     if (!cache) {
+      if (placeHolder) {
+        return <View style={style} />;
+      }
       this.cacheList[index] = (
         <VehicleList
           stickySectionHeadersEnabled
@@ -170,6 +184,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           key={index}
           index={index}
           sections={cacheData[index]}
+          showMax={showMax}
 
           onRefresh={this.onRefreshSection}
           pullIcon={pullIcon}
@@ -222,6 +237,8 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
       minIndex, maxIndex, threshold, height,
     } = this.props;
     const scrollViewHeight = height - threshold;
+    const theme = this.getTheme();
+
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
       const offset = i - index;
       const style = {
@@ -229,9 +246,10 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
         top: scrollViewHeight * offset,
         height: scrollViewHeight,
         width: '100%',
+        backgroundColor: theme.scrollBackgroundColor,
       };
-      // const placeHolder = Math.abs(offset) > 1;
-      dom[i] = this.renderVehicleListDom(i, style, reset);
+      const placeHolder = Math.abs(offset) > 1;
+      dom[i] = this.renderVehicleListDom(i, style, reset, placeHolder);
     }
 
     return dom;
@@ -241,52 +259,20 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const {
       isDark, translateYAnim,
     } = this.state;
-    const { threshold } = this.props;
-    const theme = isDark ? {
-      ...TripDark,
-      ...themeDark,
-    } : {
-      ...TripLight,
-      ...themeLight,
-    };
+    const theme = this.getTheme();
 
     return (
       <>
         <BbkThemeProvider theme={theme} channel={null}>
-          <View style={
-            {
-              flex: 1,
-              backgroundColor: theme.scrollBackgroundColor,
-            }
-          }
+          <Animated.View style={{
+            transform: [{
+              translateY: translateYAnim,
+            }],
+            flex: 1,
+          }}
           >
-            <View style={
-              {
-                flexDirection: 'row',
-                position: 'absolute',
-                top: 0,
-                width: '100%',
-                zIndex: 10,
-                height: threshold,
-                justifyContent: 'center',
-                alignContent: 'center',
-                backgroundColor: color.greenBg,
-              }
-            }
-            >
-              {this.getButtons(theme)}
-            </View>
-            <Animated.View style={{
-              marginTop: 40,
-              transform: [{
-                translateY: translateYAnim,
-              }],
-              flex: 1,
-            }}
-            >
-              {this.renderAllVehicleListDom(undefined)}
-            </Animated.View>
-          </View>
+            {this.renderAllVehicleListDom(undefined)}
+          </Animated.View>
         </BbkThemeProvider>
         <TouchableOpacity
           onPress={() => {

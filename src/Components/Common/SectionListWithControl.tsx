@@ -72,7 +72,8 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     return isIos ? this.onScroll : _.throttle(this.onScroll, throttle, { trailing: false });
   }
 
-  triggerScroll = (event, debugInfo) => {
+  // eslint-disable-next-line
+  triggerScroll = (event, debugInfo?: string) => {
     const { threshold } = this.props;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
@@ -80,7 +81,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     let load = false;
     let refresh = false;
 
-    console.log(`${debugInfo}-->`, y + height, contentHeight);
+    // console.log(`${debugInfo}-->`, y + height, contentHeight);
 
     if (isIos) {
       if (y + height > contentHeight + threshold) {

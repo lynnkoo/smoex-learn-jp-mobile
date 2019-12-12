@@ -19,8 +19,8 @@ interface VehGroupNavStateType {
 
 const styles = StyleSheet.create({
   mainWrap: {
-    height: BbkUtils.getPixel(42),
-    paddingHorizontal: BbkUtils.getPixel(4),
+    height: BbkUtils.getPixel(84),
+    paddingHorizontal: BbkUtils.getPixel(8),
     borderBottomWidth: 0,
   },
   topBorder: {
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     borderTopColor: color.grayBorder,
   },
   navItemWrap: {
-    height: BbkUtils.getPixel(42),
-    paddingHorizontal: BbkUtils.getPixel(12),
+    height: BbkUtils.getPixel(84),
+    paddingHorizontal: BbkUtils.getPixel(24),
   },
 });
 
@@ -81,6 +81,7 @@ export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGrou
       const { gId, title } = item;
       vehGroupNavList.push(
         <BbkHorizontalNavItem
+          key={BbkUtils.uuid()}
           id={gId}
           title={title}
           style={styles.navItemWrap}

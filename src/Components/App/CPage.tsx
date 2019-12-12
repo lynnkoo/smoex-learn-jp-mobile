@@ -12,6 +12,7 @@ import { Text } from 'react-native';
 import { AppContext, CarLog } from '../../Util/Index';
 import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
 import AppUnLoad from '../../AppUnLoad';
+import BbkTranslationKey from '@ctrip/bbk-car-translation-key'
 
 export interface IStateType {
   lang?: string,
@@ -106,7 +107,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   getSharkConfig() {
     return {
       appid: Platform.SHARK_APP_ID.TRIP,
-      keys: { ...TranslationKeys },
+      keys: { ...BbkTranslationKey },
     };
   }
 

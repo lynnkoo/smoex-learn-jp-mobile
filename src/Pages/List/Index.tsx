@@ -5,20 +5,30 @@ import {
 import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
-import BbkComponentCarHeader from '@ctrip/bbk-component-car-header';
-import VehicleListWithControl from './Components/VehicleListWithControl';
+import BbkDatePicker from '@ctrip/bbk-component-car-date-picker';
+import { BbkStyleUtil } from '@ctrip/bbk-utils';
+import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
+import { BbkComponentModalAnimationPreset } from '@ctrip/bbk-component-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
-import VehGroupNav from './Components/VehGroupNav';
 import { PageId } from '../../Constants/Index';
 import ListReqAndResData from '../../Global/Cache/ListReqAndResData';
 import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
+import FilterAndSortModal from './Components/FilterAndSortModal';
 
+// 组件
+import ListHeader from '../../Containers/ListHeaderContainer';
+import VehGroupNav from '../../Containers/ListVehGroupContainer';
+// import VehicleListWithControl from './Components/VehicleListWithControl';
 
 interface ListStateType extends IStateType {
   isLoading: boolean;
   isFail: boolean;
   progress: number;
   activeGroupId: string;
+  datePickerVisible: boolean;
+  datePickerFocusOnRtime: boolean;
+  locationDatePopVisible: boolean;
+  filterAndSortModalVisible: boolean;
 }
 
 const HCODE = {
@@ -52,6 +62,10 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
       isFail: false,
       progress: 0,
       activeGroupId: '',
+      datePickerVisible: false, // 取还车时间组件是否显示
+      datePickerFocusOnRtime: false, // 定位在还车时间tab
+      locationDatePopVisible: false, // 修改取还车信息弹层是否展示
+      filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
   }
@@ -62,6 +76,7 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
   }
 
   componentDidMount() {
+    super.componentDidMount();
     this.fetchListProduct();
   }
 
@@ -154,9 +169,79 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
     return curStage;
   }
 
+  // 处理热门筛选项的点击事件
+  handlePopularFilterPress = () => {
+    this.controlFilterModalIsShow();
+  }
+
+  // 控制筛选和排序弹层是否展示
+  controlFilterModalIsShow = () => {
+    const { filterAndSortModalVisible } = this.state;
+    this.setState({
+      filterAndSortModalVisible: !filterAndSortModalVisible,
+    });
+  }
+
+  // 控制时间选择器是否展示
+  controlDatePickerIsShow = () => {
+
+  }
+
+  // 控制取还车信息弹层是否展示
+  controlRentalLocationDatePopIsShow = (isFlag = false) => {
+    const { locationDatePopVisible } = this.state;
+    // todo
+    // if (progress !== 1) {
+    //   Toast.show('加载中，请稍候...');
+    //   return;
+    // }
+
+    if (locationDatePopVisible !== isFlag) {
+      this.setState({
+        locationDatePopVisible: isFlag,
+      });
+    }
+  };
+
+  // 时间组件选择回调
+  datePickerSelectCallback = (ptime, rtime, isConfirm = true) => {
+    this.setState({
+      datePickerVisible: false,
+    }, () => {
+      if (isConfirm) {
+        // todo 更新reducer值 + 重新刷新列表页
+
+      }
+    });
+  }
+
+  // 弹层状态控制
+  modalProps = () => {
+    const { locationDatePopVisible } = this.state;
+    const display = locationDatePopVisible;
+    // 弹层样式
+    // let modalStyle = null;
+    // if (this.state.feeDetailPopVisible) {
+    //     modalStyle = { bottom: this.footerHeight };
+    // }
+    return {
+      modalVisible: display,
+      location: 'bottom',
+      animateType: 'slideUp',
+      animationOutDuration: 300,
+      // style: modalStyle,
+      onRequestClose: this.modalHide,
+      ...BbkComponentModalAnimationPreset('top'),
+    };
+  }
+
+  modalHide = () => ({
+    locationDatePopVisible: false,
+  })
 
   render() {
     const curStage = this.getCurStage();
+    const { datePickerFocusOnRtime, datePickerVisible } = this.state;
     return (
       <ViewPort style={styles.page}>
         {Platform.OS === 'android' && (
@@ -175,24 +260,48 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
           && (
             <View>
               {/** 头部 */}
-              <BbkComponentCarHeader
-                {...ListPropsModel.getListHeaderProps()}
+              <ListHeader
                 onPressCurrency={() => { }}
-                showSearchSelectorWrap={() => { }}
+                showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
+                style={BbkStyleUtil.getMB(4)}
               />
               {/** 热门排序 */}
-              <BbkFilterBar {...ListPropsModel.getFilterBarProps()} />
+              <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
+              {/** 快速筛选 */}
+
+              {/** tip */}
               {/** 车型组 */}
-              <VehGroupNav {...ListPropsModel.getVehNavProps(this.getPageId())} />
+              <VehGroupNav pageId={this.getPageId()} />
+              {/** 供应商报价 */}
+              {/* <VehicleListWithControl /> */}
+
             </View>
           )
         }
 
-        {/** 快速筛选 */}
+        <BbkSearchPanelModal
+          visible={this.state.locationDatePopVisible}
+          onCancel={this.controlRentalLocationDatePopIsShow}
+          {...ListPropsModel.getSearchPanelProps()}
+        />
 
+        <FilterAndSortModal
+          visible={this.state.filterAndSortModalVisible}
+          // isShowFooter={true}
+          // type={''}
+          {...ListPropsModel.getFilterAndSortModalProps()}
+          onHide={this.controlFilterModalIsShow}
+        />
+
+        <BbkDatePicker
+          visible={datePickerVisible}
+          focusOnRtime={datePickerFocusOnRtime}
+          onCancel={() => { this.datePickerSelectCallback(null, null, false); }}
+          onConfirm={this.datePickerSelectCallback}
+          {...ListPropsModel.getDatePickerProps()}
+        />
         {/** tip */}
         {/** 供应商报价 */}
-        <VehicleListWithControl />
       </ViewPort>
     );
   }

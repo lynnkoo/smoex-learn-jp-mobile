@@ -244,30 +244,6 @@ export const ListProductRes = {
       ],
     },
     {
-      name: '租车公司',
-      code: 'Vendor_0',
-      sortNum: 0,
-      filterGroups: [
-        {
-          name: '租车公司',
-          sortNum: 0,
-          groupCode: 'Vendor_0',
-          filterItems: [
-            {
-              itemCode: 'Vendor_SD0001',
-              name: 'Budget',
-              groupCode: 'Vendor_0',
-              bitwiseType: 2,
-              binaryDigit: 8,
-              sortNum: 0,
-              isQuickItem: false,
-            },
-          ],
-          shortName: '租车公司',
-        },
-      ],
-    },
-    {
       name: '支付方式',
       code: 'PayMode',
       sortNum: 0,
@@ -339,40 +315,6 @@ export const ListProductRes = {
             },
           ],
           shortName: '距离',
-        },
-      ],
-    },
-    {
-      name: '座位',
-      code: 'Seats',
-      sortNum: 0,
-      filterGroups: [
-        {
-          name: '座位数',
-          sortNum: 0,
-          groupCode: 'Seats',
-          filterItems: [
-            {
-              itemCode: 'Seats_SeatsPrefixLth7',
-              name: '7座以下',
-              groupCode: 'Seats',
-              bitwiseType: 2,
-              binaryDigit: 1,
-              sortNum: 0,
-              isQuickItem: false,
-            },
-            {
-              itemCode: 'Seats_SeatsPrefixMth7',
-              name: '7座及以上',
-              groupCode: 'Seats',
-              bitwiseType: 2,
-              binaryDigit: 2,
-              sortNum: 0,
-              isQuickItem: true,
-              quickSortNum: 6,
-            },
-          ],
-          shortName: '座位',
         },
       ],
     },
@@ -497,6 +439,66 @@ export const ListProductRes = {
             },
           ],
           shortName: '燃油',
+        },
+      ],
+    },
+  ],
+  popularFilterItems: [
+    {
+      name: '租车公司',
+      code: 'Vendor_0',
+      sortNum: 0,
+      filterGroups: [
+        {
+          name: '租车公司',
+          sortNum: 0,
+          groupCode: 'Vendor_0',
+          filterItems: [
+            {
+              itemCode: 'Vendor_SD0001',
+              name: 'Budget',
+              groupCode: 'Vendor_0',
+              bitwiseType: 2,
+              binaryDigit: 8,
+              sortNum: 0,
+              isQuickItem: false,
+            },
+          ],
+          shortName: '租车公司',
+        },
+      ],
+    },
+    {
+      name: '座位',
+      code: 'Seats',
+      sortNum: 0,
+      filterGroups: [
+        {
+          name: '座位数',
+          sortNum: 0,
+          groupCode: 'Seats',
+          filterItems: [
+            {
+              itemCode: 'Seats_SeatsPrefixLth7',
+              name: '7座以下',
+              groupCode: 'Seats',
+              bitwiseType: 2,
+              binaryDigit: 1,
+              sortNum: 0,
+              isQuickItem: false,
+            },
+            {
+              itemCode: 'Seats_SeatsPrefixMth7',
+              name: '7座及以上',
+              groupCode: 'Seats',
+              bitwiseType: 2,
+              binaryDigit: 2,
+              sortNum: 0,
+              isQuickItem: true,
+              quickSortNum: 6,
+            },
+          ],
+          shortName: '座位',
         },
       ],
     },

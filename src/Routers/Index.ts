@@ -5,7 +5,6 @@ const Debug = lazyRequire('../Containers/DebugerContainer');
 const Market = lazyRequire('../Containers/MarketContainer');
 const List = lazyRequire('../Pages/List/Index');
 
-
 export interface PageRouteType {
   component: any,
   name: string,

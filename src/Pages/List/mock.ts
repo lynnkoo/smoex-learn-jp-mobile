@@ -1,75 +1,14 @@
-import { StyleSheet } from 'react-native';
 import {
-  border, space, tokenType, font, icon,
+  tokenType, icon,
 } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import {
   listDay, days, Reviews, total,
 } from './Texts';
+import { VehicleListStyle as style } from './Styles';
 
 const { getPixel, htmlDecode } = BbkUtils;
 
-export const style = StyleSheet.create({
-  wrap: {
-    paddingHorizontal: space.spaceXXL,
-  },
-  labelFlexLeft: {
-    justifyContent: 'flex-start',
-  },
-  labelStyle: {
-    height: getPixel(40),
-    paddingLeft: space.spaceL,
-    borderWidth: 0,
-    marginTop: space.spaceXL,
-  },
-  vendor: {
-    marginTop: space.spaceXXL,
-    paddingBottom: space.spaceXXL,
-    borderBottomWidth: border.borderSizeSm,
-    overflow: 'hidden',
-  },
-  flexRow: {
-    flexDirection: 'row',
-  },
-  priceWrap: {
-    marginTop: space.spaceL,
-    alignItems: 'flex-end',
-  },
-  verndorLabel: {
-    marginBottom: space.spaceL,
-    alignItems: 'flex-start',
-  },
-  vehicleMarginBottom: {
-    marginBottom: space.spaceL,
-  },
-  more: {
-    paddingVertical: space.spaceXXL,
-    borderBottomWidth: border.borderSizeSm,
-  },
-  moreText: {
-    ...font.body2LightStyle,
-  },
-  vehicleImage: {
-    width: getPixel(335),
-    height: getPixel(223),
-  },
-  vehicleDesc: {
-    marginTop: space.spaceXXL,
-    marginLeft: space.spaceL,
-  },
-  verdorHeader: {
-    // todo: test
-    height: getPixel(54),
-    alignItems: 'center',
-  },
-  scoreLabel: {
-    marginLeft: space.spaceM,
-    marginRight: space.spaceS,
-  },
-  comment: {
-    marginLeft: space.spaceS,
-  },
-});
 
 const vehicleLabelsHorizontal = [
   {
@@ -130,7 +69,7 @@ export const vendorLabelItems: any = {
     ...baseVendorLabel,
     text: 'Direct distance from MTR Station 40 m',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconContent: '\uee78',
     },
     colorType: tokenType.ColorType.BlueGray,
@@ -139,7 +78,7 @@ export const vendorLabelItems: any = {
     ...baseVendorLabel,
     text: 'Unlimited Mileage',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconContent: '\uef60',
     },
     colorType: tokenType.ColorType.BlueGray,
@@ -148,7 +87,7 @@ export const vendorLabelItems: any = {
     ...baseVendorLabel,
     text: 'No Deductible',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconContent: '\uee85',
     },
     colorType: tokenType.ColorType.BlueGray,
@@ -157,7 +96,7 @@ export const vendorLabelItems: any = {
     ...baseVendorLabel,
     text: 'Free Cancellation',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconContent: '\uf2bf',
     },
   },
@@ -166,7 +105,7 @@ export const vendorLabelItems: any = {
     noBg: false,
     text: 'Free Cancellation',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconType: 'primary',
       iconContent: '\uee8c',
     },
@@ -175,14 +114,14 @@ export const vendorLabelItems: any = {
     ...baseVendorLabel,
     text: 'service provided by Rentalcars',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
     },
   },
   soldOut: {
     ...baseVendorLabel,
     text: 'Will be sold out !',
     icon: {
-      ...baseVendorLabel.iconStyle,
+      iconStyle: baseVendorLabel.iconStyle,
       iconContent: htmlDecode(icon.default.circleWithSighFilled),
     },
   },

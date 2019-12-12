@@ -5,17 +5,20 @@ import {
 import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
-import BbkComponentCarHeader from '@ctrip/bbk-component-car-header';
 import BbkDatePicker from '@ctrip/bbk-component-car-date-picker';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
 import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import { BbkComponentModalAnimationPreset } from '@ctrip/bbk-component-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
-import VehGroupNav from './Components/VehGroupNav';
 import { PageId } from '../../Constants/Index';
 import ListReqAndResData from '../../Global/Cache/ListReqAndResData';
 import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
 import FilterAndSortModal from './Components/FilterAndSortModal';
+
+// 组件
+import ListHeader from '../../Containers/ListHeaderContainer';
+import VehGroupNav from '../../Containers/ListVehGroupContainer';
+// import VehicleListWithControl from './Components/VehicleListWithControl';
 
 interface ListStateType extends IStateType {
   isLoading: boolean;
@@ -212,7 +215,6 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
     });
   }
 
-
   // 弹层状态控制
   modalProps = () => {
     const { locationDatePopVisible } = this.state;
@@ -237,7 +239,6 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
     locationDatePopVisible: false,
   })
 
-
   render() {
     const curStage = this.getCurStage();
     const { datePickerFocusOnRtime, datePickerVisible } = this.state;
@@ -259,8 +260,7 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
           && (
             <View>
               {/** 头部 */}
-              <BbkComponentCarHeader
-                {...ListPropsModel.getListHeaderProps()}
+              <ListHeader
                 onPressCurrency={() => { }}
                 showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
                 style={BbkStyleUtil.getMB(4)}
@@ -271,9 +271,9 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
 
               {/** tip */}
               {/** 车型组 */}
-              <VehGroupNav {...ListPropsModel.getVehNavProps(this.getPageId())} />
+              <VehGroupNav pageId={this.getPageId()} />
               {/** 供应商报价 */}
-              {/* <VehicleListDemo /> */}
+              {/* <VehicleListWithControl /> */}
 
             </View>
           )
@@ -300,8 +300,8 @@ export default class List extends CPage<IBasePageProps, ListStateType> {
           onConfirm={this.datePickerSelectCallback}
           {...ListPropsModel.getDatePickerProps()}
         />
-
-
+        {/** tip */}
+        {/** 供应商报价 */}
       </ViewPort>
     );
   }

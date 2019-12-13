@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 
 import List from '../Pages/List/Index';
-import { initActiveGroupId } from '../State/List/Actions';
-import { getStatus } from '../State/List/Actions';
+import { initActiveGroupId, getStatus } from '../State/List/Actions';
+
 import { getIsLoading, getIsFail } from '../State/List/Selectors';
 
 const mapStateToProps = state => ({

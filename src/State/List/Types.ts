@@ -7,4 +7,3 @@ export const INIT_SET_GROUPID = 'List/INIT_SET_GROUPID';
 export const SET_GROUPID = 'List/SET_GROUPID';
 
 export const GET_GROUPID = 'List/GET_GROUPID';
-

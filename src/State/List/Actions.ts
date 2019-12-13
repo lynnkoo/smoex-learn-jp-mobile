@@ -1,4 +1,6 @@
-import { SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID } from './Types';
+import {
+  SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID,
+} from './Types';
 import { ActionType } from '../../Types/ActiontType';
 
 export interface ListActionType extends ActionType {
@@ -24,4 +26,3 @@ export const initActiveGroupId = data => ({
   type: INIT_SET_GROUPID,
   data,
 });
-

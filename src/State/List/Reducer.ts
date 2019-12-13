@@ -1,4 +1,6 @@
-import { SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID } from './Types';
+import {
+  SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID,
+} from './Types';
 
 const getInitalState = () => ({
   isLoading: true,

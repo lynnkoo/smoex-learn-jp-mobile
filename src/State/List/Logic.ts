@@ -2,8 +2,8 @@ import { createLogic } from 'redux-logic';
 import { GET_STATUS } from './Types';
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
-import { setStatus } from './Actions';
-import { initActiveGroupId } from '../List/Actions';
+import { setStatus, initActiveGroupId } from './Actions';
+
 
 const calculatePageStatus = (data) => {
   const {
@@ -66,7 +66,9 @@ export const setPageStatus = createLogic({
   /* eslint-disable no-empty-pattern */
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
-    const { isSuccess, resCode, res, batchesRequest,} = action.data;
+    const {
+      isSuccess, resCode, res, batchesRequest,
+    } = action.data;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = res.productGroups[0].groupCode;

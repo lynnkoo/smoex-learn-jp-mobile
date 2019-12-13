@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import ListProgress from '../Pages/List/Components/ListProgress';
 import { getAllVehicleCount, getAllVendorPriceCount } from '../Global/Cache/ListResSelectors';
-import { getProgress } from '../State/ListStatus/Selectors';
+import { getProgress } from '../State/List/Selectors';
 
 const mapStateToProps = state => ({
   vehCount: getAllVehicleCount(),

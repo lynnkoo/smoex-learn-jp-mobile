@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 
 import VehGroupNav from '../Pages/List/Components/VehGroupNav';
-import { getActiveGroupId } from '../State/ListVehGroup/Selectors';
+import { getActiveGroupId } from '../State/List/Selectors';
 import { getVehGroupList, getAllVehicleCount, getAllVendorPriceCount } from '../Global/Cache/ListResSelectors';
-import { setActiveGroupId } from '../State/ListVehGroup/Actions';
+import { setActiveGroupId } from '../State/List/Actions';
 
 const mapStateToProps = state => ({
   activeGroupId: getActiveGroupId(state),

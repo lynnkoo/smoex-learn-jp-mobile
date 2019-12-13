@@ -1,6 +1,12 @@
-import { SET_GROUPID, INIT_SET_GROUPID } from './Types';
+import { SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID } from './Types';
 
-const getInitalState = () => ({ activeGroupId: '' });
+const getInitalState = () => ({
+  isLoading: true,
+  isFail: false,
+  progress: 0,
+  activeGroupId: '',
+
+});
 
 const initalState = getInitalState();
 
@@ -9,13 +15,19 @@ const initActiveGroupId = (state, action) => ({
   activeGroupId: (!state.activeGroupId && action.data.activeGroupId) || state.activeGroupId,
 });
 
-export default function DriverAge(state = initalState, action) {
+
+export default (state = initalState, action) => {
   switch (action.type) {
+    case SET_STATUS:
+      return {
+        ...state, isLoading: action.data.isLoading, isFail: action.data.isFail, progress: action.data.progress,
+      };
     case INIT_SET_GROUPID:
       return initActiveGroupId(state, action);
     case SET_GROUPID:
       return { ...state, activeGroupId: action.data.activeGroupId || state.activeGroupId };
+    case GET_STATUS:
     default:
       return state;
   }
-}
+};

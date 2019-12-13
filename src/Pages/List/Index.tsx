@@ -151,7 +151,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           && (
             <VehicleListWithControl
               threshold={180}
-              locationDatePopVisible={this.state.locationDatePopVisible}
             />
           )
         }

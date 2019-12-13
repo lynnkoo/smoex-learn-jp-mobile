@@ -51,7 +51,8 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "import/extensions": [0],
-    "react/destructuring-assignment": 1
+    "react/destructuring-assignment": 1,
+    "no-nested-ternary": [0]
   },
   settings: {
     "import/resolver": {

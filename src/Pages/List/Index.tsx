@@ -5,7 +5,6 @@ import {
 import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
-import BbkDatePicker from '@ctrip/bbk-component-car-date-picker';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
 import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
@@ -19,8 +18,6 @@ import VehGroupNav from '../../Containers/ListVehGroupContainer';
 // import VehicleListWithControl from './Components/VehicleListWithControl';
 
 interface ListStateType extends IStateType {
-  datePickerVisible: boolean;
-  datePickerFocusOnRtime: boolean;
   locationDatePopVisible: boolean;
   filterAndSortModalVisible: boolean;
 }
@@ -46,13 +43,9 @@ interface IListPropsType extends IBasePageProps {
 export default class List extends CPage<IListPropsType, ListStateType> {
   batchesRequest: any[];
 
-  resData: any;
-
   constructor(props) {
     super(props);
     this.state = {
-      datePickerVisible: false, // 取还车时间组件是否显示
-      datePickerFocusOnRtime: false, // 定位在还车时间tab
       locationDatePopVisible: false, // 修改取还车信息弹层是否展示
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
     };
@@ -121,21 +114,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   };
 
-  // 时间组件选择回调
-  datePickerSelectCallback = (ptime, rtime, isConfirm = true) => {
-    this.setState({
-      datePickerVisible: false,
-    }, () => {
-      if (isConfirm) {
-        // todo 更新reducer值 + 重新刷新列表页
-
-      }
-    });
-  }
-
   render() {
     const curStage = this.getCurStage();
-    const { datePickerFocusOnRtime, datePickerVisible } = this.state;
     return (
       <ViewPort style={styles.page}>
         {Platform.OS === 'android' && (
@@ -181,14 +161,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           visible={this.state.filterAndSortModalVisible}
           {...ListPropsModel.getFilterAndSortModalProps()}
           onHide={this.controlFilterModalIsShow}
-        />
-
-        <BbkDatePicker
-          visible={datePickerVisible}
-          focusOnRtime={datePickerFocusOnRtime}
-          onCancel={() => { this.datePickerSelectCallback(null, null, false); }}
-          onConfirm={this.datePickerSelectCallback}
-          {...ListPropsModel.getDatePickerProps()}
         />
       </ViewPort>
     );

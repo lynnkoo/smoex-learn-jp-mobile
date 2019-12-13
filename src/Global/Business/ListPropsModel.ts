@@ -37,35 +37,6 @@ export const getFilterBarProps = (pressCallback) => {
   };
 };
 
-// 获取车型组组件所需参数
-export const getVehNavProps = (pageId) => {
-  const listRes = ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes);
-  const vehGroupList = [{
-    gId: 'all',
-    title: 'All Cars', // todo 需要根据shark key
-  }];
-  listRes.productGroups.forEach((m) => {
-    vehGroupList.push({
-      gId: m.groupCode,
-      title: m.groupName,
-    });
-  });
-  return {
-    pageId,
-    activeGroupId: '', // todo 从reducer中获取
-    vehGroupList,
-  };
-};
-
-// 获取时间选择组件所需参数
-export const getDatePickerProps = () => {
-  const state = getStore().getState();
-  const { rentalDate } = state.LocationAndDate;
-  return {
-    ptime: rentalDate.pickUp.dateTime,
-    rtime: rentalDate.dropOff.dateTime,
-  };
-};
 
 // 获取搜索区域模块所需参数
 export const getSearchPanelProps = () => {

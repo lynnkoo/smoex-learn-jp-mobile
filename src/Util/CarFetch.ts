@@ -79,6 +79,8 @@ class CarFetch extends FetchBase {
   queryAppCountryId = params => this.getFetchObject('14804/queryCountryId', params, false);
 
   getRouterAdapter = params => this.getFetchObject('/13589/getRoute.json', params, false);
+
+  getListProduct = params => this.getFetchObject('/18631/queryProducts', params, false);
 }
 
 export default new CarFetch();

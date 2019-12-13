@@ -48,12 +48,13 @@ export const apiListQueryProducts = async (param, callback, m) => {
   // const res = await CarFetch.getListProduct(param);
   const res = ListProductRes;
   // test
+  const time = m === 0 ? 5000 : 10000;
   setTimeout(() => {
     result.isSuccess = true;
     result.resCode = m === 0 ? '201' : '200';
     result.res = res;
     callback(result);
-  }, 2000);
+  }, time);
 };
 
 export const apiListBatchQuery = (callback) => {

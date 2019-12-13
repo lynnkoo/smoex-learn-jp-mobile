@@ -7,6 +7,7 @@ import PageIdTrip from './PageId/PageId.TRIP';
 import AgeConfig from './AgeConfig';
 import ClickKey from './ClickKey';
 import LogKey from './LogKey';
+import * as ApiResCode from './ApiResCode';
 
 // /* eslint-disable global-require */
 // const getPageId = () => {
@@ -52,4 +53,5 @@ export {
   AgeConfig,
   ClickKey,
   LogKey,
+  ApiResCode,
 };

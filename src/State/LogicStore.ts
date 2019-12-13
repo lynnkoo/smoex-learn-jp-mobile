@@ -7,6 +7,7 @@ import Country from './CountryInfo/Logic';
 import LocationAndDate from './LocationAndDate/Logic';
 import DriverAge from './DriverAge/Logic';
 import Market from './Market/Logic';
+import List from './List/Logic';
 
 const dependencies = {
   CarFetch,
@@ -18,6 +19,7 @@ export const rootLogics = [
   ...LocationAndDate,
   ...DriverAge,
   ...Market,
+  ...List,
 ];
 
 export const logicMiddleware = createLogicMiddleware(rootLogics, dependencies);

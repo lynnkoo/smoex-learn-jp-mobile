@@ -75,6 +75,7 @@ const baseContext = {
   UserInfo: {},
   UrlQuery: {},
   Url: '',
+  PageInstance: null,
 };
 
 const getAppContext = () => Object.assign({}, baseContext);
@@ -138,6 +139,10 @@ const reset = () => {
   appContext = getAppContext();
 };
 
+const setPageInstance = (pageInstance) => {
+  appContext.PageInstance = pageInstance;
+};
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -172,6 +177,9 @@ const AppContext = {
   get UrlQuery(): UrlQueryType {
     return appContext.UrlQuery;
   },
+  get PageInstance() {
+    return appContext.PageInstance;
+  },
   setABTesting,
   initLanguageInfo: initLanguage,
   setUserInfo,
@@ -179,6 +187,7 @@ const AppContext = {
   setUrlQuery,
   setSharkKeys,
   reset,
+  setPageInstance,
 };
 
 export default AppContext;

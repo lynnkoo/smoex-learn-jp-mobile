@@ -28,6 +28,9 @@ export const VehicleListStyle = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
   },
+  flexWrap: {
+    flexWrap: 'wrap',
+  },
   priceWrap: {
     marginTop: space.spaceL,
     alignItems: 'flex-end',

@@ -1,3 +1,5 @@
+export const getLocationAndDate = state => state.LocationAndDate;
+
 export const getPickUpTime = state => state.LocationAndDate.rentalDate.pickUp.dateTime;
 
 export const getDropOffTime = state => state.LocationAndDate.rentalDate.dropOff.dateTime;

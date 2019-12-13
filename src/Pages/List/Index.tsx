@@ -38,6 +38,7 @@ interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
   setPageStatus: (data: any) => void;
+  fetchList: () => void;
 }
 
 export default class List extends CPage<IListPropsType, ListStateType> {
@@ -59,7 +60,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    this.fetchListProduct();
+    // this.fetchListProduct();
+    this.props.fetchList();
   }
 
   // 调用获取列表页数据接口
@@ -116,6 +118,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   render() {
     const curStage = this.getCurStage();
+    console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
         {Platform.OS === 'android' && (

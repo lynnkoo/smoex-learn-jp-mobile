@@ -72,7 +72,7 @@ export const Vehicle = withTheme(
 );
 
 export const VehicleHeader = withTheme(
-  ({ vehicleHeader, theme }) => {
+  ({ vehicleHeader, onLayout, theme }) => {
     const {
       vehicleName,
       groupName,
@@ -80,7 +80,7 @@ export const VehicleHeader = withTheme(
       isHotLabel,
     } = vehicleHeader;
     return (
-      <View style={{ backgroundColor: theme.backgroundColor }}>
+      <View style={{ backgroundColor: theme.backgroundColor }} onLayout={onLayout}>
         <BbkVehicleName name={vehicleName} groupName={groupName} isSimilar={isSimilar} isHotLabel={isHotLabel} />
       </View>
     );

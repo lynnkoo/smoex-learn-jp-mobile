@@ -15,7 +15,7 @@ import FilterAndSortModal from './Components/FilterAndSortModal';
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
 import VehGroupNav from '../../Containers/ListVehGroupContainer';
-// import VehicleListWithControl from './Components/VehicleListWithControl';
+import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
 
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
@@ -145,12 +145,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
         {/** 无结果 */}
+
+        {/** 供应商报价 */}
         {curStage === PAGESTAGE.SHOW
           && (
-            <View>
-              {/** 供应商报价 */}
-              {/* <VehicleListWithControl /> */}
-            </View>
+            <VehicleListWithControl
+              threshold={180}
+              locationDatePopVisible={this.state.locationDatePopVisible}
+            />
           )
         }
 

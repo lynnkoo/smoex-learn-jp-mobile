@@ -1,5 +1,4 @@
 import { Business } from '@ctrip/crn';
-import { BbkChannel } from '@ctrip/bbk-utils';
 import { AppContext, Utils, User } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
 // import { initialiseABTesting } from './Util/ABTesting';
@@ -82,7 +81,6 @@ const appLoad = (props) => {
   // initialiseABTesting();
   initialiseAppState();
   initialiseAppContext();
-  BbkChannel.setChannel(Utils.isTrip() ? 'TRIP' : 'CTRIP'); // todo
 };
 
 export default appLoad;

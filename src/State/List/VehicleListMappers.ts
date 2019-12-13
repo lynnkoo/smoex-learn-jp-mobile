@@ -6,8 +6,9 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 import { Utils } from '../../Util/Index';
 import {
   listDay, Reviews, total,
-} from './Texts';
-import { VehicleListStyle as style } from './Styles';
+} from '../../Pages/List/Texts';
+import { VehicleListStyle as style } from '../../Pages/List/Styles';
+import { getVehAndProductList, getVehGroupList } from '../../Global/Cache/ListResSelectors';
 
 const { getPixel } = BbkUtils;
 let count = 0;
@@ -243,17 +244,17 @@ const getVendorListData = vendorPriceList => _.map(vendorPriceList, (vendor) => 
   return vendorItemData;
 });
 
-export const getVehicleListData = (mockServer, showMax) => {
-  const { productGroups, vehicleList } = mockServer;
+export const getVehicleListData = () => {
+  const { productGroups, vehicleList } = getVehAndProductList();
   const groupListData = productGroups.map((group) => {
     const { productList } = group;
-    const vehicleListData = productList.map((product) => {
+    const vehicleListData = productList.map((product, index) => {
       const { vehicleCode, vendorPriceList } = product;
       const vehicleItemData = getVehicleItemData(vehicleList, vehicleCode);
       const vendorListData = getVendorListData(vendorPriceList);
       return {
+        index,
         ...vehicleItemData,
-        moreNumber: Math.max(vendorPriceList.length - showMax, 0),
         // todo: 加字段
         recommendDesc: '“test”',
         data: [vendorListData.slice(0, 5)],
@@ -261,8 +262,15 @@ export const getVehicleListData = (mockServer, showMax) => {
     });
     return vehicleListData;
   });
-  return groupListData.slice(0, 5);
-  // return groupListData;
+  return groupListData;
+};
+
+export const getGroupLength = () => {
+  const vehGroupList = getVehGroupList();
+  return {
+    minIndex: 0,
+    maxIndex: vehGroupList.length,
+  };
 };
 
 export const placeHolder = null;

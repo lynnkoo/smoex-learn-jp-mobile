@@ -9,39 +9,37 @@ import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
 import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
-import { getVehicleListData } from '../composeData';
-import mockServer from '../mockServer';
-
-const showMax = 2;
 
 interface VehicleListWithControlProps {
   maxIndex?: number;
   minIndex?: number;
-  initIndex?: number;
-  cacheData?: any;
+  initIndex: number;
+  listData?: any;
   initialNumToRender?: number;
   theme?: any;
   height?: number;
   threshold?: number;
+  showMax?: number;
+  locationDatePopVisible: boolean
 }
 
 interface VehicleListWithControlState {
   index: number;
-  initIndex: number;
   isDark: boolean;
   translateYAnim: any;
 }
 
 export default class VehicleListWithControl extends Component<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
-    maxIndex: 4,
+    maxIndex: 0,
     minIndex: 0,
-    initIndex: 2,
-    cacheData: getVehicleListData(mockServer, showMax),
+    initIndex: 0,
+    listData: {},
     initialNumToRender: 10,
     theme: {},
     height: Dimensions.get('window').height,
-    threshold: 100,
+    threshold: 0,
+    showMax: 2,
   };
 
   cacheList = [];
@@ -57,20 +55,9 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const { initIndex } = props;
     this.state = {
       index: initIndex,
-      initIndex,
       isDark: false,
       translateYAnim: new Animated.Value(0),
     };
-  }
-
-  getButtons(theme) {
-    const { maxIndex } = this.props;
-    return new Array(maxIndex).fill(1).map((item, index) => (
-      /* eslint-disable-next-line */
-      <TouchableOpacity style={{ width: 70, alignItems: 'center' }} onPress={() => this.tabScroll(index + 1)} key={index}>
-        <Text style={{ color: theme.black, lineHeight: 40 }}>{index + 1}</Text>
-      </TouchableOpacity>
-    ));
   }
 
   getTheme() {
@@ -111,8 +98,8 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   }
 
   animate = (index, callback = () => {}) => {
-    const { translateYAnim, initIndex: initIdx } = this.state;
-    const { height, threshold } = this.props;
+    const { translateYAnim } = this.state;
+    const { height, threshold, initIndex: initIdx } = this.props;
     const scrollViewHeight = height - threshold;
     Animated.timing(
       translateYAnim,
@@ -152,7 +139,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   // eslint-disable-next-line
   renderVehicleListDom = (index, style, reset, placeHolder) => {
     const {
-      cacheData, minIndex, maxIndex, initialNumToRender, theme,
+      listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
@@ -172,7 +159,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const cache = this.cacheList[index];
     if (!cache) {
       if (placeHolder) {
-        return <View style={style} />;
+        return <View style={style} key={index} />;
       }
       this.cacheList[index] = (
         <VehicleList
@@ -183,7 +170,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           style={style}
           key={index}
           index={index}
-          sections={cacheData[index]}
+          sections={listData[index]}
           showMax={showMax}
 
           onRefresh={this.onRefreshSection}
@@ -216,7 +203,6 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const { translateYAnim } = this.state;
     this.setState({
       index,
-      initIndex: index,
     });
     Animated.timing(
       translateYAnim,
@@ -227,6 +213,13 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
       },
     ).start();
     this.renderAllVehicleListDom(index);
+  }
+
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(props) {
+    if (props.initIndex !== this.props.initIndex) {
+      this.tabScroll(props.initIndex);
+    }
   }
 
   renderAllVehicleListDom($index) {
@@ -259,16 +252,22 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const {
       isDark, translateYAnim,
     } = this.state;
+    const { threshold, height } = this.props;
     const theme = this.getTheme();
 
     return (
       <>
         <BbkThemeProvider theme={theme} channel={null}>
           <Animated.View style={{
+            position: 'absolute',
+            top: threshold,
+            height: height - threshold,
+            width: '100%',
             transform: [{
               translateY: translateYAnim,
             }],
             flex: 1,
+            overFlow: 'hidden',
           }}
           >
             {this.renderAllVehicleListDom(undefined)}

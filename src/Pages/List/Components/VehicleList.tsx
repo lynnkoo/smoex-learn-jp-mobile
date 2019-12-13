@@ -2,15 +2,13 @@
 import React, { memo, useState } from 'react';
 // eslint-disable-next-line
 import _ from 'lodash';
-import { BbkUtils } from '@ctrip/bbk-utils';
 import SectionListWithControl from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 
-const { selector } = BbkUtils;
-
 interface section {
   vehicleHeader: any;
-  moreNumber: number;
+  index: number;
+  data: Object[];
 }
 
 interface sectionProps {
@@ -19,11 +17,13 @@ interface sectionProps {
 
 const VehicleList = (props: any) => {
   const [showMore, setShowMore] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
   const {
     sections,
     showMax,
     ...passThroughProps
   } = props;
+
 
   const showMoreHandler = () => {
     setShowMore(!showMore);
@@ -40,22 +40,30 @@ const VehicleList = (props: any) => {
       />
     );
   };
-  const renderSectionHeader = ({ section: { vehicleHeader } }: sectionProps) => (
+  const renderSectionHeader = ({ section: { vehicleHeader, index } }: sectionProps) => (
     <VehicleHeader
       vehicleHeader={vehicleHeader}
+      onLayout={() => {
+        if (index === sections.length - 1) {
+          setShowFooter(true);
+        }
+      }}
     />
   );
-  const renderSectionFooter = ({ section: { moreNumber } }: sectionProps) => selector(
-    // todo: 加载过快时，隐藏Footer
-    true,
-    <VehicleFooter
-      moreNumber={showMore ? moreNumber : showMore}
-      onPress={showMoreHandler}
-    />,
-  );
+  const renderSectionFooter = ({ section: { data } }: sectionProps) => {
+    const moreNumber = Math.max(data.length - showMax, 0);
+
+    return (
+      <VehicleFooter
+        moreNumber={showMore ? moreNumber : showMore}
+        onPress={showMoreHandler}
+      />
+    );
+  };
 
   return (
     <SectionListWithControl
+      showFooter={showFooter}
       sections={sections}
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}

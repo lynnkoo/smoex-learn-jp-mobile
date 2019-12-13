@@ -7,11 +7,12 @@ import { RefreshControl, LoadControl } from '@ctrip/crn';
 import { color } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 
-const { isIos } = BbkUtils;
+const { isIos, selector } = BbkUtils;
 
 // @ts-ignore
 interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
+  showFooter?: boolean;
   threshold?: number;
   throttle?: number;
   pullStartContent?: string;
@@ -130,6 +131,11 @@ export default class SectionListWithControl extends Component<SectionListWithCon
   }
 
   onScrollEndDrag = (event) => {
+    const { showFooter } = this.props;
+    if (!showFooter) {
+      return;
+    }
+
     const {
       load,
       refresh,
@@ -175,6 +181,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     } = this.state;
     const {
       throttle = 50,
+      showFooter,
       sections,
       renderItem,
       renderSectionHeader,
@@ -233,7 +240,8 @@ export default class SectionListWithControl extends Component<SectionListWithCon
             refreshingContent={refreshingContent}
           />
         )}
-        ListFooterComponent={(
+        ListFooterComponent={selector(
+          showFooter,
           <LoadControl
             style={styles.controlWrap}
             iconStyle={styles.iconStyle}
@@ -245,7 +253,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
             noMoreContent={noMoreContent}
             noticeContent={noticeContent}
             loadingContent={loadingContent}
-          />
+          />,
         )}
       />
     );

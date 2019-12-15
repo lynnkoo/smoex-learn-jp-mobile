@@ -55,7 +55,7 @@ export interface LanguageInfoType {
 const baseContext = {
   ABTesting: { trace: '', datas: {} },
   MarketInfo: {
-    channelId: '',
+    channelId: '14277', // todo
     childChannelId: '',
     sId: Channel.sId || '',
     aId: Channel.alianceId || '',

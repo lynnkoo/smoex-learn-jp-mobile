@@ -12,43 +12,38 @@ import { packageListReqParam } from './Mappers';
 import { ListProductRes } from '../../../__mocks__/ListMockData';
 
 const REQUEST_COUNT = 2;
-// const batchGroups = [0, 1];
-
-// 测试
-let resCount = 0;
+const batchGroups = [0, 1];
 
 export const apiListBatchQuery = createLogic({
   type: FETCH_LIST_BATCH,
   latest: true,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
-    // batchGroups.forEach(() => {
-    //   dispatch(fetchApiList());
-    // });
+    batchGroups.forEach((m) => {
+      dispatch(fetchApiList(m));
+    });
     // test
-    dispatch(fetchApiList());
+    // dispatch(fetchApiList());
     done();
   },
 });
 
 export const apiListQueryProducts = createLogic({
   type: FETCH_LIST,
-  latest: true,
+  // latest: true,
   /* eslint-disable no-empty-pattern */
-  async process({ getState }, dispatch, done) {
-    // test
-    const param = packageListReqParam(getState());
+  async process({ action, getState }, dispatch, done) {
+    // 获取请求的批次
+    // @ts-ignore
+    const vendorGroup = action.data;
+    const param = packageListReqParam(getState(), vendorGroup);
     console.log('测试+++param', param);
+
     // const res = await CarFetch.getListProduct(param).catch((err) => { console.log('测试+++err', err) });
+    // test
     const res = ListProductRes;
-    // 测试
-    resCount += 1;
-    if (resCount >= REQUEST_COUNT) {
-      res.baseResponse.code = '201';
-      resCount = 0;
-    }
     console.log('测试+++res', res);
-    dispatch(fetchApiListCallback(res));
+    dispatch(fetchApiListCallback({ param, res }));
     done();
   },
 });
@@ -58,8 +53,9 @@ export const apiListQueryProductsCallback = createLogic({
   // latest: true,
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
-    const res = action.data || {};
-    const isSuccess = res && res.baseResponse && res.baseResponse.isSuccess;
+    const { param, res } = action.data || {};
+    console.log('测试+++apiListQueryProductsCallback', param);
+    const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false;
     const resCode = res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
@@ -70,9 +66,9 @@ export const apiListQueryProductsCallback = createLogic({
     // @ts-ignore
     const newBatchesRequest = getState().List.batchesRequest;
     // 记录当前响应的结果
-    const curRequest = newBatchesRequest.find(f => f.resCode === resCode);
+    const curRequest = newBatchesRequest.find(f => f.vendorGroup === param.vendorGroup);
     if (!curRequest) {
-      newBatchesRequest.push({ resCode, result: isSuccess ? 1 : -1 });
+      newBatchesRequest.push({ vendorGroup: param.vendorGroup, resCode, result: isSuccess ? 1 : -1 });
       dispatch(setBatchRequest(newBatchesRequest.length >= REQUEST_COUNT ? [] : newBatchesRequest));
     }
     // 计算当前响应的总次数

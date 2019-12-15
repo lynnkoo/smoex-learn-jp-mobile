@@ -1,4 +1,5 @@
-import { getAge, getAdultNumbers, getChildNumbers } from '../DriverAgeAndNumber/Selectors';
+import moment from 'moment';
+import { getAdultNumbers, getChildNumbers } from '../DriverAgeAndNumber/Selectors';
 import {
   getPickUpTime,
   getDropOffTime,
@@ -17,13 +18,15 @@ import {
 } from '../LocationAndDate/Selectors';
 
 /* eslint-disable import/prefer-default-export */
-export const packageListReqParam = state => ({
-  age: getAge(state),
+export const packageListReqParam = (state, vendorGroup: number) => ({
+  vendorGroup,
+  // age: getAge(state),
+  age: 30,
   adultNumbers: getAdultNumbers(state),
   childrenNumbers: getChildNumbers(state),
   pickupPointInfo: {
     cityId: getPickUpCityId(state),
-    date: getPickUpTime(state),
+    date: moment(getPickUpTime(state)).format('YYYY-MM-DD HH:mm:ss'),
     locationCode: getPickUpLocationCode(state),
     locationName: getPickUpLocationName(state),
     locationType: getPickUpLocationType(state),
@@ -35,7 +38,7 @@ export const packageListReqParam = state => ({
   },
   returnPointInfo: {
     cityId: getDropOffCityId(state),
-    date: getDropOffTime(state),
+    date: moment(getDropOffTime(state)).format('YYYY-MM-DD HH:mm:ss'),
     locationCode: getDropOffLocationCode(state),
     locationName: getDropOffLocationName(state),
     locationType: getDropOffLocationType(state),
@@ -45,4 +48,5 @@ export const packageListReqParam = state => ({
       radius: 0,
     },
   },
+  requestType: 1, // todo
 });

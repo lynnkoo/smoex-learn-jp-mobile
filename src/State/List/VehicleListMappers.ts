@@ -152,7 +152,7 @@ const getVendorLabelItems = (vendor) => {
   // todo: 异地取还
   const isDiff = false;
   const {
-    pStoreRouteDesc, rStoreRouteDesc, positiveTagList, platformName,
+    pStoreRouteDesc, rStoreRouteDesc, positiveTagList = [], platformName,
   } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);

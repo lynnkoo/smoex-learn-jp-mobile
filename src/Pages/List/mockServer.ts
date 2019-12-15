@@ -26,6 +26,7 @@ export default {
       name: '高级品牌',
       code: 'Brand',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '高级品牌',
@@ -113,6 +114,7 @@ export default {
       name: '驾照要求',
       code: 'DriverLience',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '驾照要求',
@@ -165,6 +167,7 @@ export default {
       name: '特色服务',
       code: 'Service',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '特色服务',
@@ -244,6 +247,7 @@ export default {
       name: '租车公司',
       code: 'Vendor_0',
       sortNum: 0,
+      hierarchy: 1,
       filterGroups: [
         {
           name: '租车公司',
@@ -268,6 +272,7 @@ export default {
       name: '支付方式',
       code: 'PayMode',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '支付方式',
@@ -310,6 +315,7 @@ export default {
       name: '距离',
       code: 'Distance',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '门店距离',
@@ -343,6 +349,7 @@ export default {
       name: '座位',
       code: 'Seats',
       sortNum: 0,
+      hierarchy: 1,
       filterGroups: [
         {
           name: '座位数',
@@ -377,6 +384,7 @@ export default {
       name: '排挡',
       code: 'Transmission',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '车辆排挡',
@@ -411,6 +419,7 @@ export default {
       name: '信用卡',
       code: 'CreditCard',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '信用卡',
@@ -453,6 +462,7 @@ export default {
       name: '取车',
       code: 'Location',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '门店位置',

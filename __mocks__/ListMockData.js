@@ -26,9 +26,70 @@ export const ListProductRes = {
   allVendorPriceCount: 86,
   filterMenuItems: [
     {
+      name: '租车公司',
+      code: 'Vendor_0',
+      sortNum: 0,
+      hierarchy: 1,
+      filterGroups: [
+        {
+          name: '租车公司',
+          sortNum: 0,
+          groupCode: 'Vendor_0',
+          filterItems: [
+            {
+              itemCode: 'Vendor_SD0001',
+              name: 'Budget',
+              groupCode: 'Vendor_0',
+              bitwiseType: 2,
+              binaryDigit: 8,
+              sortNum: 0,
+              isQuickItem: false,
+            },
+          ],
+          shortName: '租车公司',
+        },
+      ],
+    },
+    {
+      name: '座位',
+      code: 'Seats',
+      sortNum: 0,
+      hierarchy: 1,
+      filterGroups: [
+        {
+          name: '座位数',
+          sortNum: 0,
+          groupCode: 'Seats',
+          filterItems: [
+            {
+              itemCode: 'Seats_SeatsPrefixLth7',
+              name: '7座以下',
+              groupCode: 'Seats',
+              bitwiseType: 2,
+              binaryDigit: 1,
+              sortNum: 0,
+              isQuickItem: false,
+            },
+            {
+              itemCode: 'Seats_SeatsPrefixMth7',
+              name: '7座及以上',
+              groupCode: 'Seats',
+              bitwiseType: 2,
+              binaryDigit: 2,
+              sortNum: 0,
+              isQuickItem: true,
+              quickSortNum: 6,
+            },
+          ],
+          shortName: '座位',
+        },
+      ],
+    },
+    {
       name: '高级品牌',
       code: 'Brand',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '高级品牌',
@@ -116,6 +177,7 @@ export const ListProductRes = {
       name: '驾照要求',
       code: 'DriverLience',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '驾照要求',
@@ -168,6 +230,7 @@ export const ListProductRes = {
       name: '特色服务',
       code: 'Service',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '特色服务',
@@ -247,6 +310,7 @@ export const ListProductRes = {
       name: '支付方式',
       code: 'PayMode',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '支付方式',
@@ -289,6 +353,7 @@ export const ListProductRes = {
       name: '距离',
       code: 'Distance',
       sortNum: 0,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '门店距离',
@@ -322,6 +387,7 @@ export const ListProductRes = {
       name: '排挡',
       code: 'Transmission',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '车辆排挡',
@@ -356,6 +422,7 @@ export const ListProductRes = {
       name: '信用卡',
       code: 'CreditCard',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '信用卡',
@@ -398,6 +465,7 @@ export const ListProductRes = {
       name: '取车',
       code: 'Location',
       sortNum: 1,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '门店位置',
@@ -422,6 +490,7 @@ export const ListProductRes = {
       name: '燃油',
       code: 'FuelType',
       sortNum: 3,
+      hierarchy: 2,
       filterGroups: [
         {
           name: '燃油类型',
@@ -439,66 +508,6 @@ export const ListProductRes = {
             },
           ],
           shortName: '燃油',
-        },
-      ],
-    },
-  ],
-  popularFilterItems: [
-    {
-      name: '租车公司',
-      code: 'Vendor_0',
-      sortNum: 0,
-      filterGroups: [
-        {
-          name: '租车公司',
-          sortNum: 0,
-          groupCode: 'Vendor_0',
-          filterItems: [
-            {
-              itemCode: 'Vendor_SD0001',
-              name: 'Budget',
-              groupCode: 'Vendor_0',
-              bitwiseType: 2,
-              binaryDigit: 8,
-              sortNum: 0,
-              isQuickItem: false,
-            },
-          ],
-          shortName: '租车公司',
-        },
-      ],
-    },
-    {
-      name: '座位',
-      code: 'Seats',
-      sortNum: 0,
-      filterGroups: [
-        {
-          name: '座位数',
-          sortNum: 0,
-          groupCode: 'Seats',
-          filterItems: [
-            {
-              itemCode: 'Seats_SeatsPrefixLth7',
-              name: '7座以下',
-              groupCode: 'Seats',
-              bitwiseType: 2,
-              binaryDigit: 1,
-              sortNum: 0,
-              isQuickItem: false,
-            },
-            {
-              itemCode: 'Seats_SeatsPrefixMth7',
-              name: '7座及以上',
-              groupCode: 'Seats',
-              bitwiseType: 2,
-              binaryDigit: 2,
-              sortNum: 0,
-              isQuickItem: true,
-              quickSortNum: 6,
-            },
-          ],
-          shortName: '座位',
         },
       ],
     },

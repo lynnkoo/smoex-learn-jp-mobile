@@ -68,6 +68,7 @@ export const setPageStatus = createLogic({
     // @ts-ignore
     const {
       isSuccess, resCode, res, batchesRequest,
+      // @ts-ignore
     } = action.data;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);

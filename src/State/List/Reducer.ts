@@ -7,7 +7,11 @@ const getInitalState = () => ({
   isFail: false,
   progress: 0,
   activeGroupId: '',
-
+  activeFilterBarCode: '',
+  selectedFilters: {
+    sort: [],
+    filters: [],
+  },
 });
 
 const initalState = getInitalState();

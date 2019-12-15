@@ -10,11 +10,11 @@ import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
 import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
-import FilterAndSortModal from './Components/FilterAndSortModal';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
 import VehGroupNav from '../../Containers/ListVehGroupContainer';
+import FilterAndSortModal from '../../Containers/ListFilterAndSortModalContainer';
 // import VehicleListWithControl from './Components/VehicleListWithControl';
 
 interface ListStateType extends IStateType {

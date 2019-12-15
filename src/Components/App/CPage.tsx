@@ -1,5 +1,5 @@
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
-import React from 'react';
+import React, {createContext, ContextType} from 'react';
 import {
   Page,
   ViewPort,
@@ -25,6 +25,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   pageShowTime: Date = null;
   pageAppearCount: Number = null;
   isPageAppear: Boolean = true;
+  pageInstance: ContextType<any>
 
   constructor(prop: P) {
     super(prop);
@@ -48,6 +49,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   pageDidAppear() {
+    AppContext.setPageInstance(this);
     this.pageLastActiveTime = new Date();
     this.isPageAppear = true;
   }

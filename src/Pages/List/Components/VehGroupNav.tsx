@@ -12,6 +12,8 @@ interface VehGroupNavPropsType {
   activeGroupId: string;
   vehGroupList: any[];
   setActiveGroupId: (data: { activeGroupId: string }) => void;
+  tabScroll: Function;
+  resetGroupIndex: Function;
 }
 
 interface VehGroupNavStateType {
@@ -23,7 +25,6 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(88),
     backgroundColor: color.white,
-    overflow: 'hidden',
   },
   mainWrap: {
     borderBottomWidth: 0,

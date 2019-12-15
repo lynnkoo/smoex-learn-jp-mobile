@@ -5,3 +5,4 @@ export const days = value => getSharkValue('days', value);
 export const Reviews = getSharkValue('Reviews');
 export const listShowMore = value => getSharkValue('listShowMore', value);
 export const total = getSharkValue('total');
+export const listFetchResult = value => getSharkValue('list_fetchResult', value);

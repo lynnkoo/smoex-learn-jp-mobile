@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
 import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
@@ -15,7 +14,8 @@ import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
 import ListHeader from '../../Containers/ListHeaderContainer';
 import VehGroupNav from '../../Containers/ListVehGroupContainer';
 import FilterAndSortModal from '../../Containers/ListFilterAndSortModalContainer';
-// import VehicleListWithControl from './Components/VehicleListWithControl';
+import ListFilterBar from '../../Containers/ListFilterBarContainer';
+import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
 
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
@@ -38,6 +38,7 @@ interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
   setPageStatus: (data: any) => void;
+  fetchList: () => void;
 }
 
 export default class List extends CPage<IListPropsType, ListStateType> {
@@ -59,7 +60,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    this.fetchListProduct();
+    this.props.fetchList();
+    // test 为了模拟200和201间隔回来
+    setTimeout(() => {
+      this.props.fetchList();
+    }, 10000);
   }
 
   // 调用获取列表页数据接口
@@ -116,6 +121,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   render() {
     const curStage = this.getCurStage();
+    console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
         {Platform.OS === 'android' && (
@@ -131,7 +137,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
           style={BbkStyleUtil.getMB(4)}
         />
-        <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
+        <ListFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
         <VehGroupNav pageId={this.getPageId()} />
 
         {curStage === PAGESTAGE.INIT
@@ -142,12 +148,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
         {/** 无结果 */}
+
+        {/** 供应商报价 */}
         {curStage === PAGESTAGE.SHOW
           && (
-            <View>
-              {/** 供应商报价 */}
-              {/* <VehicleListWithControl /> */}
-            </View>
+            <VehicleListWithControl
+              threshold={180}
+            />
           )
         }
 

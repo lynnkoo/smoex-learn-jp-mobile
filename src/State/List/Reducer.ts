@@ -1,5 +1,5 @@
 import {
-  SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID,
+  SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID, FETCH_LIST_BATCH, FETCH_LIST, FETCH_LIST_CALLBACK,
 } from './Types';
 
 const getInitalState = () => ({
@@ -9,9 +9,10 @@ const getInitalState = () => ({
   activeGroupId: '',
   activeFilterBarCode: '',
   selectedFilters: {
-    sort: [],
-    filters: [],
+    Sort: [],
+    Filters: [],
   },
+  batchesRequest: [], // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
 });
 
 const initalState = getInitalState();
@@ -33,6 +34,9 @@ export default (state = initalState, action) => {
     case SET_GROUPID:
       return { ...state, activeGroupId: action.data.activeGroupId || state.activeGroupId };
     case GET_STATUS:
+    case FETCH_LIST_BATCH:
+    case FETCH_LIST:
+    case FETCH_LIST_CALLBACK:
     default:
       return state;
   }

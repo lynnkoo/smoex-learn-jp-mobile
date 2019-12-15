@@ -1,7 +1,13 @@
 import { connect } from 'react-redux';
 import FilterAndSortModal from '../Pages/List/Components/FilterAndSortModal';
 import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
-import { getAllVehicleCount, getAllVendorPriceCount } from '../Global/Cache/ListResSelectors'
+import {
+  getAllVehicleCount,
+  getAllVendorPriceCount,
+  getPopularFilterItems,
+  getFilterItems,
+  getSortList,
+} from '../Global/Cache/ListResSelectors';
 
 const setFilterGroup = (filterMenuItem: any, selectedFilters: any) => {
   const filterGroup = [];
@@ -39,9 +45,9 @@ const setFilterGroup = (filterMenuItem: any, selectedFilters: any) => {
 const getFilterData = (state) => {
   const type = getActiveFilterBarCode(state);
   const selectedFilters = getSelectedFilters(state)[type] || [];
-  const sortItems = [];
-  const popularFilterItems = [];
-  const allFilterItems = [];
+  const sortItems = getSortList();
+  const popularFilterItems = getPopularFilterItems();
+  const allFilterItems = getFilterItems();
 
   let filterData = [];
   let isShowFooter = false;
@@ -58,25 +64,16 @@ const getFilterData = (state) => {
       });
       isShowFooter = false;
       break;
-    case 'Vendor_0':
-      filterData = setFilterGroup(
-        popularFilterItems.find((f: any) => f.code === 'Vendor_0'),
-        selectedFilters,
-      );
-      isShowFooter = true;
-      break;
-    case 'Seats':
-      filterData = setFilterGroup(
-        popularFilterItems.find((f: any) => f.code === 'Seats'),
-        selectedFilters,
-      );
-      isShowFooter = false;
-      break;
-    case 'All':
+    case 'Filter':
       filterData = setFilterGroup(allFilterItems, selectedFilters);
       isShowFooter = true;
       break;
     default:
+      filterData = setFilterGroup(
+        popularFilterItems.find((f: any) => f.code === type),
+        selectedFilters,
+      );
+      isShowFooter = true;
       break;
   }
   return {
@@ -93,6 +90,6 @@ const mapStateToProps = state => ({
 });
 
 /* eslint-disable no-unused-vars */
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterAndSortModal);

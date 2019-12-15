@@ -47,7 +47,7 @@ export const getFilterBarProps = (pressCallback) => {
 export const getSearchPanelProps = () => {
   const state = getStore().getState();
   const { rentalLocation, rentalDate } = state.LocationAndDate;
-  const { age } = state.DriverAge;
+  const { age } = state.DriverAgeAndNumber;
   const pCityInfo = {
     cityId: rentalLocation.pickUp.cityId,
     latitude: rentalLocation.pickUp.area.lat,
@@ -76,5 +76,5 @@ export const getSearchPanelProps = () => {
 
 // 获取筛选和排序弹层所需参数
 export const getFilterAndSortModalProps = () => {
-  
+
 };

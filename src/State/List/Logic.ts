@@ -8,50 +8,25 @@ import {
   setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest,
 } from './Actions';
 // import { CarFetch } from '../../Util/Index';
+import { packageListReqParam } from './Mappers';
 import { ListProductRes } from '../../../__mocks__/ListMockData';
 
-
-// 组装列表页请求数据 - todo 放在mapping里面
-/* eslint-disable no-unused-vars */
-const packageListReqParam = () => ({
-  age: 30,
-  adultNumbers: 2,
-  childrenNumbers: 2,
-  pickupPointInfo: {
-    cityId: 347,
-    date: '2019-12-10 10:00:00',
-    locationCode: 'LAX',
-    locationType: 1,
-    poi: {
-      latitude: 33.941589,
-      longitude: -118.40853,
-      radius: 0,
-    },
-  },
-  returnPointInfo: {
-    cityId: 347,
-    date: '2019-12-19 10:00:00',
-    locationCode: 'LAX',
-    locationType: 1,
-    poi: {
-      latitude: 33.941589,
-      longitude: -118.40853,
-      radius: 0,
-    },
-  },
-});
 const REQUEST_COUNT = 2;
+// const batchGroups = [0, 1];
+
+// 测试
+let resCount = 0;
 
 export const apiListBatchQuery = createLogic({
   type: FETCH_LIST_BATCH,
   latest: true,
   /* eslint-disable no-empty-pattern */
-  async process({}, dispatch, done) {
-    const batchGroups = new Array(REQUEST_COUNT);
-    batchGroups.forEach(() => {
-      console.log('测试+++FETCH_LIST_BATCH');
-      dispatch(fetchApiList());
-    });
+  async process({ }, dispatch, done) {
+    // batchGroups.forEach(() => {
+    //   dispatch(fetchApiList());
+    // });
+    // test
+    dispatch(fetchApiList());
     done();
   },
 });
@@ -60,11 +35,18 @@ export const apiListQueryProducts = createLogic({
   type: FETCH_LIST,
   latest: true,
   /* eslint-disable no-empty-pattern */
-  async process({}, dispatch, done) {
+  async process({ getState }, dispatch, done) {
     // test
-    // const param = packageListReqParam();
-    // const res = await CarFetch.getListProduct(param);
+    const param = packageListReqParam(getState());
+    console.log('测试+++param', param);
+    // const res = await CarFetch.getListProduct(param).catch((err) => { console.log('测试+++err', err) });
     const res = ListProductRes;
+    // 测试
+    resCount += 1;
+    if (resCount >= REQUEST_COUNT) {
+      res.baseResponse.code = '200';
+      resCount = 0;
+    }
     console.log('测试+++res', res);
     dispatch(fetchApiListCallback(res));
     done();
@@ -73,7 +55,7 @@ export const apiListQueryProducts = createLogic({
 
 export const apiListQueryProductsCallback = createLogic({
   type: FETCH_LIST_CALLBACK,
-  latest: true,
+  // latest: true,
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
     const res = action.data || {};
@@ -102,7 +84,7 @@ export const apiListQueryProductsCallback = createLogic({
     });
     const totalCount = +successCount + +failCount;
     // 计算进度条的进度值
-    const curProgress = totalCount >= REQUEST_COUNT ? 1 : (totalCount > 0 ? 0.3 : 0);
+    const curProgress = totalCount >= REQUEST_COUNT ? 1 : (totalCount > 0 ? 0.6 : 0);
     const has200 = newBatchesRequest.find(f => f.resCode === ApiResCode.ListResCode.C200);
     // 当前页面有数据展示，则不展示loading
     const curPageResData = ListResSelectors.getBaseResData();
@@ -111,7 +93,6 @@ export const apiListQueryProductsCallback = createLogic({
     const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 会展示白屏
     const nextProgress = (hasResult || !has200) ? curProgress : 1;
     dispatch(setStatus({ isLoading: nextIsLoading, isFail: nextFailed, progress: nextProgress }));
-
     done();
   },
 });

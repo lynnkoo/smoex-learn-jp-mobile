@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(88),
     backgroundColor: color.white,
-    overflow: 'hidden',
   },
   mainWrap: {
     borderBottomWidth: 0,

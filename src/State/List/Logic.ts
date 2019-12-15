@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic';
 import {
-  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK,
+  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
 } from './Types';
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
@@ -9,6 +9,7 @@ import {
 } from './Actions';
 // import { CarFetch } from '../../Util/Index';
 import { ListProductRes } from '../../../__mocks__/ListMockData';
+import { getVehGroupList } from '../../Global/Cache/ListResSelectors';
 
 
 // 组装列表页请求数据 - todo 放在mapping里面
@@ -116,8 +117,32 @@ export const apiListQueryProductsCallback = createLogic({
   },
 });
 
+export const setGroupIdByIndex = createLogic({
+  type: SET_GROUPID,
+  transform({ action }: any, next) {
+    const data = action.data || {};
+    const { activeGroupIndex, ...passThroughData } = data;
+    if (activeGroupIndex !== undefined) {
+      const vehGroup = getVehGroupList()[activeGroupIndex] || {};
+      const activeGroupId = vehGroup.gId;
+      if (activeGroupId) {
+        next({
+          ...action,
+          data: {
+            activeGroupId,
+            ...passThroughData,
+          },
+        });
+        return;
+      }
+    }
+    next(action);
+  },
+});
+
 export default [
   apiListBatchQuery,
   apiListQueryProducts,
   apiListQueryProductsCallback,
+  setGroupIdByIndex,
 ];

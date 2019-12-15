@@ -1,14 +1,20 @@
 // eslint-disable-next-line
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 // eslint-disable-next-line
 import _ from 'lodash';
+import { BbkUtils } from '@ctrip/bbk-utils';
 import SectionListWithControl from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
+import LoginItem from './LoginItem';
+import { User } from '../../../Util/Index';
+import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
+
+const { selector } = BbkUtils;
 
 interface section {
   vehicleHeader: any;
-  index: number;
-  data: Object[];
+  vehicleIndex: number;
+  data: [];
 }
 
 interface sectionProps {
@@ -16,23 +22,19 @@ interface sectionProps {
 }
 
 const VehicleList = (props: any) => {
-  const [showMore, setShowMore] = useState(false);
-  const [showFooter, setShowFooter] = useState(false);
   const {
     sections,
     showMax,
     ...passThroughProps
   } = props;
+  const [showMoreArr, setShowMoreArr] = useState(sections.map(({ data }) => data[0].length > showMax));
+  const [showFooter, setShowFooter] = useState(false);
 
-
-  const showMoreHandler = () => {
-    setShowMore(!showMore);
-  };
 
   const renderItem = (data) => {
-    let vhicleData = data;
-    if (showMore) {
-      vhicleData = data.slice(0, showMax);
+    const vhicleData = data;
+    if (showMoreArr[data.section.vehicleIndex]) {
+      vhicleData.item = data.item.slice(0, showMax);
     }
     return (
       <Vehicle
@@ -40,24 +42,57 @@ const VehicleList = (props: any) => {
       />
     );
   };
-  const renderSectionHeader = ({ section: { vehicleHeader, index } }: sectionProps) => (
+
+  const renderSectionHeader = ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
     <VehicleHeader
       vehicleHeader={vehicleHeader}
       onLayout={() => {
-        if (index === sections.length - 1) {
+        if (vehicleIndex === sections.length - 1) {
           setShowFooter(true);
         }
       }}
     />
   );
-  const renderSectionFooter = ({ section: { data } }: sectionProps) => {
-    const moreNumber = Math.max(data.length - showMax, 0);
+
+  const [showLoginItem, setShowLoginItem] = useState(false);
+
+  const isLogin = async () => {
+    const $isLogin = await User.isLogin();
+    setShowLoginItem(!$isLogin);
+  };
+
+  useEffect(() => {
+    isLogin();
+  });
+
+  const onLogin = () => {
+    User.toLogin();
+  };
+
+  const renderSectionFooter = ({ section: { data, vehicleIndex } }: sectionProps) => {
+    const showMore = showMoreArr[vehicleIndex];
+    const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
+
+    const showMoreHandler = () => {
+      setShowMoreArr(showMoreArr.map((value, i) => (i === vehicleIndex ? !value : value)));
+    };
 
     return (
-      <VehicleFooter
-        moreNumber={showMore ? moreNumber : showMore}
-        onPress={showMoreHandler}
-      />
+      <>
+        <VehicleFooter
+          moreNumber={showMore ? moreNumber : showMore}
+          onPress={showMoreHandler}
+        />
+
+        {
+          selector(
+            showLoginItem && vehicleIndex === 0,
+            <LoginItem
+              onLogin={onLogin}
+            />,
+          )
+        }
+      </>
     );
   };
 
@@ -68,6 +103,7 @@ const VehicleList = (props: any) => {
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
+      ListFooterExtraComponent={<SelectedFilterItems />}
       threshold={50}
       {...passThroughProps}
     />

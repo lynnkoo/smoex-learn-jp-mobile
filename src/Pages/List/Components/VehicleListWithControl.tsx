@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, Animated, Dimensions,
+  View, Animated, Dimensions,
 } from 'react-native';
 import { Toast } from '@ctrip/crn';
 import BbkThemeProvider from '@ctrip/bbk-theming';
 import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
 import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
+import { getSharkValue } from '@ctrip/bbk-shark';
 import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
+import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 
 interface VehicleListWithControlProps {
   maxIndex?: number;
@@ -20,7 +22,8 @@ interface VehicleListWithControlProps {
   height?: number;
   threshold?: number;
   showMax?: number;
-  locationDatePopVisible: boolean
+  locationDatePopVisible: boolean;
+  setActiveGroupId: (args: any) => void;
 }
 
 interface VehicleListWithControlState {
@@ -113,6 +116,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
       callback();
     });
     this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+    this.props.setActiveGroupId({ activeGroupIndex: index });
   }
 
   onLoadMore = (callback) => {
@@ -137,7 +141,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   }
 
   // eslint-disable-next-line
-  renderVehicleListDom = (index, style, reset, placeHolder) => {
+  renderVehicleListDom = (index, style, placeHolder) => {
     const {
       listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
@@ -146,14 +150,14 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     }
 
     const isTop = index === minIndex;
-    const noRefresh = isTop && '到顶了～';
-    const refreshTip = isTop ? '' : `查看${index - 1}经济车型`;
-    const loadTip = `查看${index + 1}经济车型`;
+    const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
+    const lastGroupName = getGroupNameByIndex(index - 1);
+    const nextGroupName = getGroupNameByIndex(index + 1);
     const pullIcon = !isTop ? '\ue0b5' : ' ';
-    const noticeContent = `上拉${loadTip}`;
-    const loadingContent = `松开${loadTip}`;
-    const pullStartContent = noRefresh || `下拉${refreshTip}`;
-    const pullContinueContent = noRefresh || `松开${refreshTip}`;
+    const noticeContent = getSharkValue('listCombine_pullUpToRefersh', nextGroupName);
+    const loadingContent = getSharkValue('listCombine_releaseToRefersh', nextGroupName);
+    const pullStartContent = noRefresh || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
+    const pullContinueContent = noRefresh || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
     const noMore = index >= maxIndex;
 
     const cache = this.cacheList[index];
@@ -190,7 +194,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           endFillColor={theme.scrollBackgroundColor || color.grayBg}
         />
       );
-    } else if (reset) {
+    } else {
       this.scrollerRef[index].setNativeProps({
         style,
       });
@@ -225,7 +229,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   renderAllVehicleListDom($index) {
     const dom = [];
     const reset = $index !== undefined;
-    const index = $index || this.state.index;
+    const index = reset ? $index : this.state.index;
     const {
       minIndex, maxIndex, threshold, height,
     } = this.props;
@@ -242,7 +246,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
         backgroundColor: theme.scrollBackgroundColor,
       };
       const placeHolder = Math.abs(offset) > 1;
-      dom[i] = this.renderVehicleListDom(i, style, reset, placeHolder);
+      dom[i] = this.renderVehicleListDom(i, style, placeHolder);
     }
 
     return dom;
@@ -250,54 +254,28 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
 
   render() {
     const {
-      isDark, translateYAnim,
+      translateYAnim,
     } = this.state;
     const { threshold, height } = this.props;
     const theme = this.getTheme();
 
     return (
-      <>
-        <BbkThemeProvider theme={theme} channel={null}>
-          <Animated.View style={{
-            position: 'absolute',
-            top: threshold,
-            height: height - threshold,
-            width: '100%',
-            transform: [{
-              translateY: translateYAnim,
-            }],
-            flex: 1,
-            overFlow: 'hidden',
-          }}
-          >
-            {this.renderAllVehicleListDom(undefined)}
-          </Animated.View>
-        </BbkThemeProvider>
-        <TouchableOpacity
-          onPress={() => {
-            this.setState({ isDark: !isDark });
-          }}
-          style={{
-            position: 'absolute',
-            right: 30,
-            bottom: 30,
-            zIndex: 999,
-            padding: 10,
-            borderRadius: 4,
-            borderColor: theme.backgroundColor,
-            borderWidth: 1,
-            backgroundColor: theme.bbkTextColor,
-          }}
+      <BbkThemeProvider theme={theme} channel={null}>
+        <Animated.View style={{
+          position: 'absolute',
+          top: threshold,
+          height: height - threshold,
+          width: '100%',
+          transform: [{
+            translateY: translateYAnim,
+          }],
+          overFlow: 'hidden',
+          zIndex: -1,
+        }}
         >
-          <Text
-            style={{
-              color: theme.backgroundColor,
-            }}
-          >
-            Theme
-          </Text>
-        </TouchableOpacity>
-      </>
+          {this.renderAllVehicleListDom(undefined)}
+        </Animated.View>
+      </BbkThemeProvider>
     );
   }
 }

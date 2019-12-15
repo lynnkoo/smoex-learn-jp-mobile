@@ -7,6 +7,7 @@ import { setOpacity } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
 import { VehicleListStyle as style } from '../Styles';
 import VerdorHeader from './VendorHeader';
+import { AppContext } from '../../../Util/Index';
 
 export default withTheme(
   ({
@@ -15,9 +16,25 @@ export default withTheme(
     vendorHeaderProps,
     theme,
     soldOutLabel,
+    locationAndDate,
   }) => {
-    // todo: handler
-    const handler = () => { console.log('---------VerdorHeader'); };
+    const onVerdorHeaderPress = () => {
+      const data: any = {
+        ...locationAndDate,
+        book: {
+          bomcode: 'LAXCT464965_10382_CTFees_Fees_SSF_Taxes_ULM_0_0',
+          paymode: 1,
+          pstorecode: 'LAXCT464965',
+          rstorecode: 'LAXCT464965',
+          vehiclecode: 10382,
+          vendorid: 14060297,
+          isredirect: true,
+        },
+      };
+      // 跳转Trip详情页地址
+      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&data=${encodeURIComponent(JSON.stringify(data))}`;
+      AppContext.PageInstance.push(url);
+    };
 
     const soldoutLabelProps = {
       ...soldOutLabel,
@@ -28,7 +45,7 @@ export default withTheme(
 
     const getLabelWrapStyle = (type) => {
       const rowTypes = ['normal', 'feature'];
-      return [rowTypes.indexOf(type) > -1 && style.flexRow];
+      return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
     };
 
     const getLabelProps = (labelProps, type) => {
@@ -55,15 +72,15 @@ export default withTheme(
     return (
       <View style={[style.vendor, { borderBottomColor: setOpacity(theme.black, 0.1) }]}>
         <VerdorHeader
-          onPress={handler}
+          onPress={onVerdorHeaderPress}
           {...vendorHeaderProps}
         />
 
         {
           labelTypes.map(type => (
-            <View style={getLabelWrapStyle(type)}>
+            <View style={getLabelWrapStyle(type)} key={type}>
               {
-                vendorLabelItems[type].map(labelProps => <BbkLabel {...getLabelProps(labelProps, type)} />)
+                vendorLabelItems[type].map(labelProps => <BbkLabel {...getLabelProps(labelProps, type)} key={labelProps.text} />)
               }
             </View>
           ))

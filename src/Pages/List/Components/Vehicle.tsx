@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
+// eslint-disable-next-line
+import _ from 'lodash';
 import BbkVehicleName from '@ctrip/bbk-component-car-vehicle-name';
 import BbkCarVehicleDesc from '@ctrip/bbk-component-car-vehicle-describe';
 import BbkLabel from '@ctrip/bbk-component-label';
@@ -15,12 +17,17 @@ import { listShowMore } from '../Texts';
 
 const { selector } = BbkUtils;
 
+
 export const Vehicle = withTheme(
   ({ item, section, theme }) => {
     const { recommendDesc, vehicleDesc } = section;
     const {
       imgUrl, vehicleImageLabel, vehicleLabelsHorizontal, vehicleLabels,
     } = vehicleDesc;
+
+    useEffect(() => {
+      // console.log('--------------Vehicle', _.get(section, 'vehicleHeader.vehicleName'))
+    });
 
     return (
       <View style={[style.wrap, { backgroundColor: theme.backgroundColor }]}>
@@ -65,7 +72,7 @@ export const Vehicle = withTheme(
 );
 
 export const VehicleHeader = withTheme(
-  ({ vehicleHeader, theme }) => {
+  ({ vehicleHeader, onLayout, theme }) => {
     const {
       vehicleName,
       groupName,
@@ -73,7 +80,7 @@ export const VehicleHeader = withTheme(
       isHotLabel,
     } = vehicleHeader;
     return (
-      <View style={{ backgroundColor: theme.backgroundColor }}>
+      <View style={{ backgroundColor: theme.backgroundColor }} onLayout={onLayout}>
         <BbkVehicleName name={vehicleName} groupName={groupName} isSimilar={isSimilar} isHotLabel={isHotLabel} />
       </View>
     );
@@ -81,14 +88,14 @@ export const VehicleHeader = withTheme(
 );
 
 export const VehicleFooter = withTheme(
-  ({ moreNumber, theme }) => {
+  ({ moreNumber, onPress, theme }) => {
     const moreTextStyle = [style.moreText, {
       color: theme.blueBase,
     }];
 
     return selector(
       moreNumber,
-      <BbkTouchable onPress={() => { console.log('=======more'); }}>
+      <BbkTouchable onPress={onPress}>
         <BbkCarRightIcon
           text={listShowMore(moreNumber)}
           style={[style.more, style.vehicleMarginBottom, {

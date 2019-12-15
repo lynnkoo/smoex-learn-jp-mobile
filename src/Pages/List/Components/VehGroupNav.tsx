@@ -12,6 +12,8 @@ interface VehGroupNavPropsType {
   activeGroupId: string;
   vehGroupList: any[];
   setActiveGroupId: (data: { activeGroupId: string }) => void;
+  tabScroll: Function;
+  resetGroupIndex: Function;
 }
 
 interface VehGroupNavStateType {

@@ -262,10 +262,10 @@ export const getVehicleListData = () => {
       return {
         vehicleIndex,
         ...vehicleItemData,
-        data: [vendorListData.slice(0, 5)],
+        data: [vendorListData],
       };
     });
-    return vehicleListData.slice(0, 5);
+    return vehicleListData;
   });
   return groupListData;
 };

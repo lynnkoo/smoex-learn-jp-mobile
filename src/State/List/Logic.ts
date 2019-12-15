@@ -49,7 +49,7 @@ export const apiListBatchQuery = createLogic({
   /* eslint-disable no-empty-pattern */
   async process({}, dispatch, done) {
     const batchGroups = new Array(REQUEST_COUNT);
-    batchGroups.forEach(() => {
+    [0, 1].forEach(() => {
       console.log('测试+++FETCH_LIST_BATCH');
       dispatch(fetchApiList());
     });

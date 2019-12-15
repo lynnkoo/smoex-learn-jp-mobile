@@ -1,13 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 import _ from 'lodash';
+import { URL } from '@ctrip/crn';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkPriceDesc from '@ctrip/bbk-component-car-price-desc';
 import { setOpacity } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
+import BbkTouchable from '@ctrip/bbk-component-touchable';
 import { VehicleListStyle as style } from '../Styles';
 import VerdorHeader from './VendorHeader';
-import { AppContext } from '../../../Util/Index';
 
 export default withTheme(
   ({
@@ -17,23 +18,16 @@ export default withTheme(
     theme,
     soldOutLabel,
     locationAndDate,
+    reference,
   }) => {
     const onVerdorHeaderPress = () => {
       const data: any = {
         ...locationAndDate,
-        book: {
-          bomcode: 'LAXCT464965_10382_CTFees_Fees_SSF_Taxes_ULM_0_0',
-          paymode: 1,
-          pstorecode: 'LAXCT464965',
-          rstorecode: 'LAXCT464965',
-          vehiclecode: 10382,
-          vendorid: 14060297,
-          isredirect: true,
-        },
+        book: reference,
       };
       // 跳转Trip详情页地址
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&data=${encodeURIComponent(JSON.stringify(data))}`;
-      AppContext.PageInstance.push(url);
+      URL.openURL(url);
     };
 
     const soldoutLabelProps = {
@@ -76,22 +70,24 @@ export default withTheme(
           {...vendorHeaderProps}
         />
 
-        {
-          labelTypes.map(type => (
-            <View style={getLabelWrapStyle(type)} key={type}>
-              {
-                vendorLabelItems[type].map(labelProps => <BbkLabel {...getLabelProps(labelProps, type)} key={labelProps.text} />)
-              }
-            </View>
-          ))
-        }
-
-        <View style={style.priceWrap}>
-          <BbkPriceDesc {...priceDescProps} />
+        <BbkTouchable onPress={onVerdorHeaderPress}>
           {
-            soldOutLabel && <BbkLabel {...soldoutLabelProps} />
+            labelTypes.map(type => (
+              <View style={getLabelWrapStyle(type)} key={type}>
+                {
+                  vendorLabelItems[type].map(labelProps => <BbkLabel {...getLabelProps(labelProps, type)} key={labelProps.text} />)
+                }
+              </View>
+            ))
           }
-        </View>
+
+          <View style={style.priceWrap}>
+            <BbkPriceDesc {...priceDescProps} />
+            {
+              soldOutLabel && <BbkLabel {...soldoutLabelProps} />
+            }
+          </View>
+        </BbkTouchable>
       </View>
     );
   },

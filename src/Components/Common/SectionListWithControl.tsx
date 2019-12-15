@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 import {
   SectionList, SectionListProps, StyleSheet,
 } from 'react-native';
@@ -29,6 +29,7 @@ interface SectionListWithControlProps extends SectionListProps<any> {
   refFn?: (any) => void;
   pullIcon?: string;
   loadingContent?: string;
+  ListFooterExtraComponent?: ReactElement
 }
 
 interface SectionListWithControlState {
@@ -131,17 +132,16 @@ export default class SectionListWithControl extends Component<SectionListWithCon
   }
 
   onScrollEndDrag = (event) => {
-    const { showFooter } = this.props;
-    if (!showFooter) {
-      return;
-    }
-
     const {
       load,
       refresh,
     } = this.triggerScroll(event, 'onScrollEndDrag');
 
     if (load) {
+      const { showFooter } = this.props;
+      if (!showFooter) {
+        return;
+      }
       this.props.onLoadMore(() => {
         this.setState({
           onLoading: false,
@@ -202,6 +202,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
       initialNumToRender,
       endFillColor,
+      ListFooterExtraComponent,
     } = this.props;
 
     return (
@@ -242,18 +243,22 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         )}
         ListFooterComponent={selector(
           showFooter,
-          <LoadControl
-            style={styles.controlWrap}
-            iconStyle={styles.iconStyle}
-            textStyle={styles.textStyle}
-            // eslint-disable-next-line
-            ref={ref => this.loadControl = ref}
-            isLoading={onLoading}
-            noMore={noMore}
-            noMoreContent={noMoreContent}
-            noticeContent={noticeContent}
-            loadingContent={loadingContent}
-          />,
+          <>
+            {ListFooterExtraComponent}
+            <LoadControl
+              style={styles.controlWrap}
+              iconStyle={styles.iconStyle}
+              textStyle={styles.textStyle}
+              // eslint-disable-next-line
+              ref={ref => this.loadControl = ref}
+              isLoading={onLoading}
+              noMore={noMore}
+              noMoreContent={noMoreContent}
+              noticeContent={noticeContent}
+              loadingContent={loadingContent}
+            />
+          </>
+          ,
         )}
       />
     );

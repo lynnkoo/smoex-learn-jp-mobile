@@ -25,13 +25,13 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   pageShowTime: Date = null;
   pageAppearCount: Number = null;
   isPageAppear: Boolean = true;
-  pageInstance: ContextType<any>
 
   constructor(prop: P) {
     super(prop);
     this.pageInitialiseTime = new Date();
     this.pageLastActiveTime = new Date();
     this.pageAppearCount = 0;
+    AppContext.setPageInstance(this);
     // this.state = {
     //   lang: '',
     //   messages: null,
@@ -49,6 +49,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   pageDidAppear() {
+    // 第一次初始化时不会调用
     AppContext.setPageInstance(this);
     this.pageLastActiveTime = new Date();
     this.isPageAppear = true;

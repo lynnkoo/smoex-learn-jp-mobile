@@ -3,6 +3,8 @@ import ListReqAndResData from './ListReqAndResData';
 
 export const getBaseResData = () => ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {};
 
+export const getRequestInfo = () => getBaseResData().requestInfo || {};
+
 // 获取所有车型组下的报价数据
 export const getProductGroups = () => getBaseResData().productGroups || [];
 
@@ -31,3 +33,6 @@ export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;
 
 // 获取所有报价个数
 export const getAllVendorPriceCount = () => getBaseResData().allVendorPriceCount || 0;
+
+// 是否为异地取还
+export const isDiffLocation = () => getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName;

@@ -132,17 +132,16 @@ export default class SectionListWithControl extends Component<SectionListWithCon
   }
 
   onScrollEndDrag = (event) => {
-    const { showFooter } = this.props;
-    if (!showFooter) {
-      return;
-    }
-
     const {
       load,
       refresh,
     } = this.triggerScroll(event, 'onScrollEndDrag');
 
     if (load) {
+      const { showFooter } = this.props;
+      if (!showFooter) {
+        return;
+      }
       this.props.onLoadMore(() => {
         this.setState({
           onLoading: false,

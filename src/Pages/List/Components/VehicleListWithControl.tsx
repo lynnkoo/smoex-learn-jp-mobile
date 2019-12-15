@@ -86,7 +86,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     const { index } = this.state;
     const { minIndex } = this.props;
 
-    if (index <= 1) {
+    if (index <= minIndex) {
       return null;
     }
 
@@ -151,6 +151,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
 
     const isTop = index === minIndex;
     const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
+    const noMoreContent = getSharkValue('listCombine_toTheBottom');
     const lastGroupName = getGroupNameByIndex(index - 1);
     const nextGroupName = getGroupNameByIndex(index + 1);
     const pullIcon = !isTop ? '\ue0b5' : ' ';
@@ -188,13 +189,13 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           noMore={noMore}
           noticeContent={noticeContent}
           loadingContent={loadingContent}
-          noMoreContent="到底了～"
+          noMoreContent={noMoreContent}
 
           initialNumToRender={initialNumToRender}
           endFillColor={theme.scrollBackgroundColor || color.grayBg}
         />
       );
-    } else {
+    } else if (this.scrollerRef[index]) {
       this.scrollerRef[index].setNativeProps({
         style,
       });

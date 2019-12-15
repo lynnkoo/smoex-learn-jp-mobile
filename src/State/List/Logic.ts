@@ -44,7 +44,7 @@ export const apiListQueryProducts = createLogic({
     // 测试
     resCount += 1;
     if (resCount >= REQUEST_COUNT) {
-      res.baseResponse.code = '200';
+      res.baseResponse.code = '201';
       resCount = 0;
     }
     console.log('测试+++res', res);
@@ -88,7 +88,7 @@ export const apiListQueryProductsCallback = createLogic({
     const has200 = newBatchesRequest.find(f => f.resCode === ApiResCode.ListResCode.C200);
     // 当前页面有数据展示，则不展示loading
     const curPageResData = ListResSelectors.getBaseResData();
-    const hasResult = (curPageResData && curPageResData.productList && curPageResData.productList.length) || false;
+    const hasResult = (curPageResData && curPageResData.productGroups && curPageResData.productGroups.length > 0) || false;
     const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
     const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 会展示白屏
     const nextProgress = (hasResult || !has200) ? curProgress : 1;

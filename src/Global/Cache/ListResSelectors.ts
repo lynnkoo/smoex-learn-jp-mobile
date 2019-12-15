@@ -31,3 +31,28 @@ export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;
 
 // 获取所有报价个数
 export const getAllVendorPriceCount = () => getBaseResData().allVendorPriceCount || 0;
+
+// 获取所有筛选项列表
+export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [];
+
+const getFilterItemsByHierarchy = (hierarchy: number) => {
+  const targetList = [];
+  getAllFilterMenuItems().forEach((item) => {
+    if (item.hierarchy === hierarchy) {
+      targetList.push(item);
+    }
+  });
+  return targetList;
+};
+
+// 获取热门筛选项列表
+export const getPopularFilterItems = () => getFilterItemsByHierarchy(1);
+
+// 获取点击'Filter'后对应的所有筛选项列表
+export const getFilterItems = () => getFilterItemsByHierarchy(2);
+
+// 获取排序列表
+export const getSortList = () => {
+  const { basicData } = getBaseResData();
+  return (basicData && basicData.sortItems) || [];
+};

@@ -96,6 +96,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     Event.sendEvent('changeRentalDate', this.props.rentalDate);
   }
 
+  pageGoBack = () => {
+    this.pop();
+    // todo log
+  }
+
   // 调用获取列表页数据接口
   fetchListProduct = () => {
     this.batchesRequest = [];
@@ -172,6 +177,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             />
           )}
           <ListHeader
+            handleBackPress={this.pageGoBack}
             onPressCurrency={() => { }}
             showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
             style={BbkStyleUtil.getMB(4)}

@@ -8,19 +8,19 @@ import {
   getPickUpLocationName,
   getPickUpLocationType,
   getPickUpLocationLat,
-  getPickUpLocationlng,
+  getPickUpLocationLng,
   getDropOffCityId,
   getDropOffLocationCode,
   getDropOffLocationName,
   getDropOffLocationType,
   getDropOffLocationLat,
-  getDropOffLocationlng,
+  getDropOffLocationLng,
 } from '../LocationAndDate/Selectors';
 
 /* eslint-disable import/prefer-default-export */
 export const packageListReqParam = (state, vendorGroup: number) => ({
   vendorGroup,
-  // age: getAge(state),
+  // age: getAge(state), // todo
   age: 30,
   adultNumbers: getAdultNumbers(state),
   childrenNumbers: getChildNumbers(state),
@@ -32,7 +32,7 @@ export const packageListReqParam = (state, vendorGroup: number) => ({
     locationType: getPickUpLocationType(state),
     poi: {
       latitude: getPickUpLocationLat(state),
-      longitude: getPickUpLocationlng(state),
+      longitude: getPickUpLocationLng(state),
       radius: 0,
     },
   },
@@ -44,7 +44,7 @@ export const packageListReqParam = (state, vendorGroup: number) => ({
     locationType: getDropOffLocationType(state),
     poi: {
       latitude: getDropOffLocationLat(state),
-      longitude: getDropOffLocationlng(state),
+      longitude: getDropOffLocationLng(state),
       radius: 0,
     },
   },

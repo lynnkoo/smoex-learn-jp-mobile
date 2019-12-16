@@ -61,10 +61,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   componentDidMount() {
     super.componentDidMount();
     this.props.fetchList();
-    // test 为了模拟200和201间隔回来
-    setTimeout(() => {
-      this.props.fetchList();
-    }, 10000);
   }
 
   // 调用获取列表页数据接口
@@ -147,7 +143,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             </View>
           )
         }
-        {/** 无结果 */}
 
         {/** 供应商报价 */}
         {curStage === PAGESTAGE.SHOW

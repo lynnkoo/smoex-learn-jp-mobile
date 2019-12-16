@@ -7,9 +7,8 @@ import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
   setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest,
 } from './Actions';
-// import { CarFetch } from '../../Util/Index';
+import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
-import { ListProductRes } from '../../../__mocks__/ListMockData';
 
 const REQUEST_COUNT = 2;
 const batchGroups = [0, 1];
@@ -22,8 +21,6 @@ export const apiListBatchQuery = createLogic({
     batchGroups.forEach((m) => {
       dispatch(fetchApiList(m));
     });
-    // test
-    // dispatch(fetchApiList());
     done();
   },
 });
@@ -37,12 +34,7 @@ export const apiListQueryProducts = createLogic({
     // @ts-ignore
     const vendorGroup = action.data;
     const param = packageListReqParam(getState(), vendorGroup);
-    console.log('测试+++param', param);
-
-    // const res = await CarFetch.getListProduct(param).catch((err) => { console.log('测试+++err', err) });
-    // test
-    const res = ListProductRes;
-    console.log('测试+++res', res);
+    const res = await CarFetch.getListProduct(param); // todo catch
     dispatch(fetchApiListCallback({ param, res }));
     done();
   },
@@ -54,13 +46,13 @@ export const apiListQueryProductsCallback = createLogic({
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
     const { param, res } = action.data || {};
-    console.log('测试+++apiListQueryProductsCallback', param);
-    const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false;
+    // const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false; // todo
+    const isSuccess = (res && res.productGroups && res.productGroups.length > 0) || false;
     const resCode = res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = res.productGroups[0].groupCode;
-      dispatch(initActiveGroupId({ activeGroupId: initGId }));
+      dispatch(initActiveGroupId({ activeGroupId: initGId })); // todo allcars
     }
 
     // @ts-ignore
@@ -86,7 +78,7 @@ export const apiListQueryProductsCallback = createLogic({
     const curPageResData = ListResSelectors.getBaseResData();
     const hasResult = (curPageResData && curPageResData.productGroups && curPageResData.productGroups.length > 0) || false;
     const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
-    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 会展示白屏
+    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 是否会展示白屏？
     const nextProgress = (hasResult || !has200) ? curProgress : 1;
     dispatch(setStatus({ isLoading: nextIsLoading, isFail: nextFailed, progress: nextProgress }));
     done();

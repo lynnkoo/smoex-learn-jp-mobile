@@ -69,18 +69,31 @@ class FetchBase implements FetchBaseType {
     };
   }
 
-  getFetchObject = async (url: string, params, cancelable: boolean) => {
+  getFetchObject = async (url: string, param, cancelable: boolean, options = {}) => {
+    const opts = {
+      method: 'post',
+      baseParamKey: 'baseRequest',
+      timeout: 30,
+      ...options,
+    };
     const requestUrl = await this.getRequestUrl(url);
-    const tmpParams = { ...params, baseRequest: this.getBaseRequest(params) };
-    console.log('测试+++requestUrl', requestUrl);
-    console.log('测试+++tmpParams', JSON.stringify(tmpParams));
+    const tmpParam = param;
+    tmpParam[opts.baseParamKey] = this.getBaseRequest(param);
     if (!cancelable) {
-      return fetch(requestUrl, tmpParams);
+      return fetch(requestUrl, {
+        method: opts.method,
+        body: tmpParam,
+        timeout: opts.timeout,
+      })
+        .then(res => res)
+        .catch((error) => {
+          throw error;
+        });
     }
 
     return {
-      post: () => fetch(requestUrl, tmpParams),
-      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParams.baseRequest.requestId }),
+      post: () => fetch(requestUrl, tmpParam),
+      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParam.baseRequest.requestId }),
     };
   };
 }

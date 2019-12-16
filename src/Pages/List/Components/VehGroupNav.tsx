@@ -14,6 +14,7 @@ interface VehGroupNavPropsType {
   setActiveGroupId: (data: { activeGroupId: string }) => void;
   tabScroll: Function;
   resetGroupIndex: Function;
+  progress: number;
 }
 
 interface VehGroupNavStateType {
@@ -87,7 +88,8 @@ export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGrou
 
   render() {
     const vehGroupNav = this.renderVehGroup();
-    const { activeGroupId } = this.props;
+    const { activeGroupId, progress } = this.props;
+    if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
       <View style={styles.container}>
         <BbkHorizontalNav

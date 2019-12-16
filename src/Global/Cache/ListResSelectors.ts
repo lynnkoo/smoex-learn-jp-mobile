@@ -11,15 +11,10 @@ export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 
 // 获取所有车型组下的报价数据(包含全部车型)
 // todo 需调排序的
-export const getAllProductGroups = () => {
-  const allProductGroups = getProductGroups(getBaseProductGroups(), {
-    groupCode: 'all',
-    groupName: allCars,
-  });
-
-  console.log('测试+++allProductGroups', allProductGroups);
-  return allProductGroups;
-};
+export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), {
+  groupCode: 'all',
+  groupName: allCars,
+});
 
 // 获取所有车型详情数据列表
 export const getVehicleList = () => getBaseResData().vehicleList || [];
@@ -30,7 +25,8 @@ export const getVehAndProductList = () => ({ vehicleList: getVehicleList(), prod
 // 获取车型组列表数据
 export const getVehGroupList = () => {
   const vehGroupList = [];
-  getAllProductGroups().forEach((item) => {
+  // todo getAllProductGroups
+  getBaseProductGroups().forEach((item) => {
     vehGroupList.push({
       gId: item.groupCode,
       title: item.groupName,
@@ -70,3 +66,5 @@ export const getSortList = () => {
   const { basicData } = getBaseResData();
   return (basicData && basicData.sortItems) || [];
 };
+
+export const getRecommendInfo = () => getBaseResData().recommendInfo || {};

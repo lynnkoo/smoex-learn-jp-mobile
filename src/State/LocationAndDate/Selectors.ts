@@ -14,7 +14,7 @@ export const getPickUpLocationName = state => state.LocationAndDate.rentalLocati
 
 export const getPickUpLocationLat = state => state.LocationAndDate.rentalLocation.pickUp.area.lat;
 
-export const getPickUpLocationlng = state => state.LocationAndDate.rentalLocation.pickUp.area.lng;
+export const getPickUpLocationLng = state => state.LocationAndDate.rentalLocation.pickUp.area.lng;
 
 export const getDropOffCityId = state => state.LocationAndDate.rentalLocation.dropOff.cid;
 
@@ -26,4 +26,6 @@ export const getDropOffLocationName = state => state.LocationAndDate.rentalLocat
 
 export const getDropOffLocationLat = state => state.LocationAndDate.rentalLocation.dropOff.area.lat;
 
-export const getDropOffLocationlng = state => state.LocationAndDate.rentalLocation.dropOff.area.lng;
+export const getDropOffLocationLng = state => state.LocationAndDate.rentalLocation.dropOff.area.lng;
+
+export const getIsOneWay = state => state.LocationAndDate.rentalLocation.isOneWay;

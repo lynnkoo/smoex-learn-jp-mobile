@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Platform, StatusBar, View, StyleSheet,
 } from 'react-native';
-import { ViewPort, IBasePageProps } from '@ctrip/crn';
+import { ViewPort, IBasePageProps, Event } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
@@ -42,10 +42,16 @@ const styles = StyleSheet.create({
 interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
+  rentalDate: any;
   setPageStatus: (data: any) => void;
   fetchList: () => void;
   fetchApiListCallback: (data: any) => void;
+  setLocationInfo: (rentalLocation: any) => void;
 }
+
+const removeEvents = () => {
+  Event.removeEventListener('changeRentalLocation');
+};
 
 export default class List extends CPage<IListPropsType, ListStateType> {
   batchesRequest: any[];
@@ -68,6 +74,26 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   componentDidMount() {
     super.componentDidMount();
     this.props.fetchList();
+    this.registerEvents();
+  }
+
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    removeEvents();
+    this.sendEvents();
+  }
+
+  registerEvents() {
+    Event.addEventListener('changeRentalLocation', (data) => {
+      this.props.setLocationInfo({
+        ...data,
+        fromEvent: 'changeRentalLocation',
+      });
+    });
+  }
+
+  sendEvents() {
+    Event.sendEvent('changeRentalDate', this.props.rentalDate);
   }
 
   // 调用获取列表页数据接口

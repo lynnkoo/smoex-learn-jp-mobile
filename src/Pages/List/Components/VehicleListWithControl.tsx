@@ -175,7 +175,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           style={style}
           key={index}
           index={index}
-          sections={listData[index]}
+          sections={listData[index] || []}
           showMax={showMax}
 
           onRefresh={this.onRefreshSection}

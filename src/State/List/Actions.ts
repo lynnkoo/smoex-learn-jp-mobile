@@ -18,7 +18,7 @@ export const getStatus = (data: any) => ({
   data,
 });
 
-export const setActiveGroupId = data => ({
+export const setActiveGroupId = (data: any) => ({
   type: SET_GROUPID,
   data,
 });

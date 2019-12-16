@@ -16,6 +16,8 @@ export const getAllProductGroups = () => getProductGroups(getBaseProductGroups()
   groupName: allCars,
 });
 
+export const getRequestInfo = () => getBaseResData().requestInfo || {};
+
 // 获取所有车型详情数据列表
 export const getVehicleList = () => getBaseResData().vehicleList || [];
 
@@ -68,3 +70,6 @@ export const getSortList = () => {
 };
 
 export const getRecommendInfo = () => getBaseResData().recommendInfo || {};
+
+// 是否为异地取还
+export const isDiffLocation = () => getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName;

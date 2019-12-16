@@ -6,6 +6,7 @@ import { ViewPort, IBasePageProps } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
+import { color } from '@ctrip/bbk-tokens';
 import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
@@ -20,6 +21,7 @@ import VehicleListWithControl from '../../Containers/VehicleListWithControlConta
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
   filterAndSortModalVisible: boolean;
+  listThreshold: number
 }
 
 const PAGESTAGE = {
@@ -32,6 +34,9 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
   },
+  wrapper: {
+    backgroundColor: color.white,
+  },
 });
 
 interface IListPropsType extends IBasePageProps {
@@ -39,6 +44,7 @@ interface IListPropsType extends IBasePageProps {
   isFail: boolean;
   setPageStatus: (data: any) => void;
   fetchList: () => void;
+  fetchApiListCallback: (data: any) => void;
 }
 
 export default class List extends CPage<IListPropsType, ListStateType> {
@@ -49,6 +55,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     this.state = {
       locationDatePopVisible: false, // 修改取还车信息弹层是否展示
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
+      listThreshold: 0,
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
   }
@@ -71,6 +78,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   apiListQueryProductsCallback = (data) => {
     this.props.setPageStatus({ batchesRequest: this.batchesRequest, ...data });
+    this.props.fetchApiListCallback({ batchesRequest: this.batchesRequest, ...data });
   }
 
   getCurStage() {
@@ -115,40 +123,51 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   };
 
+  setVehicleListThreshold = ({ nativeEvent }) => {
+    const { height } = nativeEvent.layout;
+    this.setState({
+      listThreshold: height,
+    });
+  }
+
   render() {
+    const { listThreshold } = this.state;
     const curStage = this.getCurStage();
     console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
-        {Platform.OS === 'android' && (
-          <StatusBar
-            backgroundColor="transparent"
-            barStyle="dark-content"
-            hidden={false}
-            translucent
+        <View style={styles.wrapper} onLayout={this.setVehicleListThreshold}>
+          {Platform.OS === 'android' && (
+            <StatusBar
+              backgroundColor="transparent"
+              barStyle="dark-content"
+              hidden={false}
+              translucent
+            />
+          )}
+          <ListHeader
+            onPressCurrency={() => { }}
+            showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
+            style={BbkStyleUtil.getMB(4)}
           />
-        )}
-        <ListHeader
-          onPressCurrency={() => { }}
-          showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
-          style={BbkStyleUtil.getMB(4)}
-        />
-        <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
-        <VehGroupNav pageId={this.getPageId()} />
+          <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
+          <VehGroupNav pageId={this.getPageId()} />
 
-        {curStage === PAGESTAGE.INIT
-          && (
-            <View style={{ overflow: 'hidden' }}>
-              <BbkSkeletonLoading visible pageName={PageType.List} />
-            </View>
-          )
-        }
+          {curStage === PAGESTAGE.INIT
+            && (
+              <View style={{ overflow: 'hidden' }}>
+                <BbkSkeletonLoading visible pageName={PageType.List} />
+              </View>
+            )
+          }
+          {/** 无结果 */}
+        </View>
 
         {/** 供应商报价 */}
         {curStage === PAGESTAGE.SHOW
           && (
             <VehicleListWithControl
-              threshold={180}
+              threshold={listThreshold}
             />
           )
         }

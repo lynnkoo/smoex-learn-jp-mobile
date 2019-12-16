@@ -19,6 +19,7 @@ export interface CacheType { }
 
 export interface UserInfoType {
   UserID?: string;
+  Auth?: string
 }
 
 export interface CarEnvType {

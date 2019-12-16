@@ -19,6 +19,7 @@ export interface CacheType { }
 
 export interface UserInfoType {
   UserID?: string;
+  Auth?: string
 }
 
 export interface CarEnvType {
@@ -55,7 +56,7 @@ export interface LanguageInfoType {
 const baseContext = {
   ABTesting: { trace: '', datas: {} },
   MarketInfo: {
-    channelId: '',
+    channelId: '14277', // todo
     childChannelId: '',
     sId: Channel.sId || '',
     aId: Channel.alianceId || '',

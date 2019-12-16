@@ -1,54 +1,42 @@
 import { createLogic } from 'redux-logic';
 import {
-  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK,
+  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
 } from './Types';
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
   setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest,
 } from './Actions';
-// import { CarFetch } from '../../Util/Index';
+import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
-import { ListProductRes } from '../../../__mocks__/ListMockData';
+import { getVehGroupList } from '../../Global/Cache/ListResSelectors';
 
 const REQUEST_COUNT = 2;
-// const batchGroups = [0, 1];
-
-// 测试
-let resCount = 0;
+const batchGroups = [0, 1];
 
 export const apiListBatchQuery = createLogic({
   type: FETCH_LIST_BATCH,
   latest: true,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
-    // batchGroups.forEach(() => {
-    //   dispatch(fetchApiList());
-    // });
-    // test
-    dispatch(fetchApiList());
+    batchGroups.forEach((m) => {
+      dispatch(fetchApiList(m));
+    });
     done();
   },
 });
 
 export const apiListQueryProducts = createLogic({
   type: FETCH_LIST,
-  latest: true,
+  // latest: true,
   /* eslint-disable no-empty-pattern */
-  async process({ getState }, dispatch, done) {
-    // test
-    const param = packageListReqParam(getState());
-    console.log('测试+++param', param);
-    // const res = await CarFetch.getListProduct(param).catch((err) => { console.log('测试+++err', err) });
-    const res = ListProductRes;
-    // 测试
-    resCount += 1;
-    if (resCount >= REQUEST_COUNT) {
-      res.baseResponse.code = '201';
-      resCount = 0;
-    }
-    console.log('测试+++res', res);
-    dispatch(fetchApiListCallback(res));
+  async process({ action, getState }, dispatch, done) {
+    // 获取请求的批次
+    // @ts-ignore
+    const vendorGroup = action.data;
+    const param = packageListReqParam(getState(), vendorGroup);
+    const res = await CarFetch.getListProduct(param); // todo catch
+    dispatch(fetchApiListCallback({ param, res }));
     done();
   },
 });
@@ -58,21 +46,22 @@ export const apiListQueryProductsCallback = createLogic({
   // latest: true,
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
-    const res = action.data || {};
-    const isSuccess = res && res.baseResponse && res.baseResponse.isSuccess;
+    const { param, res } = action.data || {};
+    // const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false; // todo
+    const isSuccess = (res && res.productGroups && res.productGroups.length > 0) || false;
     const resCode = res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = res.productGroups[0].groupCode;
-      dispatch(initActiveGroupId({ activeGroupId: initGId }));
+      dispatch(initActiveGroupId({ activeGroupId: initGId })); // todo allcars
     }
 
     // @ts-ignore
     const newBatchesRequest = getState().List.batchesRequest;
     // 记录当前响应的结果
-    const curRequest = newBatchesRequest.find(f => f.resCode === resCode);
+    const curRequest = newBatchesRequest.find(f => f.vendorGroup === param.vendorGroup);
     if (!curRequest) {
-      newBatchesRequest.push({ resCode, result: isSuccess ? 1 : -1 });
+      newBatchesRequest.push({ vendorGroup: param.vendorGroup, resCode, result: isSuccess ? 1 : -1 });
       dispatch(setBatchRequest(newBatchesRequest.length >= REQUEST_COUNT ? [] : newBatchesRequest));
     }
     // 计算当前响应的总次数
@@ -90,10 +79,33 @@ export const apiListQueryProductsCallback = createLogic({
     const curPageResData = ListResSelectors.getBaseResData();
     const hasResult = (curPageResData && curPageResData.productGroups && curPageResData.productGroups.length > 0) || false;
     const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
-    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 会展示白屏
+    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 是否会展示白屏？
     const nextProgress = (hasResult || !has200) ? curProgress : 1;
     dispatch(setStatus({ isLoading: nextIsLoading, isFail: nextFailed, progress: nextProgress }));
     done();
+  },
+});
+
+export const setGroupIdByIndex = createLogic({
+  type: SET_GROUPID,
+  transform({ action }: any, next) {
+    const data = action.data || {};
+    const { activeGroupIndex, ...passThroughData } = data;
+    if (activeGroupIndex !== undefined) {
+      const vehGroup = getVehGroupList()[activeGroupIndex] || {};
+      const activeGroupId = vehGroup.gId;
+      if (activeGroupId) {
+        next({
+          ...action,
+          data: {
+            activeGroupId,
+            ...passThroughData,
+          },
+        });
+        return;
+      }
+    }
+    next(action);
   },
 });
 
@@ -101,4 +113,5 @@ export default [
   apiListBatchQuery,
   apiListQueryProducts,
   apiListQueryProductsCallback,
+  setGroupIdByIndex,
 ];

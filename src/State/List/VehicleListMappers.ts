@@ -1,16 +1,18 @@
 import _ from 'lodash';
 import {
   tokenType,
+  icon,
 } from '@ctrip/bbk-tokens';
+
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { Utils } from '../../Util/Index';
 import {
   listDay, Reviews, total,
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
-import { getVehAndProductList, getVehGroupList } from '../../Global/Cache/ListResSelectors';
+import { getVehAndProductList, getVehGroupList, isDiffLocation } from '../../Global/Cache/ListResSelectors';
 
-const { getPixel } = BbkUtils;
+const { getPixel, htmlDecode } = BbkUtils;
 let count = 0;
 
 // todo: memoize
@@ -26,10 +28,13 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     passengerNo,
     luggageNo,
     doorNo,
+    // todo: 没有空调时是否要出 hasConditioner
+    conditionerDesc,
     transmissionName,
     displacement,
     imageList = [],
     isSpecialized,
+    recommendDesc,
   } = vehicle;
   count += 1;
   const vehicleLabels = [
@@ -39,14 +44,13 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
         iconContent: '\uee81',
       },
     },
-    {
-      // todo: 加字段
-      text: 'Air Conditioning',
+    conditionerDesc && {
+      text: conditionerDesc,
       icon: {
         iconContent: '\uee7c',
       },
     },
-    {
+    transmissionName && {
       text: transmissionName,
       icon: {
         iconContent: '\uee7d',
@@ -87,13 +91,15 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
       ],
       vehicleLabels: vehicleLabels.filter(v => v),
     },
+    recommendDesc,
   };
 };
 
-const getPriceDescProps = (priceInfo) => {
+const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
   const {
     currentOriginalDailyPrice, currentTotalPrice, currentCurrencyCode, currentDailyPrice,
   } = priceInfo;
+  const { title }: any = privilegesPromotions;
   // 国内资源可能没有天价，因为异地还车费不确定
   return {
     totalPrice: {
@@ -113,7 +119,7 @@ const getPriceDescProps = (priceInfo) => {
     // todo: 没有日价时需要取总价
     // totolText: days(7),
     dayText: `/${listDay}`,
-    // saleLabel: '62% OFF TODAY',
+    [title && 'saleLabel']: title,
   };
 };
 
@@ -135,10 +141,10 @@ const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: str
   noBg,
 });
 
-// const getSoldOutLabel = () => getVendorLabel()({
-//   text: 'Will be sold out !',
-//   iconContent: htmlDecode(icon.default.circleWithSighFilled),
-// });
+const getSoldOutLabel = text => text && getVendorLabel()({
+  text,
+  iconContent: htmlDecode(icon.default.circleWithSighFilled),
+});
 
 interface labelList {
   distance: {};
@@ -149,10 +155,8 @@ interface labelList {
 }
 
 const getVendorLabelItems = (vendor) => {
-  // todo: 异地取还
-  const isDiff = false;
   const {
-    pStoreRouteDesc, rStoreRouteDesc, positiveTagList, platformName,
+    pStoreRouteDesc, rStoreRouteDesc, positiveTagList = [], platformName,
   } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);
@@ -175,7 +179,7 @@ const getVendorLabelItems = (vendor) => {
   const labels: labelList = {
     distance: [
       getNormalVendorLabel({
-        text: `${pStoreRouteDesc}${isDiff ? `\n${rStoreRouteDesc}` : ''}`,
+        text: `${pStoreRouteDesc}${isDiffLocation() ? `\n${rStoreRouteDesc}` : ''}`,
         iconContent: '\uee78',
       }),
     ],
@@ -190,13 +194,13 @@ const getVendorLabelItems = (vendor) => {
   }
 
   positiveTagList.forEach((tag) => {
-    const { type, title = 'Free Cancellation', icon = '\uf2bf' } = tag;
+    const { type, title = 'Free Cancellation', icon: iconContent = '\uf2bf' } = tag;
     const params = tagType[type] || {};
     const getVendorLabelFn = getVendorLabel(...params.args);
     labels[params.typeKey] = labels[params.typeKey] || [];
     labels[params.typeKey].push(getVendorLabelFn({
       text: title,
-      iconContent: icon,
+      iconContent,
     }));
   });
 
@@ -208,7 +212,7 @@ const getVendorHeaderProps = (vendor) => {
     vendorLogo, vendorName, vendorTag = {}, commentInfo = {}, evaluation = {},
   } = vendor;
   const {
-    commentCount, vendorDesc = 'test', overallRating = 'test', level = 'test',
+    commentCount, vendorDesc, overallRating, maximumRating,
   } = commentInfo;
   // 评分标签 type 1表示正向 蓝色  2负向 灰色
   const { type } = evaluation;
@@ -218,24 +222,27 @@ const getVendorHeaderProps = (vendor) => {
     title: vendorTag.title,
     scoreDesc: vendorDesc,
     commentDesc: `${commentCount} ${Reviews}`,
-    score: level,
-    totalScore: overallRating,
+    score: overallRating,
+    totalScore: maximumRating,
     scoreLow: type > 1,
   };
 };
 
 const getVendorItemData = (vendor) => {
-  const { priceInfo } = vendor;
-  const priceDescProps = getPriceDescProps(priceInfo);
+  const {
+    priceInfo, reference, privilegesPromotions, stockDesc,
+  } = vendor;
+  const priceDescProps = getPriceDescProps(priceInfo, privilegesPromotions);
   const vendorLabelItems = getVendorLabelItems(vendor);
-  // const soldOutLabel = getSoldOutLabel();
+  const soldOutLabel = getSoldOutLabel(stockDesc);
   const vendorHeaderProps = getVendorHeaderProps(vendor);
   return {
     priceDescProps,
     vendorLabelItems,
-    // todo: 国内资源才有库存
-    // soldOutLabel,
+    // 国内资源才有库存
+    soldOutLabel,
     vendorHeaderProps,
+    reference,
   };
 };
 
@@ -248,16 +255,14 @@ export const getVehicleListData = () => {
   const { productGroups, vehicleList } = getVehAndProductList();
   const groupListData = productGroups.map((group) => {
     const { productList } = group;
-    const vehicleListData = productList.map((product, index) => {
+    const vehicleListData = productList.map((product, vehicleIndex) => {
       const { vehicleCode, vendorPriceList } = product;
       const vehicleItemData = getVehicleItemData(vehicleList, vehicleCode);
       const vendorListData = getVendorListData(vendorPriceList);
       return {
-        index,
+        vehicleIndex,
         ...vehicleItemData,
-        // todo: 加字段
-        recommendDesc: '“test”',
-        data: [vendorListData.slice(0, 5)],
+        data: [vendorListData],
       };
     });
     return vehicleListData;
@@ -273,4 +278,7 @@ export const getGroupLength = () => {
   };
 };
 
-export const placeHolder = null;
+export const getGroupNameByIndex = (index) => {
+  const vehGroupList = getVehGroupList();
+  return (vehGroupList[index] || {}).title;
+};

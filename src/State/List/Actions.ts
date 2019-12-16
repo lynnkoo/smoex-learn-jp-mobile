@@ -18,7 +18,7 @@ export const getStatus = (data: any) => ({
   data,
 });
 
-export const setActiveGroupId = data => ({
+export const setActiveGroupId = (data: any) => ({
   type: SET_GROUPID,
   data,
 });
@@ -32,8 +32,9 @@ export const fetchListBatchQuery = () => ({
   type: FETCH_LIST_BATCH,
 });
 
-export const fetchApiList = () => ({
+export const fetchApiList = data => ({
   type: FETCH_LIST,
+  data,
 });
 
 export const fetchApiListCallback = data => ({

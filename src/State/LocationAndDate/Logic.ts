@@ -1,11 +1,12 @@
 import { createLogic } from 'redux-logic';
 import moment from 'moment';
-import { GET_LOCATION_DATE_INFO } from './Types';
+import { GET_LOCATION_DATE_INFO, SET_LOCATION_INFO } from './Types';
 import { setDateInfo, setLocationInfo } from './Actions';
 import { Utils } from '../../Util/Index';
 import {
   initRentalLocation, initDatePickup, initDateDropoff,
 } from '../../__datas__/LocationAndDate';
+import { getLoactionFromEvent } from './Mappers';
 
 export const setCommonDateInfo = createLogic({
   type: GET_LOCATION_DATE_INFO,
@@ -53,6 +54,23 @@ export const setCommonDateInfo = createLogic({
     done();
   },
 });
+
+export const setGroupIdByIndex = createLogic({
+  type: SET_LOCATION_INFO,
+  transform({ action }: any, next) {
+    const data = action.data || {};
+    const { fromEvent } = data;
+    if (fromEvent === 'changeRentalLocation') {
+      const newData = getLoactionFromEvent(data);
+      next({
+        ...action,
+        data: newData,
+      });
+    }
+    next(action);
+  },
+});
+
 
 export default [
   setCommonDateInfo,

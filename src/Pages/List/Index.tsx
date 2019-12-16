@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, RefObject } from 'react';
 import {
   Platform, StatusBar, View, StyleSheet,
 } from 'react-native';
@@ -43,6 +43,8 @@ interface IListPropsType extends IBasePageProps {
 
 export default class List extends CPage<IListPropsType, ListStateType> {
   batchesRequest: any[];
+ 
+  filterModalRef: RefObject<any>;
 
   constructor(props) {
     super(props);
@@ -51,6 +53,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
+    this.filterModalRef = useRef(null);
   }
 
   getPageId() {
@@ -137,7 +140,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
           style={BbkStyleUtil.getMB(4)}
         />
-        <ListFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
+        <ListFilterBar />
         <VehGroupNav pageId={this.getPageId()} />
 
         {curStage === PAGESTAGE.INIT
@@ -164,11 +167,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {...ListPropsModel.getSearchPanelProps()}
         />
 
-        <FilterAndSortModal
-          visible={this.state.filterAndSortModalVisible}
-          {...ListPropsModel.getFilterAndSortModalProps()}
-          onHide={this.controlFilterModalIsShow}
-        />
+        <FilterAndSortModal filterModalRef={this.filterModalRef} />
       </ViewPort>
     );
   }

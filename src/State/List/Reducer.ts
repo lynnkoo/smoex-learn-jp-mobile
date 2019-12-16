@@ -9,8 +9,9 @@ const getInitalState = () => ({
   activeGroupId: '',
   activeFilterBarCode: '',
   selectedFilters: {
-    Sort: [],
-    Filters: [],
+    sortFilter: '',
+    priceFilter: [],
+    bitsFilter: [],
   },
   batchesRequest: [], // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
 });

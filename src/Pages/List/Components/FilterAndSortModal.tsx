@@ -7,49 +7,74 @@ import {
 import BbkComponentCarFilterModal from '@ctrip/bbk-component-car-filter-modal';
 import BbkComponentFilterList from '@ctrip/bbk-component-filter-list';
 import BbkComponentSelectMenu, { BbkSelectMenu } from '@ctrip/bbk-component-select-menu';
+import { FilterType } from '../../../Constants/Index';
 
 const { SelectMenuType } = BbkSelectMenu;
-
-const filterType = {
-  Sort: 'Sort',
-  Supplier: 'Supplier',
-  Seats: 'Seats',
-  Filter: 'Filter',
-};
 
 interface IFilterInner {
   type: string;
   filterData: Array<Object>;
 }
-export interface IFilterAndSort extends IFilterInner{
+export interface IFilterAndSort extends IFilterInner {
   allVehicleCount: number;
   allVendorPriceCount: number;
   isShowFooter: boolean;
   filterModalRef: RefObject<any>
 }
 
+const initFilterData = (type, tempFilterData) => {
+  let filterData = [];
+  switch (type) {
+    case FilterType.Sort:
+      filterData = tempFilterData;
+      break;
+    case FilterType.Supplier:
+    case FilterType.Filter:
+      tempFilterData.forEach((item) => {
+        if (item.filterGroups && item.filterGroups.length > 0) {
+          filterData.push(item.filterGroups[0]);
+        }
+      });
+      break;
+    case FilterType.Seats:
+      tempFilterData.forEach((item) => {
+        if (item.filterGroups && item.filterGroups.length > 0) {
+          item.filterGroups.forEach((group) => {
+            if (group && group.filterItems.length > 0) {
+              filterData.push(group.filterItems[0]);
+            }
+          });
+        }
+      });
+      break;
+    default:
+      break;
+  }
+  return filterData;
+};
+
 const RenderInner: React.FC<IFilterInner> = ({ type, filterData }: IFilterInner) => (
   <View>
-    {type === filterType.Sort ? (
+    {type === FilterType.Sort ? (
       <BbkComponentSelectMenu
-        filterData={filterData}
+        filterData={initFilterData(type, filterData)}
         type={SelectMenuType.Single}
         onToggle={() => { }}
       />
-    ) : type === filterType.Supplier ? (
+    ) : type === FilterType.Supplier ? (
       <BbkComponentFilterList
-        filterGroups={filterData}
+        filterGroups={initFilterData(type, filterData)}
         changeTempFilterData={() => { }}
       />
-    ) : type === filterType.Seats ? (
+    ) : type === FilterType.Seats ? (
       <BbkComponentSelectMenu
-        filterData={filterData}
+        filterData={initFilterData(type, filterData)}
         type={SelectMenuType.Multiple}
         onToggle={() => { }}
       />
-    ) : type === filterType.Filter ? (
+    ) : type === FilterType.Filter ? (
       <BbkComponentFilterList
-        filterGroups={filterData}
+        filterGroups={initFilterData(type, filterData)}
         changeTempFilterData={() => { }}
       />
     ) : null}

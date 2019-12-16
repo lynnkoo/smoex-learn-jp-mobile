@@ -65,8 +65,8 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     super.push(name, args);
   }
 
-  pop(name) {
-    super.pop(name);
+  pop(name? : string, info? : any) {
+    super.pop(name, info);
   }
 
   replace(name) {

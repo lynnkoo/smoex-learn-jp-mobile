@@ -5,7 +5,7 @@ import {
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
-  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest,
+  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset,
 } from './Actions';
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
@@ -19,6 +19,7 @@ export const apiListBatchQuery = createLogic({
   latest: true,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
+    dispatch(reset());
     batchGroups.forEach((m) => {
       dispatch(fetchApiList(m));
     });

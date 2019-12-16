@@ -29,3 +29,7 @@ export const getDropOffLocationLat = state => state.LocationAndDate.rentalLocati
 export const getDropOffLocationLng = state => state.LocationAndDate.rentalLocation.dropOff.area.lng;
 
 export const getIsOneWay = state => state.LocationAndDate.rentalLocation.isOneWay;
+
+export const getRentalLocation = state => state.LocationAndDate.rentalLocation;
+
+export const getRentalDate = state => state.LocationAndDate.rentalDate;

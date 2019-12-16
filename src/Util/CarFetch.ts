@@ -1,4 +1,6 @@
-import { fetch, cancelFetch } from '@ctrip/crn';
+import {
+  fetch, cancelFetch, Device, Application,
+} from '@ctrip/crn';
 import uuid from 'uuid';
 import Utils from './Utils';
 import { REST_SOA } from '../Constants/Platform';
@@ -38,23 +40,60 @@ class FetchBase implements FetchBaseType {
     const curParam = Object.assign({}, params);
     const requestId = curParam.requestId || uuid();
     const parentRequestId = curParam.parentRequestId || '';
+    const { latitude, longitude, mac } = Device.deviceInfo;
     return {
       sourceFrom: AppContext.CarEnv.apptype,
       requestId,
       parentRequestId,
+      locale: AppContext.LanguageInfo.locale,
+      currencyCode: AppContext.LanguageInfo.currency,
+      sourceCountryId: 1, // todo
+      channelId: AppContext.MarketInfo.channelId,
+      clientVersion: AppContext.CarEnv.BuildTime,
+      clientid: Device.deviceInfo.clientID || '',
+      vid: '',
+      mobileInfo: {
+        customerGPSLat: Number(latitude) || 0,
+        customerGPSLng: Number(longitude) || 0,
+        mobileModel: `${Device.deviceType}`,
+        mobileSN: `${mac}`,
+        wirelessVersion: `${Application.version}`,
+      },
+      allianceInfo: {
+        allianceId: AppContext.MarketInfo.aId,
+        ouid: '1',
+        sid: AppContext.MarketInfo.sId,
+        distributorUID: '1',
+      },
+      extraTags: {},
     };
   }
 
-  getFetchObject = async (url: string, params, cancelable: boolean) => {
+  getFetchObject = async (url: string, param, cancelable: boolean, options = {}) => {
+    const opts = {
+      method: 'post',
+      baseParamKey: 'baseRequest',
+      timeout: 30,
+      ...options,
+    };
     const requestUrl = await this.getRequestUrl(url);
-    const tmpParams = { ...params, baseRequest: this.getBaseRequest(params) };
+    const tmpParam = param;
+    tmpParam[opts.baseParamKey] = this.getBaseRequest(param);
     if (!cancelable) {
-      return fetch(requestUrl, tmpParams);
+      return fetch(requestUrl, {
+        method: opts.method,
+        body: tmpParam,
+        timeout: opts.timeout,
+      })
+        .then(res => res)
+        .catch((error) => {
+          throw error;
+        });
     }
 
     return {
-      post: () => fetch(requestUrl, tmpParams),
-      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParams.baseRequest.requestId }),
+      post: () => fetch(requestUrl, tmpParam),
+      cancel: () => cancelFetch(requestUrl, { sequenceId: tmpParam.baseRequest.requestId }),
     };
   };
 }
@@ -78,9 +117,9 @@ class CarFetch extends FetchBase {
 
   queryAppCountryId = params => this.getFetchObject('14804/queryCountryId', params, false);
 
-  getRouterAdapter = params => this.getFetchObject('/13589/getRoute.json', params, false);
+  getRouterAdapter = params => this.getFetchObject('13589/getRoute.json', params, false);
 
-  getListProduct = params => this.getFetchObject('/18631/queryProducts', params, false);
+  getListProduct = params => this.getFetchObject('18631/queryProducts', params, false);
 }
 
 export default new CarFetch();

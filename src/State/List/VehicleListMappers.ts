@@ -156,7 +156,7 @@ interface labelList {
 
 const getVendorLabelItems = (vendor) => {
   const {
-    pStoreRouteDesc, rStoreRouteDesc, positiveTagList, platformName,
+    pStoreRouteDesc, rStoreRouteDesc, positiveTagList = [], platformName,
   } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);

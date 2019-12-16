@@ -67,7 +67,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    // this.fetchListProduct();
     this.props.fetchList();
   }
 

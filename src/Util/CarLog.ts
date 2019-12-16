@@ -62,7 +62,7 @@ class CarLog {
     const locationAndDateInfo = CarLog.getLocationAndDateInfo();
     const curDate = new Date();
     const state = getStore().getState();
-    const { age } = state.DriverAge;
+    const { age } = state.DriverAgeAndNumber;
     return {
       sourceFrom: AppContext.CarEnv.apptype,
       businessType: Utils.getBusinessType(),

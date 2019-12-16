@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import Vendor from '../Pages/List/Components/Vendor';
-import { getLocationAndDate } from '../State/LocationAndDate/Selectors';
+import { getFormatLocationAndDate } from '../State/LocationAndDate/Selectors';
 
 const mapStateToProps = state => ({
-  locationAndDate: getLocationAndDate(state),
+  locationAndDate: getFormatLocationAndDate(state),
 });
 
 const mapDispatchToProps = () => ({

@@ -17,14 +17,64 @@ export default withTheme(
     vendorHeaderProps,
     theme,
     soldOutLabel,
-    locationAndDate,
-    reference,
+    // locationAndDate,
+    // reference,
   }) => {
     const onVerdorHeaderPress = () => {
+      // const data: any = {
+      //   ...locationAndDate,
+      //   book: reference,
+      // };
+      // todo: test
       const data: any = {
-        ...locationAndDate,
-        book: reference,
+        rentalLocation: {
+          pickUp: {
+            cid: 617,
+            cname: '台北',
+            country: '中國',
+            area: {
+              id: 'TPE',
+              name: '桃園機場 (TPE)',
+              lat: 25.079651,
+              lng: 121.234217,
+              type: 1,
+            },
+          },
+          dropOff: {
+            cid: 617,
+            cname: '台北',
+            country: '中國',
+            area: {
+              id: 'TPE',
+              name: '桃園機場 (TPE)',
+              lat: 25.079651,
+              lng: 121.234217,
+              type: 1,
+            },
+          },
+          isOneWay: false,
+        },
+        rentalDate: {
+          pickUp: {
+            dateTime: '20191225100000',
+          },
+          dropOff: {
+            dateTime: '20191229100000',
+          },
+        },
+        book: {
+          bomcode: 'TPE14088003TPE_10375_CDW_FRFB_Fees_GPS_PAI_TP_TPL_Taxes_ULM_0_0',
+          paymode: 2,
+          pstorecode: 'TPE14088003TPE',
+          rstorecode: 'TPE14088003TPE',
+          vehiclecode: '10375',
+          vendorid: '14088003',
+          vendorCode: 'SD0662',
+          isredirect: true,
+          packageid: 4845,
+        },
       };
+
       // 跳转Trip详情页地址
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&data=${encodeURIComponent(JSON.stringify(data))}`;
       URL.openURL(url);

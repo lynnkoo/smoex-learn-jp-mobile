@@ -12,7 +12,7 @@ import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkCarImage from '@ctrip/bbk-component-car-image';
 import { VehicleListStyle as style } from '../Styles';
-import Verdor from './Vendor';
+import Verdor from '../../../Containers/VendorContainer';
 import { listShowMore } from '../Texts';
 
 const { selector } = BbkUtils;

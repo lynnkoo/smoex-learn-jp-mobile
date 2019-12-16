@@ -29,7 +29,8 @@ interface SectionListWithControlProps extends SectionListProps<any> {
   refFn?: (any) => void;
   pullIcon?: string;
   loadingContent?: string;
-  ListFooterExtraComponent?: ReactElement
+  ListFooterExtraComponent?: ReactElement;
+  ListEmptyComponent?: ReactElement;
 }
 
 interface SectionListWithControlState {
@@ -203,6 +204,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       initialNumToRender,
       endFillColor,
       ListFooterExtraComponent,
+      ListEmptyComponent,
     } = this.props;
 
     return (
@@ -260,6 +262,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
           </>
           ,
         )}
+        ListEmptyComponent={ListEmptyComponent}
       />
     );
   }

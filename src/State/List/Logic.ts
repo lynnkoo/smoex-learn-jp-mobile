@@ -50,7 +50,7 @@ export const apiListQueryProductsCallback = createLogic({
     const { param, res } = action.data || {};
     // const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false; // todo
     const isSuccess = (res && res.productGroups && res.productGroups.length > 0) || false;
-    const resCode = res.baseResponse && res.baseResponse.code;
+    const resCode = res && res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = res.productGroups[0].groupCode;

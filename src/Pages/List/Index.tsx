@@ -17,6 +17,8 @@ import ListHeader from '../../Containers/ListHeaderContainer';
 import VehGroupNav from '../../Containers/ListVehGroupContainer';
 import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
 import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
+import ListNoMatch from '../../Containers/NoMatchContainer';
+import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
@@ -165,7 +167,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               </View>
             )
           }
-          {/** 无结果 */}
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch />
+          }
         </View>
 
         {/** 供应商报价 */}
@@ -184,6 +189,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {...ListPropsModel.getFilterAndSortModalProps()}
           onHide={this.controlFilterModalIsShow}
         />
+
+        <RentalCarsDatePicker />
+
       </ViewPort>
     );
   }

@@ -46,7 +46,7 @@ const SearchPanelModal = (props: IPropsType) => {
       });
     }
     props.setAge({ age: backUpAge });
-  }, [backPTime, backRTime, backUpAge, backUpRentalLocation, props]);
+  }, [visible]);
 
   const onPressPickupLocation = () => {
     console.log('todo+++onPressDropoffLocation+++');

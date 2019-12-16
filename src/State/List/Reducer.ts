@@ -13,6 +13,7 @@ const getInitalState = () => ({
   batchesRequest: [], // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
   locationDatePopVisible: false,
   datePickerVisible: false,
+  datePickerFocusOnRtime: false,
 });
 
 const initalState = getInitalState();
@@ -37,7 +38,11 @@ export default (state = initalState, action) => {
     case SET_LOCATIONDATEPOP_VISIBLE:
       return { ...state, locationDatePopVisible: action.data.visible };
     case SET_DATEPICKER_VISIBLE:
-      return { ...state, datePickerVisible: action.data.visible };
+      return {
+        ...state,
+        datePickerVisible: action.data.visible,
+        datePickerFocusOnRtime: action.data.focurOnRTime !== undefined ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
+      };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
     case GET_STATUS:

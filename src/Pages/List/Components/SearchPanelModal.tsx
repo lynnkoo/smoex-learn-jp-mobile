@@ -35,7 +35,8 @@ const SearchPanelModal = (props: IPropsType) => {
       setBackUpRentalLocation(rentalLocation);
       setBackUpAge(age);
     }
-  }, [age, ptime, rentalLocation, rtime, visible]);
+  /* eslint-disable */
+  }, [visible]);
 
   const onCancel = useCallback(() => {
     console.log('onCancel+++');
@@ -46,11 +47,12 @@ const SearchPanelModal = (props: IPropsType) => {
       props.setLocationInfo({
         pickUp: backUpRentalLocation.pickUp,
         dropOff: backUpRentalLocation.dropOff,
-        isOneWay: backUpRentalLocation.isOneWay,
+        isShowDropOff: backUpRentalLocation.isShowDropOff,
       });
     }
     props.setAge({ age: backUpAge });
-  }, [visible]);
+  /* eslint-disable */
+  }, []);
 
   const onPressPickupLocation = () => {
     const url = `${addressUrl}&addresstype=pickup`;
@@ -89,8 +91,8 @@ const SearchPanelModal = (props: IPropsType) => {
     // todo log
   };
 
-  const onIsOneWayChange = (isOneWay) => {
-    props.setLocationInfo({ isOneWay });
+  const onIsShowDropOffChange = (isShowDropOff) => {
+    props.setLocationInfo({ isShowDropOff });
     // todo log
   };
 
@@ -105,7 +107,7 @@ const SearchPanelModal = (props: IPropsType) => {
       onTimeCancel={onTimeCancel}
       onPressSearch={onPressSearch}
       onPressAgeSelect={onPressAgeSelect}
-      onIsOneWayChange={onIsOneWayChange}
+      onIsShowDropOffChange={onIsShowDropOffChange}
       {...props}
     />
   );

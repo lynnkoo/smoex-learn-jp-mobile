@@ -32,7 +32,7 @@ const getInitalState = () => (
           type: '',
         },
       },
-      isOneWay: false,
+      isShowDropOff: false,
     },
     rentalDate: {
       pickUp: { dateTime: initDatePickup },
@@ -71,9 +71,9 @@ const setLocationInfo = (state, action) => {
       dropOff: action.data.dropOff,
     });
   }
-  if (action.data.isOneWay !== undefined) {
+  if (action.data.isShowDropOff !== undefined) {
     rentalInfo = Object.assign({}, rentalInfo, {
-      isOneWay: action.data.isOneWay,
+      isShowDropOff: action.data.isShowDropOff,
     });
   }
 

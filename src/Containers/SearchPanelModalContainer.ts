@@ -15,8 +15,8 @@ import {
   getDropOffCityId,
   getDropOffLocationLat,
   getDropOffLocationLng,
-  getIsOneWay,
   getRentalLocation,
+  getIsShowDropOff,
 } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
 import { getDatePickerVisible, getLocationDatePopVisible } from '../State/List/Selectors';
@@ -47,7 +47,7 @@ const mapStateToProps = state => ({
     locationType: getDropOffLocationType(state),
   },
   age: getAge(state),
-  showDropoff: getIsOneWay(state),
+  showDropoff: getIsShowDropOff(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -60,9 +60,10 @@ const formatLocationFromEvent = (location) => {
  * format rental loaction data
  * @param {any} data
   {
-    pickUp: {...}, // 见 formatLocationFromEvent from
-    dropOff: {...},
+    pickup: {...}, // 见 formatLocationFromEvent from
+    dropoff: {...},
   }
+ * @param {boolean} isOneWay 是否关闭异地取还按钮
  * @returns {any}
   {
     pickUp: {...}, // 见 formatLocationFromEvent to
@@ -70,11 +71,14 @@ const formatLocationFromEvent = (location) => {
     isOneWay: false,
   }
  */
-export const getLoactionFromEvent = (data) => {
-  const { pickUp, dropOff } = data;
-  return {
-    pickUp: formatLocationFromEvent(pickUp),
-    dropOff: formatLocationFromEvent(dropOff),
-    isOneWay: pickUp.id === dropOff.id,
-  };
+export const getLoactionFromEvent = (data, isOneWay) => {
+  const { pickup, dropoff } = data;
+  const res: any = {};
+  res.pickUp = pickup && formatLocationFromEvent(pickup);
+  if (isOneWay) {
+    res.dropOff = res.pickUp;
+  } else {
+    res.dropOff = dropoff && formatLocationFromEvent(dropoff);
+  }
+  return res;
 };

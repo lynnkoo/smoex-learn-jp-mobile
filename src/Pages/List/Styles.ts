@@ -58,8 +58,7 @@ export const VehicleListStyle = StyleSheet.create({
     marginLeft: space.spaceL,
   },
   verdorHeader: {
-    // todo: test
-    height: getPixel(54),
+    minHeight: getPixel(54),
     alignItems: 'center',
   },
   scoreLabel: {

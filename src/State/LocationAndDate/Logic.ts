@@ -2,6 +2,7 @@ import { createLogic } from 'redux-logic';
 import moment from 'moment';
 import { GET_LOCATION_DATE_INFO, SET_LOCATION_INFO } from './Types';
 import { setDateInfo, setLocationInfo } from './Actions';
+import { getRentalLocation } from './Selectors';
 import { Utils } from '../../Util/Index';
 import {
   initRentalLocation, initDatePickup, initDateDropoff,
@@ -57,11 +58,13 @@ export const setCommonDateInfo = createLogic({
 
 export const setGroupIdByIndex = createLogic({
   type: SET_LOCATION_INFO,
-  transform({ action }: any, next) {
+  transform({ getState, action }: any, next) {
     const data = action.data || {};
     const { fromEvent } = data;
     if (fromEvent === 'changeRentalLocation') {
-      const newData = getLoactionFromEvent(data);
+      const { isOneWay } = getRentalLocation(getState());
+      // todo: isOneWay 含义统一
+      const newData = getLoactionFromEvent(data, !isOneWay);
       next({
         ...action,
         data: newData,
@@ -74,4 +77,5 @@ export const setGroupIdByIndex = createLogic({
 
 export default [
   setCommonDateInfo,
+  setGroupIdByIndex,
 ];

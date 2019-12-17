@@ -11,6 +11,7 @@ import {
   getDropOffLocationName,
   getDropOffLocationType,
 } from '../State/LocationAndDate/Selectors';
+import { setLocationAndDatePopIsShow } from '../State/List/Actions';
 
 const mapStateToProps = state => ({
   data: {
@@ -33,6 +34,7 @@ const mapStateToProps = state => ({
 
 /* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
+  showSearchSelectorWrap: () => { dispatch(setLocationAndDatePopIsShow({ visible: true })); },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BbkComponentCarHeader);

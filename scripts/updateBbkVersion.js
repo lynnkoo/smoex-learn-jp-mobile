@@ -1,8 +1,9 @@
-var fs = require('fs');
-var path = require('path');
+/* eslint-disable */
+const fs = require('fs');
+const path = require('path');
 
-//解析需要遍历的文件夹，我这以E盘根目录为例
-var packagePath = path.resolve(__dirname, '../package.json');
+// 解析需要遍历的文件夹，我这以E盘根目录为例
+const packagePath = path.resolve(__dirname, '../package.json');
 
 start();
 
@@ -13,19 +14,19 @@ async function start() {
 function getBbkVersions(packagePath) {
   let packageJson = fs.readFileSync(packagePath, 'utf-8');
   packageJson = JSON.parse(packageJson);
-  const dependencies = packageJson.dependencies
-  const bbkDependencies = []
+  const { dependencies } = packageJson;
+  const bbkDependencies = [];
   let resString = `
   printf "start install"
-  npm i `
+  npm i `;
   for (key in dependencies) {
     if (key.startsWith('@ctrip/bbk-')) {
-      bbkDependencies.push(key)
-      resString += `${key}@latest `
+      bbkDependencies.push(key);
+      resString += `${key}@latest `;
     }
   }
 
-  resString += '--save'
+  resString += '--save';
   writePackageDependencies(resString);
 }
 

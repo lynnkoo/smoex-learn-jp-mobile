@@ -14,3 +14,7 @@ export const getActiveGroupIndex = (state) => {
   const activeGroupId = getActiveGroupId(state);
   return Math.max(_.findIndex(vehGroupList, { gId: activeGroupId }), 0);
 };
+
+export const getDatePickerVisible = state => state.List.datePickerVisible;
+
+export const getLocationDatePopVisible = state => state.List.locationDatePopVisible;

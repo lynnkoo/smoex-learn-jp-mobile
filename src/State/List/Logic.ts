@@ -1,11 +1,12 @@
 import { createLogic } from 'redux-logic';
+import uuid from 'uuid';
 import {
   FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
 } from './Types';
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
-  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest,
+  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset,
 } from './Actions';
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
@@ -19,8 +20,10 @@ export const apiListBatchQuery = createLogic({
   latest: true,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
+    dispatch(reset());
+    const requestId = uuid();
     batchGroups.forEach((m) => {
-      dispatch(fetchApiList(m));
+      dispatch(fetchApiList({ vendorGroup: m, requestId }));
     });
     done();
   },
@@ -33,8 +36,7 @@ export const apiListQueryProducts = createLogic({
   async process({ action, getState }, dispatch, done) {
     // 获取请求的批次
     // @ts-ignore
-    const vendorGroup = action.data;
-    const param = packageListReqParam(getState(), vendorGroup);
+    const param = packageListReqParam(getState(), action.data);
     const res = await CarFetch.getListProduct(param); // todo catch
     dispatch(fetchApiListCallback({ param, res }));
     done();
@@ -49,7 +51,7 @@ export const apiListQueryProductsCallback = createLogic({
     const { param, res } = action.data || {};
     // const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false; // todo
     const isSuccess = (res && res.productGroups && res.productGroups.length > 0) || false;
-    const resCode = res.baseResponse && res.baseResponse.code;
+    const resCode = res && res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = res.productGroups[0].groupCode;

@@ -7,7 +7,6 @@ import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-load
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
-import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
 import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
@@ -17,6 +16,9 @@ import FilterAndSortModal from './Components/FilterAndSortModal';
 import ListHeader from '../../Containers/ListHeaderContainer';
 import VehGroupNav from '../../Containers/ListVehGroupContainer';
 import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
+import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
+import ListNoMatch from '../../Containers/NoMatchContainer';
+import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
@@ -179,7 +181,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListHeader
             handleBackPress={this.pageGoBack}
             onPressCurrency={() => { }}
-            showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
             style={BbkStyleUtil.getMB(4)}
           />
           <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
@@ -192,7 +193,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               </View>
             )
           }
-          {/** 无结果 */}
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch />
+          }
         </View>
 
         {/** 供应商报价 */}
@@ -204,17 +208,16 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
 
-        <BbkSearchPanelModal
-          visible={this.state.locationDatePopVisible}
-          onCancel={this.controlRentalLocationDatePopIsShow}
-          {...ListPropsModel.getSearchPanelProps()}
-        />
+        <SearchPanelModal />
 
         <FilterAndSortModal
           visible={this.state.filterAndSortModalVisible}
           {...ListPropsModel.getFilterAndSortModalProps()}
           onHide={this.controlFilterModalIsShow}
         />
+
+        <RentalCarsDatePicker />
+
       </ViewPort>
     );
   }

@@ -18,8 +18,9 @@ import {
 } from '../LocationAndDate/Selectors';
 
 /* eslint-disable import/prefer-default-export */
-export const packageListReqParam = (state, vendorGroup: number) => ({
-  vendorGroup,
+export const packageListReqParam = (state, data: { vendorGroup: number, requestId: string }) => ({
+  requestId: data.requestId,
+  vendorGroup: data.vendorGroup,
   // age: getAge(state), // todo
   age: 30,
   adultNumbers: getAdultNumbers(state),

@@ -26,7 +26,9 @@
     "clean": "watchman watch-del-all && rm -rf package-lock.json && rm -rf node_modules && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-* && npm run install:ctrip",
     "product:ts": "rm -rf node_modules && rm -rf  package-lock.json && npm install --production",
     "install:ctrip": "npm install --registry=http://registry.npm.release.ctripcorp.com",
-    "install": "tsc"
+    "install": "tsc",
+    "bbk:link": "./scripts/bbkLocalLink.sh",
+    "bbk:update": "node ./scripts/updateBbkVersion.js && ./scripts/bbkInstall.sh"
   },
   "peerDependencies": {
     "@ctrip/bbk-tokens": "^0.0.34",
@@ -87,6 +89,7 @@
     "react-dom": "16.8.3",
     "react-intl": "^3.6.0",
     "react-native": "0.61.2",
+    "react-native-animatable": "^1.3.3",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.8.3",
     "redux": "^4.0.4",
@@ -94,7 +97,8 @@
     "reselect": "^4.0.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "react-native-animatable": "^1.3.3"
   },
   "devDependencies": {
     "enzyme": "^3.10.0",

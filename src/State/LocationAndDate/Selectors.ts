@@ -1,8 +1,14 @@
+import moment from 'moment';
+
 export const getLocationAndDate = state => state.LocationAndDate;
+
+export const getRentalDate = state => getLocationAndDate(state).rentalDate;
 
 export const getPickUpTime = state => state.LocationAndDate.rentalDate.pickUp.dateTime;
 
 export const getDropOffTime = state => state.LocationAndDate.rentalDate.dropOff.dateTime;
+
+export const getRentalLocation = state => state.LocationAndDate.rentalLocation;
 
 export const getPickUpCityId = state => state.LocationAndDate.rentalLocation.pickUp.cid;
 
@@ -30,6 +36,20 @@ export const getDropOffLocationLng = state => state.LocationAndDate.rentalLocati
 
 export const getIsOneWay = state => state.LocationAndDate.rentalLocation.isOneWay;
 
-export const getRentalLocation = state => state.LocationAndDate.rentalLocation;
+export const getFormatRentalDate = (state, formatTemp = 'YYYYMMDDHHmmss') => {
+  const rentalDate = getRentalDate(state) || {};
+  const { pickUp = {}, dropOff = {} } = rentalDate;
+  return {
+    pickUp: {
+      dateTime: moment(pickUp.dateTime).format(formatTemp),
+    },
+    dropOff: {
+      dateTime: moment(dropOff.dateTime).format(formatTemp),
+    },
+  };
+};
 
-export const getRentalDate = state => state.LocationAndDate.rentalDate;
+export const getFormatLocationAndDate = state => ({
+  rentalDate: getFormatRentalDate(state),
+  rentalLocation: getRentalLocation(state),
+});

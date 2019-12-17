@@ -212,7 +212,7 @@ const getVendorHeaderProps = (vendor) => {
     vendorLogo, vendorName, vendorTag = {}, commentInfo = {}, evaluation = {},
   } = vendor;
   const {
-    commentCount, vendorDesc = 'test', overallRating = 'test', level = 'test',
+    commentCount, vendorDesc, overallRating, maximumRating,
   } = commentInfo;
   // 评分标签 type 1表示正向 蓝色  2负向 灰色
   const { type } = evaluation;
@@ -222,8 +222,8 @@ const getVendorHeaderProps = (vendor) => {
     title: vendorTag.title,
     scoreDesc: vendorDesc,
     commentDesc: `${commentCount} ${Reviews}`,
-    score: level,
-    totalScore: overallRating,
+    score: overallRating,
+    totalScore: maximumRating,
     scoreLow: type > 1,
   };
 };

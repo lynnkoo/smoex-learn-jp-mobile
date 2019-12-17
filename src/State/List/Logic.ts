@@ -1,4 +1,5 @@
 import { createLogic } from 'redux-logic';
+import uuid from 'uuid';
 import {
   FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
 } from './Types';
@@ -20,8 +21,9 @@ export const apiListBatchQuery = createLogic({
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
     dispatch(reset());
+    const requestId = uuid();
     batchGroups.forEach((m) => {
-      dispatch(fetchApiList(m));
+      dispatch(fetchApiList({ vendorGroup: m, requestId }));
     });
     done();
   },
@@ -34,8 +36,7 @@ export const apiListQueryProducts = createLogic({
   async process({ action, getState }, dispatch, done) {
     // 获取请求的批次
     // @ts-ignore
-    const vendorGroup = action.data;
-    const param = packageListReqParam(getState(), vendorGroup);
+    const param = packageListReqParam(getState(), action.data);
     const res = await CarFetch.getListProduct(param); // todo catch
     dispatch(fetchApiListCallback({ param, res }));
     done();

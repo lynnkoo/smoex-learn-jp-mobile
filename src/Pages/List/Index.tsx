@@ -21,7 +21,6 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 
 interface ListStateType extends IStateType {
-  locationDatePopVisible: boolean;
   filterAndSortModalVisible: boolean;
   listThreshold: number
 }
@@ -45,10 +44,14 @@ interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
   rentalDate: any;
+  datePickerVisible: boolean;
+  locationDatePopVisible: boolean;
   setPageStatus: (data: any) => void;
   fetchList: () => void;
   fetchApiListCallback: (data: any) => void;
   setLocationInfo: (rentalLocation: any) => void;
+  setDatePickerIsShow: ({ visible: boolean }) => void;
+  setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
 }
 
 const removeEvents = () => {
@@ -58,10 +61,11 @@ const removeEvents = () => {
 export default class List extends CPage<IListPropsType, ListStateType> {
   batchesRequest: any[];
 
+  datePickerRef: any;
+
   constructor(props) {
     super(props);
     this.state = {
-      locationDatePopVisible: false, // 修改取还车信息弹层是否展示
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
     };
@@ -140,27 +144,28 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
-  // 控制取还车信息弹层是否展示
-  controlRentalLocationDatePopIsShow = (isFlag = false) => {
-    const { locationDatePopVisible } = this.state;
-    // todo
-    // if (progress !== 1) {
-    //   Toast.show('加载中，请稍候...');
-    //   return;
-    // }
-
-    if (locationDatePopVisible !== isFlag) {
-      this.setState({
-        locationDatePopVisible: isFlag,
-      });
-    }
-  };
-
   setVehicleListThreshold = ({ nativeEvent }) => {
     const { height } = nativeEvent.layout;
     this.setState({
       listThreshold: height,
     });
+  }
+
+  handleDatePickerRef = (ref) => {
+    this.datePickerRef = ref;
+  }
+
+  onBackAndroid() {
+    const { datePickerVisible, locationDatePopVisible } = this.props;
+    if (datePickerVisible) {
+      this.datePickerRef.dismiss(() => {
+        this.props.setDatePickerIsShow({ visible: false });
+      });
+    } else if (locationDatePopVisible) {
+      this.props.setLocationAndDatePopIsShow({ visible: false });
+    } else {
+      this.pageGoBack();
+    }
   }
 
   render() {
@@ -195,7 +200,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           }
           {
             curStage === PAGESTAGE.FAIL
-            && <ListNoMatch />
+            && <ListNoMatch datePickerRef={this.datePickerRef} />
           }
         </View>
 
@@ -216,7 +221,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           onHide={this.controlFilterModalIsShow}
         />
 
-        <RentalCarsDatePicker />
+        <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
 
       </ViewPort>
     );

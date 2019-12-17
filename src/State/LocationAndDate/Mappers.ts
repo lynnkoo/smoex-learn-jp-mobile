@@ -67,7 +67,7 @@ const formatLocationFromEvent = (location) => {
   {
     pickUp: {...}, // 见 formatLocationFromEvent to
     dropOff: {...},
-    isOneWay: false,
+    isShowDropOff: false,
   }
  */
 export const getLoactionFromEvent = (data) => {
@@ -75,6 +75,6 @@ export const getLoactionFromEvent = (data) => {
   return {
     pickUp: formatLocationFromEvent(pickUp),
     dropOff: formatLocationFromEvent(dropOff),
-    isOneWay: pickUp.id === dropOff.id,
+    // isOneWay: pickUp.id === dropOff.id,
   };
 };

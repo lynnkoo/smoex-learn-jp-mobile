@@ -1,8 +1,10 @@
 import { connect } from 'react-redux';
 
-import RentalCarsDatePicker from '@ctrip/bbk-component-car-date-picker';
+import ListDatePicker from '../Pages/List/Components/DatePicker';
 import { getDatePickerVisible } from '../State/List/Selectors';
 import { getPickUpTime, getDropOffTime } from '../State/LocationAndDate/Selectors';
+import { setDateInfo } from '../State/LocationAndDate/Actions';
+import { setDatePickerIsShow } from '../State/List/Actions';
 
 
 const mapStateToProps = state => ({
@@ -15,8 +17,8 @@ const mapStateToProps = state => ({
 
 /* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
-  onConfirm: () => { console.log('onConfirm+++'); },
-  onCancel: () => { console.log('onCancel+++'); },
+  setDateInfo: (data) => { dispatch(setDateInfo(data)); },
+  setDatePickerIsShow: (data) => { dispatch(setDatePickerIsShow(data)); },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RentalCarsDatePicker);
+export default connect(mapStateToProps, mapDispatchToProps)(ListDatePicker);

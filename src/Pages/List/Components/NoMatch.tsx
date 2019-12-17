@@ -9,6 +9,7 @@ interface IPropsType {
   recommendInfo: any; // TODO type
   pTime: string;
   rTime: string;
+  datePickerRef: any;
   fetchList: () => void;
   setDatePickerIsShow: (data: any) => void;
   setLocationAndDatePopIsShow: (data: any) => void;
@@ -24,8 +25,11 @@ const RC = {
 
 const ListNoMatch = (props: IPropsType) => {
   const {
+    recommendInfo, datePickerRef, setDatePickerIsShow, setLocationAndDatePopIsShow, fetchList,
+  } = props;
+  const {
     promptTitle = '', promptSubTitle = '', type = '', buttonTitle = '',
-  } = props.recommendInfo || {};
+  } = recommendInfo || {};
 
   const getTitle = () => promptTitle || getSharkValue('list_SystemBusy');
 
@@ -34,19 +38,24 @@ const ListNoMatch = (props: IPropsType) => {
   const getOperationButtonText = () => buttonTitle || getSharkValue('list_retry');
 
   const handleOperateButtonPress = () => {
-    console.log('测试+++type', type);
     switch (type) {
       case RC.timeP:
-        props.setDatePickerIsShow({ visible: true });
+        if (datePickerRef) {
+          datePickerRef.show({ focusOnRtime: false });
+          setDatePickerIsShow({ visible: true });
+        }
         break;
       case RC.timeR:
-        props.setDatePickerIsShow({ visible: true, focurOnRTime: true });
+        if (datePickerRef) {
+          datePickerRef.show({ focusOnRtime: true });
+          setDatePickerIsShow({ visible: true });
+        }
         break;
       case RC.edit:
-        props.setLocationAndDatePopIsShow({ visible: true });
+        setLocationAndDatePopIsShow({ visible: true });
         break;
       default:
-        props.fetchList();
+        fetchList();
 
       // todo log
     }

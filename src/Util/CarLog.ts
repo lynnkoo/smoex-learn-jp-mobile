@@ -49,7 +49,7 @@ class CarLog {
       dropOffLocationType: rentalLocation.dropOff.area.type,
       dropOffLocationName: rentalLocation.dropOff.area.name,
       dropOffDateTime: dropOffTime,
-      isOneWay: rentalLocation.isOneWay,
+      isDifferentLocation: rentalLocation.pickUp.area.id !== rentalLocation.dropOff.area.id,
       isSendCar: '2',
       isPickupCar: '2',
       residency: `${countryId}` || '66',

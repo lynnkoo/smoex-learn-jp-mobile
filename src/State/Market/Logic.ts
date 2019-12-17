@@ -1,12 +1,12 @@
 import { createLogic } from 'redux-logic';
-
+import _ from 'lodash';
 import { loadMarketCompleted, loadMarketFailed } from './Actions';
 import { LOAD, LOADING_TYPE, FROM_URL } from './Types';
 import {
   getDefaultPageName, getPageName, getParams, checkParams,
 } from './Helpers';
 import { setDateInfo, setLocationInfo } from '../LocationAndDate/Actions';
-import { AppContext } from '../../Util/Index';
+import { AppContext, Utils } from '../../Util/Index';
 
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=192826013
 
@@ -31,7 +31,10 @@ export const load = createLogic({
       if (st === LOADING_TYPE.CLIENT && fromurl === FROM_URL.COMM) {
         const params = getParams(data);
         if (checkParams(params)) {
-          dispatch(setDateInfo({ ...params.rentalDate }));
+          dispatch(setDateInfo({
+            pickup: Utils.dateTimeFormat(_.get(params, 'rentalDate.pickUp.dateTime')),
+            dropoff: Utils.dateTimeFormat(_.get(params, 'rentalDate.dropOff.dateTime')),
+          }));
           dispatch(setLocationInfo({ ...params.rentalLocation }));
           dispatch(loadMarketCompleted({ landingto: pageName }));
           isLoadSuccess = true;

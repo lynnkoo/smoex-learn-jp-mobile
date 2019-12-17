@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { URL } from '@ctrip/crn';
 import BbkComponentSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 
 interface IPropsType {
@@ -13,6 +14,9 @@ interface IPropsType {
   fetchList: () => void;
   setLocationInfo: (data: any) => void;
 }
+
+const addressUrl = '/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=address';
+// const addressUrl = 'http://127.0.0.1:5387/index.ios.bundle?CRNModuleName=rn_ibu_car&CRNType=1&page=address'
 
 const SearchPanelModal = (props: IPropsType) => {
   const {
@@ -51,11 +55,13 @@ const SearchPanelModal = (props: IPropsType) => {
   }, []);
 
   const onPressPickupLocation = () => {
-    console.log('todo+++onPressDropoffLocation+++');
+    const url = `${addressUrl}&addresstype=pickup`;
+    URL.openURL(url);
   };
 
   const onPressDropoffLocation = () => {
-    console.log('todo+++onPressDropoffLocation+++');
+    const url = `${addressUrl}&addresstype=dropoff`;
+    URL.openURL(url);
   };
 
   const onAgeChange = (data) => {

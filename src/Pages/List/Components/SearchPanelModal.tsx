@@ -31,6 +31,7 @@ const SearchPanelModal = (props: IPropsType) => {
       setBackUpRentalLocation(rentalLocation);
       setBackUpAge(age);
     }
+  /* eslint-disable */
   }, [visible]);
 
   const onCancel = useCallback(() => {
@@ -46,7 +47,8 @@ const SearchPanelModal = (props: IPropsType) => {
       });
     }
     props.setAge({ age: backUpAge });
-  }, [visible]);
+  /* eslint-disable */
+  }, []);
 
   const onPressPickupLocation = () => {
     console.log('todo+++onPressDropoffLocation+++');

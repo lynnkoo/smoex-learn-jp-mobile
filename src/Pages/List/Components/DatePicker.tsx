@@ -10,6 +10,7 @@ interface IPropsType {
 const ListDatePicker = (props: IPropsType) => {
   const handleDatePickerRef = useCallback((ref) => {
     props.handleDatePickerRef(ref);
+    /* eslint-disable */
   }, []);
 
   const handleOnConfirm = (data) => {

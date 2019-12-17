@@ -53,3 +53,5 @@ export const getFormatLocationAndDate = state => ({
   rentalDate: getFormatRentalDate(state),
   rentalLocation: getRentalLocation(state),
 });
+
+export const isDifferentLocation = state => getPickUpLocationCode(state) !== getDropOffLocationCode(state);

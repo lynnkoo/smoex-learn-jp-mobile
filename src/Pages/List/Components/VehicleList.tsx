@@ -42,13 +42,6 @@ const NoMatch = () => (
       subTitle=""
       isShowOperateButton={false}
       isShowRentalDate={false}
-      tip=""
-      reQueryPress={() => {}}
-      reQueryText=""
-      theme={{}}
-      style={{}}
-      ptime=""
-      rtime=""
     />
   </View>
 );

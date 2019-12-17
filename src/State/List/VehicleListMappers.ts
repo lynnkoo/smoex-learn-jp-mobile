@@ -28,7 +28,7 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     passengerNo,
     luggageNo,
     doorNo,
-    // todo: 没有空调时是否要出 hasConditioner
+    hasConditioner,
     conditionerDesc,
     transmissionName,
     displacement,
@@ -44,7 +44,8 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
         iconContent: '\uee81',
       },
     },
-    conditionerDesc && {
+    // 没有空调时不出
+    hasConditioner && conditionerDesc && {
       text: conditionerDesc,
       icon: {
         iconContent: '\uee7c',

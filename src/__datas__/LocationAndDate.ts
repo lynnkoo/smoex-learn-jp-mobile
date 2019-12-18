@@ -37,5 +37,5 @@ export const initRentalLocation = {
       type: '1',
     },
   },
-  isOneWay: false,
+  isShowDropOff: false,
 };

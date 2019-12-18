@@ -22,16 +22,12 @@ export const getRequestInfo = () => getBaseResData().requestInfo || {};
 export const getVehicleList = () => getBaseResData().vehicleList || [];
 
 // 获取所有车型详情列表和报价列表
-export const getVehAndProductList = () => ({
-  vehicleList: getVehicleList(),
-  productGroups: getBaseProductGroups(),
-});
+export const getVehAndProductList = () => ({ vehicleList: getVehicleList(), productGroups: getAllProductGroups() });
 
 // 获取车型组列表数据
 export const getVehGroupList = () => {
   const vehGroupList = [];
-  // todo getAllProductGroups
-  getBaseProductGroups().forEach((item) => {
+  getAllProductGroups().forEach((item) => {
     vehGroupList.push({
       gId: item.groupCode,
       title: item.groupName,

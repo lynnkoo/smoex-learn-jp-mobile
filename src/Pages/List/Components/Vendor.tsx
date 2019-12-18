@@ -52,7 +52,7 @@ export default withTheme(
               type: 1,
             },
           },
-          isOneWay: false,
+          isShowDropOff: false,
         },
         rentalDate: {
           pickUp: {

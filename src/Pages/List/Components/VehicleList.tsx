@@ -2,14 +2,19 @@
 import React, { memo, useState, useEffect } from 'react';
 // eslint-disable-next-line
 import _ from 'lodash';
+import { View, StyleSheet } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
+import { getSharkValue } from '@ctrip/bbk-shark';
+import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
+import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
+import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 import LoginItem from './LoginItem';
 import { User } from '../../../Util/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 
-const { selector } = BbkUtils;
+const { selector, getPixel } = BbkUtils;
 
 interface section {
   vehicleHeader: any;
@@ -20,6 +25,26 @@ interface section {
 interface sectionProps {
   section: section;
 }
+
+const styles = StyleSheet.create({
+  noMatchWrap: {
+    backgroundColor: color.white,
+    paddingTop: getPixel(64),
+    paddingBottom: getPixel(40),
+  },
+});
+
+const NoMatch = () => (
+  <View style={styles.noMatchWrap}>
+    <BbkListNoMatch
+      type={ImgType.No_Search_Result}
+      title={getSharkValue('listCombine_filterModalNoResult')}
+      subTitle=""
+      isShowOperateButton={false}
+      isShowRentalDate={false}
+    />
+  </View>
+);
 
 const VehicleList = (props: any) => {
   const {
@@ -104,6 +129,7 @@ const VehicleList = (props: any) => {
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
       ListFooterExtraComponent={<SelectedFilterItems />}
+      ListEmptyComponent={<NoMatch />}
       threshold={50}
       {...passThroughProps}
     />

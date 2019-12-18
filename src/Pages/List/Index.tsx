@@ -6,10 +6,9 @@ import { ViewPort, IBasePageProps, Event } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
-import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
-import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
+import { ListServiceModel } from '../../Global/Business/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -17,11 +16,13 @@ import VehGroupNav from '../../Containers/ListVehGroupContainer';
 import FilterAndSortModal from '../../Containers/ListFilterAndSortModalContainer';
 import ListFilterBar from '../../Containers/ListFilterBarContainer';
 import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
+import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
+import ListNoMatch from '../../Containers/NoMatchContainer';
+import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 
 const { selector } = BbkUtils;
 
 interface ListStateType extends IStateType {
-  locationDatePopVisible: boolean;
   filterAndSortModalVisible: boolean;
   listThreshold: number
 }
@@ -45,11 +46,15 @@ interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
   rentalDate: any;
+  datePickerVisible: boolean;
+  locationDatePopVisible: boolean;
   setPageStatus: (data: any) => void;
   fetchList: () => void;
   fetchApiListCallback: (data: any) => void;
   setLocationInfo: (rentalLocation: any) => void;
   setActiveFilterBarCode: (data: any) => void;
+  setDatePickerIsShow: ({ visible: boolean }) => void;
+  setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
 }
 
 const removeEvents = () => {
@@ -61,10 +66,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   filterModalRef: RefObject<any>;
 
+  datePickerRef: any;
+
   constructor(props) {
     super(props);
     this.state = {
-      locationDatePopVisible: false, // 修改取还车信息弹层是否展示
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
     };
@@ -144,22 +150,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
-  // 控制取还车信息弹层是否展示
-  controlRentalLocationDatePopIsShow = (isFlag = false) => {
-    const { locationDatePopVisible } = this.state;
-    // todo
-    // if (progress !== 1) {
-    //   Toast.show('加载中，请稍候...');
-    //   return;
-    // }
-
-    if (locationDatePopVisible !== isFlag) {
-      this.setState({
-        locationDatePopVisible: isFlag,
-      });
-    }
-  };
-
   setVehicleListThreshold = ({ nativeEvent }) => {
     const { height } = nativeEvent.layout;
     this.setState({
@@ -173,6 +163,23 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       this.filterModalRef.current.show();
     } else {
       this.filterModalRef.current.hide();
+    }
+  }
+
+  handleDatePickerRef = (ref) => {
+    this.datePickerRef = ref;
+  }
+
+  onBackAndroid() {
+    const { datePickerVisible, locationDatePopVisible } = this.props;
+    if (datePickerVisible) {
+      this.datePickerRef.dismiss(() => {
+        this.props.setDatePickerIsShow({ visible: false });
+      });
+    } else if (locationDatePopVisible) {
+      this.props.setLocationAndDatePopIsShow({ visible: false });
+    } else {
+      this.pageGoBack();
     }
   }
 
@@ -194,7 +201,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListHeader
             handleBackPress={this.pageGoBack}
             onPressCurrency={() => { }}
-            showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
             style={BbkStyleUtil.getMB(4)}
           />
 
@@ -210,7 +216,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               </View>
             )
           }
-          {/** 无结果 */}
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch datePickerRef={this.datePickerRef} />
+          }
         </View>
 
         {/** 供应商报价 */}
@@ -222,13 +231,12 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
 
+        <SearchPanelModal />
+
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
 
-        <BbkSearchPanelModal
-          visible={this.state.locationDatePopVisible}
-          onCancel={this.controlRentalLocationDatePopIsShow}
-          {...ListPropsModel.getSearchPanelProps()}
-        />
+        <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
+
       </ViewPort>
     );
   }

@@ -1,6 +1,9 @@
 import {
   SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID, FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_ACTIVE_FILTER_BAR_CODE, UPDATE_SELECTED_FILTER,
   SET_BATCH_REQUEST,
+  SET_LOCATIONDATEPOP_VISIBLE,
+  SET_DATEPICKER_VISIBLE,
+  RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
 
@@ -55,4 +58,18 @@ export const setActiveFilterBarCode = data => ({
 export const updateSelectedFilter = data => ({
   type: UPDATE_SELECTED_FILTER,
   data,
+});
+
+export const setLocationAndDatePopIsShow = data => ({
+  type: SET_LOCATIONDATEPOP_VISIBLE,
+  data,
+});
+
+export const setDatePickerIsShow = data => ({
+  type: SET_DATEPICKER_VISIBLE,
+  data,
+});
+
+export const reset = () => ({
+  type: RESET,
 });

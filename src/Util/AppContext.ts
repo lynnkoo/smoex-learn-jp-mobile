@@ -122,7 +122,7 @@ const initLanguage = async () => {
     if (traditional.includes(language)) {
       language = 'CN';
     }
-    this.LanguageInfo = {
+    appContext.LanguageInfo = {
       language,
       locale: localeInstance.getLocale(),
       site: language,
@@ -142,6 +142,10 @@ const reset = () => {
 
 const setPageInstance = (pageInstance) => {
   appContext.PageInstance = pageInstance;
+};
+
+const setLanguageCurrency = (currency) => {
+  appContext.LanguageInfo.currency = currency;
 };
 
 const AppContext = {
@@ -189,6 +193,7 @@ const AppContext = {
   setSharkKeys,
   reset,
   setPageInstance,
+  setLanguageCurrency,
 };
 
 export default AppContext;

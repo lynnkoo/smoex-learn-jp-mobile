@@ -70,7 +70,7 @@ export const getSearchPanelProps = () => {
     pcity: pCityInfo,
     rcity: rCityInfo,
     age,
-    showDropoff: rentalLocation.isOneWay,
+    showDropoff: rentalLocation.isShowDropOff,
   };
 };
 

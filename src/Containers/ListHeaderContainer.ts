@@ -11,6 +11,7 @@ import {
   getDropOffLocationName,
   getDropOffLocationType,
 } from '../State/LocationAndDate/Selectors';
+import { setLocationAndDatePopIsShow, fetchListBatchQuery } from '../State/List/Actions';
 
 const mapStateToProps = state => ({
   data: {
@@ -31,8 +32,15 @@ const mapStateToProps = state => ({
   currency: AppContext.LanguageInfo.currency,
 });
 
-/* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
+  showSearchSelectorWrap: () => { dispatch(setLocationAndDatePopIsShow({ visible: true })); },
+  onPressHeaderRight: (data) => {
+    if (data && data.code) {
+      AppContext.setLanguageCurrency(data.code);
+      dispatch(fetchListBatchQuery());
+      // todo log
+    }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BbkComponentCarHeader);

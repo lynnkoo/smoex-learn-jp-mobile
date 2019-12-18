@@ -34,7 +34,7 @@ export const getDropOffLocationLat = state => state.LocationAndDate.rentalLocati
 
 export const getDropOffLocationLng = state => state.LocationAndDate.rentalLocation.dropOff.area.lng;
 
-export const getIsOneWay = state => state.LocationAndDate.rentalLocation.isOneWay;
+export const getIsShowDropOff = state => state.LocationAndDate.rentalLocation.isShowDropOff;
 
 export const getFormatRentalDate = (state, formatTemp = 'YYYYMMDDHHmmss') => {
   const rentalDate = getRentalDate(state) || {};
@@ -53,3 +53,5 @@ export const getFormatLocationAndDate = state => ({
   rentalDate: getFormatRentalDate(state),
   rentalLocation: getRentalLocation(state),
 });
+
+export const isDifferentLocation = state => getPickUpLocationCode(state) !== getDropOffLocationCode(state);

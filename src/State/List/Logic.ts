@@ -1,12 +1,13 @@
 import { createLogic } from 'redux-logic';
 import uuid from 'uuid';
+import _ from 'lodash';
 import {
-  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
+  FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID, DELETE_SELECTED_FILTER,
 } from './Types';
 import { ApiResCode } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
-  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset,
+  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter
 } from './Actions';
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
@@ -111,9 +112,24 @@ export const setGroupIdByIndex = createLogic({
   },
 });
 
+export const deleteSelectedFilter = createLogic({
+  type: DELETE_SELECTED_FILTER,
+  async process({ action, getState }, dispatch, done) {
+    // @ts-ignore
+    const data = action.data || {};
+    const { deleteCode } = data;
+    // @ts-ignore
+    const newSelectedFilters = getState().List.selectedFilters.bitsFilter;
+    _.pull(newSelectedFilters, deleteCode);
+    dispatch(updateSelectedFilter({ bitsFilter: newSelectedFilters }));
+    done();
+  },
+});
+
 export default [
   apiListBatchQuery,
   apiListQueryProducts,
   apiListQueryProductsCallback,
   setGroupIdByIndex,
+  deleteSelectedFilter,
 ];

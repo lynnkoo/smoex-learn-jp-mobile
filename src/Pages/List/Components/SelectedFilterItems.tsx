@@ -55,7 +55,7 @@ const SelectedFilterItem = ({ id, text, clearFilter }: SelectedFilterItemProps) 
         text={text}
         style={styles.filterItem}
         textStyle={styles.filterItemText}
-        iconContent={htmlDecode(icon.default.cross)}
+        iconContent={htmlDecode(icon.cross)}
         iconStyle={[styles.filterItemText, styles.filterItemClose]}
       />
     </BbkTouchable>

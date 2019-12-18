@@ -7,6 +7,7 @@ import PageIdTrip from './PageId/PageId.TRIP';
 import FrontEndConfig, { AgeConfig } from './FrontEndConfig';
 import ClickKey from './ClickKey';
 import LogKey from './LogKey';
+import FilterBarType from './FilterBarType';
 import * as ApiResCode from './ApiResCode';
 
 // /* eslint-disable global-require */
@@ -55,4 +56,5 @@ export {
   LogKey,
   ApiResCode,
   FrontEndConfig,
+  FilterBarType,
 };

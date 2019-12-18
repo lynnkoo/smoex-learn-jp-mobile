@@ -9,7 +9,9 @@ export const getFilterBarProps = (pressCallback) => {
     text: 'Sort', // todo - shark key
     isActive: false, // todo - 根据store中的值来判断
     hasFilter: false, // todo - 根据store中的值来判断
-    onPress: () => { pressCallback('sort'); },
+    onPress: () => {
+      pressCallback('sort');
+    },
   };
   filterItemList.push(sort);
   // 第二步 获取服务端返回的热门项的状态
@@ -20,7 +22,9 @@ export const getFilterBarProps = (pressCallback) => {
       text: m.name,
       isActive: false, // todo - 根据store中的值来判断
       hasFilter: false, // todo - 根据store中的值来判断
-      onPress: () => { pressCallback(m.code); },
+      onPress: () => {
+        pressCallback(m.code);
+      },
     };
     filterItemList.push(item);
   });
@@ -29,14 +33,15 @@ export const getFilterBarProps = (pressCallback) => {
     text: 'Filter', // todo - shark key
     isActive: false, // todo - 根据store中的值来判断
     hasFilter: false, // todo - 根据store中的值来判断
-    onPress: () => { pressCallback('filter'); },
+    onPress: () => {
+      pressCallback('filter');
+    },
   };
   filterItemList.push(filter);
   return {
     items: filterItemList,
   };
 };
-
 
 // 获取搜索区域模块所需参数
 export const getSearchPanelProps = () => {
@@ -71,35 +76,5 @@ export const getSearchPanelProps = () => {
 
 // 获取筛选和排序弹层所需参数
 export const getFilterAndSortModalProps = () => {
-  const listRes = ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {};
-  const sortItems = (listRes.basicData && listRes.basicData.sortItems) || [];
-  // const popularFilterItems = listRes.popularFilterItems || [];
-  const filterData = [];
-  const type = 'sort'; // todo  传点击的具体类型
-  // switch (type) {
-  //   case 'sort':
-  //     sortItems.forEach((item) => {
-  //       filterData.push({
-  //         name: item.title,
-  //         isSelected: false, // todo
-  //       });
-  //     });
-  //     break;
-  //   case 'Vendor_0':
-  //     const curFilterItem = popularFilterItems.find((f) => f.code === 'Vendor_0');
-  //     if(curFilterItem && curFilterItem.) {}
-  //   default:
-  //     break;
-  // }
-  sortItems.forEach((item) => {
-    filterData.push({
-      name: item.title,
-      isSelected: false, // todo
-    });
-  });
-  return {
-    filterData,
-    isShowFooter: false, // todo 根据类型来判断
-    type,
-  };
+
 };

@@ -69,3 +69,39 @@ export const getRecommendInfo = () => getBaseResData().recommendInfo || {};
 
 // 是否为异地取还
 export const isDiffLocation = () => getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName;
+
+// 遍历筛选code
+const mapCode = (filterMenu, result) => {
+  if (filterMenu.filterGroups && filterMenu.filterGroups.length > 0) {
+    filterMenu.filterGroups.forEach((group) => {
+      if (group.filterItems && group.filterItems.length > 0) {
+        group.filterItems.forEach((filter) => {
+          result.push(filter.itemCode);
+        });
+      }
+    });
+  }
+
+  return result;
+};
+
+// 获取filterbar上每个选项所含有的筛选项的全部code
+export const getFilterBarItemsCode = () => {
+  const popularFilterList = getPopularFilterItems().map(item => ({
+    type: item.code.indexOf('Vendor_') > -1 ? 'Supplier' : item.code,
+    codeList: mapCode(item, []),
+  })) || [];
+
+  let filterList = [];
+
+  getFilterItems().forEach((item) => {
+    filterList = filterList.concat(mapCode(item, []));
+  });
+
+  popularFilterList.push({
+    type: 'Filter',
+    codeList: filterList,
+  });
+
+  return popularFilterList;
+};

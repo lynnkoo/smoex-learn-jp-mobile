@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import {
   FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_GROUPID,
 } from './Types';
-import { ApiResCode } from '../../Constants/Index';
+import { ApiResCode, FrontEndConfig } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
   setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset,
@@ -11,6 +11,7 @@ import {
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
 import { getVehGroupList } from '../../Global/Cache/ListResSelectors';
+
 
 const REQUEST_COUNT = 2;
 const batchGroups = [0, 1];
@@ -37,7 +38,11 @@ export const apiListQueryProducts = createLogic({
     // 获取请求的批次
     // @ts-ignore
     const param = packageListReqParam(getState(), action.data);
-    const res = await CarFetch.getListProduct(param); // todo catch
+    const res = await CarFetch.getListProduct(param).catch((err) => {
+      // todo Log
+      dispatch(fetchApiListCallback({ param, res: null, err }));
+      done();
+    });
     dispatch(fetchApiListCallback({ param, res }));
     done();
   },
@@ -54,8 +59,8 @@ export const apiListQueryProductsCallback = createLogic({
     const resCode = res && res.baseResponse && res.baseResponse.code;
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
-      const initGId = res.productGroups[0].groupCode;
-      dispatch(initActiveGroupId({ activeGroupId: initGId })); // todo allcars
+      const initGId = FrontEndConfig.AllCarsConfig.groupCode;
+      dispatch(initActiveGroupId({ activeGroupId: initGId }));
     }
 
     // @ts-ignore

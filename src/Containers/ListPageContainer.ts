@@ -7,7 +7,7 @@ import {
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 
 import {
-  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible,
+  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getProgress,
 } from '../State/List/Selectors';
 import { getFormatRentalDate } from '../State/LocationAndDate/Selectors';
 
@@ -15,6 +15,7 @@ const mapStateToProps = state => ({
   isLoading: getIsLoading(state),
   isFail: getIsFail(state),
   rentalDate: getFormatRentalDate(state),
+  progress: getProgress(state),
   datePickerVisible: getDatePickerVisible(state),
   locationDatePopVisible: getLocationDatePopVisible(state),
 });

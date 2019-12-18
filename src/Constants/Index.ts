@@ -4,7 +4,7 @@ import { AppContext } from '../Util/Index';
 import PageIdIsd from './PageId/PageId.CTRIP_ISD';
 import PageIdOsd from './PageId/PageId.CTRIP_OSD';
 import PageIdTrip from './PageId/PageId.TRIP';
-import AgeConfig from './AgeConfig';
+import FrontEndConfig, { AgeConfig } from './FrontEndConfig';
 import ClickKey from './ClickKey';
 import LogKey from './LogKey';
 import FilterBarType from './FilterBarType';
@@ -55,5 +55,6 @@ export {
   ClickKey,
   LogKey,
   ApiResCode,
+  FrontEndConfig,
   FilterBarType,
 };

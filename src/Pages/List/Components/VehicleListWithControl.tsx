@@ -12,8 +12,6 @@ import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 
-// todo: 性能优化 allCars 预留 Index
-
 interface VehicleListWithControlProps {
   maxIndex?: number;
   minIndex?: number;
@@ -98,7 +96,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       return Toast.show('正在加载');
     }
 
-    console.log('---------onRefreshSection');
+    // console.log('---------onRefreshSection');
     const { index } = this.state;
     const { minIndex } = this.props;
 
@@ -162,7 +160,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       return Toast.show('正在加载');
     }
 
-    console.log('---------onLoadMore');
+    // console.log('---------onLoadMore');
     if (index >= maxIndex) {
       return null;
     }
@@ -176,7 +174,6 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     return null;
   }
 
-  // eslint-disable-next-line
   renderVehicleListDom = (index, placeHolder) => {
     const {
       listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
@@ -279,7 +276,6 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       const placeHolder = Math.abs(i - index) > 0;
       dom[i] = this.renderVehicleListDom(i, placeHolder);
     }
-
 
     return dom;
   }

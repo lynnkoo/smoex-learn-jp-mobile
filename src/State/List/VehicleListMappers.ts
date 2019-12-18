@@ -149,7 +149,7 @@ const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: str
 
 const getSoldOutLabel = text => text && getVendorLabel()({
   text,
-  iconContent: htmlDecode(icon.default.circleWithSighFilled),
+  iconContent: htmlDecode(icon.circleWithSighFilled),
 });
 
 interface labelList {

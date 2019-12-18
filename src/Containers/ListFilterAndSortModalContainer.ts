@@ -1,14 +1,16 @@
 import { connect } from 'react-redux';
-import { FilterType } from '@ctrio/bbk-logic';
+import { FilterType } from '@ctrip/bbk-logic';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import FilterAndSortModal from '../Pages/List/Components/FilterAndSortModal';
 import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
+import { updateSelectedFilter, setActiveFilterBarCode } from '../State/List/Actions';
 import {
   getAllVehicleCount,
   getAllVendorPriceCount,
   getPopularFilterItems,
   getFilterItems,
   getSortList,
+  getFilterBarItemsCode,
 } from '../Global/Cache/ListResSelectors';
 
 const { selector } = BbkUtils;
@@ -18,7 +20,7 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
 
   if (filterMenuItem && filterMenuItem.length > 0) {
     filterMenuItem.forEach((menu) => {
-      if (menu.filterGroups && menu.filterGroups > 0) {
+      if (menu.filterGroups && menu.filterGroups.length > 0) {
         const filterGroups = [];
 
         menu.filterGroups.forEach((group) => {
@@ -31,12 +33,11 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               filterItems.push({
                 name: item.name,
                 code: selector(isPriceGroup, item.code, item.itemCode),
-                isSelected: selector(
-                  isPriceGroup && priceIsSelected,
-                  `${selectedFilters.priceList[0].min}-${selectedFilters.priceList[0].max}` ===
-                    item.code,
-                  selectedFilters.codeList.includes(item.itemCode),
-                ),
+                isSelected:
+                  isPriceGroup && priceIsSelected
+                    ? `${selectedFilters.priceList[0].min}-${selectedFilters.priceList[0].max}`
+                      === item.code
+                    : selectedFilters.codeList.includes(item.itemCode),
               });
             });
           }
@@ -53,14 +54,12 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
                 ),
                 filterItems,
               },
-              selector(
-                isPriceGroup && priceIsSelected,
-                {
+              isPriceGroup && priceIsSelected
+                ? {
                   minPrice: selectedFilters.priceList[0].min,
                   maxPrice: selectedFilters.priceList[0].max,
-                },
-                {},
-              ),
+                }
+                : {},
             ),
           );
         });
@@ -117,9 +116,9 @@ const getFilterData = (state) => {
           name: item.title,
           code: item.code,
           isSelected:
-            displaySelectedFilters.codeList &&
-            displaySelectedFilters.codeList.length > 0 &&
-            displaySelectedFilters.codeList.some((f: any) => f === item.code),
+            displaySelectedFilters.codeList
+            && displaySelectedFilters.codeList.length > 0
+            && displaySelectedFilters.codeList.some((f: any) => f === item.code),
         });
       });
       isShowFooter = false;
@@ -130,7 +129,10 @@ const getFilterData = (state) => {
       break;
     default:
       filterData = setFilterMenu(
-        popularFilterItems.find((f: any) => f.code === filterBarType),
+        popularFilterItems.filter(
+          (f: any) => f.code === filterBarType
+            || (filterBarType === 'Supplier' && f.code.indexOf('Vendor_') > -1),
+        ), // 供应商筛选项code为Vendor_
         displaySelectedFilters,
       );
       isShowFooter = true;
@@ -140,6 +142,8 @@ const getFilterData = (state) => {
     filterData,
     isShowFooter,
     type: filterBarType,
+    selectedFilters: getSelectedFilters(state),
+    allFilters: getFilterBarItemsCode() || [],
   };
 };
 
@@ -150,6 +154,11 @@ const mapStateToProps = state => ({
 });
 
 /* eslint-disable no-unused-vars */
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = dispatch => ({
+  updateSelectedFilter: (data) => {
+    dispatch(updateSelectedFilter(data));
+  },
+  setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterAndSortModal);

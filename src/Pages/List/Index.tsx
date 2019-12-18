@@ -1,10 +1,10 @@
-import React, { useRef, RefObject } from 'react';
+import React, { RefObject } from 'react';
 import {
   Platform, StatusBar, View, StyleSheet,
 } from 'react-native';
 import { ViewPort, IBasePageProps, Event } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkStyleUtil } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 import CPage, { IStateType } from '../../Components/App/CPage';
@@ -17,6 +17,8 @@ import VehGroupNav from '../../Containers/ListVehGroupContainer';
 import FilterAndSortModal from '../../Containers/ListFilterAndSortModalContainer';
 import ListFilterBar from '../../Containers/ListFilterBarContainer';
 import VehicleListWithControl from '../../Containers/VehicleListWithControlContainer';
+
+const { selector } = BbkUtils;
 
 interface ListStateType extends IStateType {
   locationDatePopVisible: boolean;
@@ -47,6 +49,7 @@ interface IListPropsType extends IBasePageProps {
   fetchList: () => void;
   fetchApiListCallback: (data: any) => void;
   setLocationInfo: (rentalLocation: any) => void;
+  setActiveFilterBarCode: (data: any) => void;
 }
 
 const removeEvents = () => {
@@ -66,7 +69,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       listThreshold: 0,
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
-    this.filterModalRef = useRef(null);
+    this.filterModalRef = React.createRef();
   }
 
   getPageId() {
@@ -164,6 +167,15 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
+  onPressFilterBar = (type, isActive) => {
+    this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });
+    if (!isActive) {
+      this.filterModalRef.current.show();
+    } else {
+      this.filterModalRef.current.hide();
+    }
+  }
+
   render() {
     const { listThreshold } = this.state;
     const curStage = this.getCurStage();
@@ -185,7 +197,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             showSearchSelectorWrap={() => { this.controlRentalLocationDatePopIsShow(true); }}
             style={BbkStyleUtil.getMB(4)}
           />
-          <ListFilterBar />
+
+          {/** todo FilterBar 展开动画 */}
+          <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
+
           <VehGroupNav pageId={this.getPageId()} />
 
           {curStage === PAGESTAGE.INIT
@@ -207,13 +222,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
 
+        <FilterAndSortModal filterModalRef={this.filterModalRef} />
+
         <BbkSearchPanelModal
           visible={this.state.locationDatePopVisible}
           onCancel={this.controlRentalLocationDatePopIsShow}
           {...ListPropsModel.getSearchPanelProps()}
         />
-
-        <FilterAndSortModal filterModalRef={this.filterModalRef} />
       </ViewPort>
     );
   }

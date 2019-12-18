@@ -1,5 +1,5 @@
 import {
-  SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID, FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK,
+  SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID, FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_ACTIVE_FILTER_BAR_CODE, UPDATE_SELECTED_FILTER,
   SET_BATCH_REQUEST,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -44,5 +44,15 @@ export const fetchApiListCallback = data => ({
 
 export const setBatchRequest = data => ({
   type: SET_BATCH_REQUEST,
+  data,
+});
+
+export const setActiveFilterBarCode = data => ({
+  type: SET_ACTIVE_FILTER_BAR_CODE,
+  data,
+});
+
+export const updateSelectedFilter = data => ({
+  type: UPDATE_SELECTED_FILTER,
   data,
 });

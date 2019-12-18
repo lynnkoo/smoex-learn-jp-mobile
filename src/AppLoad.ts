@@ -21,7 +21,6 @@ const initialiseAppContext = async () => {
   AppContext.CarEnv.apptype = Utils.getAppType(AppContext.UrlQuery.apptype);
 
   const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
-  const ubt = await Utils.getUBT();
 
   /**
    * init channelId
@@ -38,6 +37,8 @@ const initialiseAppContext = async () => {
     AppContext.MarketInfo.channelId = CHANNEL_ID.ZUCHE;
   } else if (Utils.getChannelName() === CHANNEL_TYPE_UNION.CTRIP) {
     AppContext.MarketInfo.channelId = CHANNEL_ID.CTRIP_DEFAULT;
+  } else if (Utils.isTrip()) {
+    AppContext.MarketInfo.channelId = CHANNEL_ID.IBU_DEFAULT;
   }
 
   // init childChannelId
@@ -46,6 +47,7 @@ const initialiseAppContext = async () => {
   }
 
   // init sId
+  const ubt = await Utils.getUBT();
   const wakeResult = await Business.getWakeUpDataSync();
   if (propsUrl.sid) {
     AppContext.MarketInfo.sId = propsUrl.sid;

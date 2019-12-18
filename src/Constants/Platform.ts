@@ -51,6 +51,7 @@ export const BUSINESS_TYPE = {
 };
 
 export const CHANNEL_ID = {
+  IBU_DEFAULT: '15513',
   CTRIP_DEFAULT: '14277',
   CTRIP_MAIN_APP: '7',
   CTRIP_MAIN_H5: '5',

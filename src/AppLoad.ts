@@ -75,10 +75,10 @@ const initialiseAppContext = async () => {
 
 const appLoad = (props) => {
   initialisePropsUrl(props);
+  initialiseAppContext();
   initialiseStore();
   // initialiseABTesting();
   initialiseAppState();
-  initialiseAppContext();
 };
 
 export default appLoad;

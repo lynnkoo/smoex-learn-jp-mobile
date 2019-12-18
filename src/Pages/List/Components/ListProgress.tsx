@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   progressWrap: {
     width: BbkUtils.vw(100),
-    height: BbkUtils.getPixel(88),
+    height: BbkUtils.getPixel(90),
     backgroundColor: color.white,
     alignItems: 'center',
     justifyContent: 'center',

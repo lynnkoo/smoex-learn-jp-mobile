@@ -1,3 +1,7 @@
+import moment from 'moment';
+import { Utils } from '../../Util/Index';
+import { CtripOsdInitRentalLocation } from '../../__datas__/LocationAndDate';
+
 export const placeHolder = null;
 
 /**
@@ -81,4 +85,35 @@ export const getLoactionFromEvent = (data, isOneWay) => {
     res.dropOff = dropoff && formatLocationFromEvent(dropoff);
   }
   return res;
+};
+
+export const getInitPTime = () => {
+  const pTime = moment();
+  if (Utils.isTrip()) {
+    pTime.add(2, 'd').startOf('hour').hours(10);
+  } else if (Utils.isCtripOsd()) {
+    pTime.add(7, 'd').startOf('hour').hours(10);
+  } else if (Utils.isCtripIsd()) {
+    // todo 国内初始时间的处理
+  }
+
+  return pTime;
+};
+
+export const getInitRTime = () => getInitPTime().add(Utils.getRentalGap(), 'd');
+
+export const getInitLocationInfo = () => {
+  if (Utils.isTrip()) {
+    // 开发环境时 默认先取ctrip的, 为了满足列表页请求需要默认参数。若后面接了首页后,可以去除。
+    /* eslint-disable */
+    if (__DEV__) {
+      return CtripOsdInitRentalLocation;
+    }
+  } else if (Utils.isCtripOsd()) {
+    return CtripOsdInitRentalLocation;
+  } else if (Utils.isCtripIsd) {
+    // todo 国内初始地点的处理
+  }
+
+  return null;
 };

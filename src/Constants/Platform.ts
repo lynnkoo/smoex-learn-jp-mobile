@@ -32,12 +32,6 @@ export const APP_ID = {
   ZUCHE: '5010',
 };
 
-export const CHANNEL_TYPE = {
-  ISD: 'rn_car_isd',
-  OSD: 'rn_car_osd',
-  IBU: 'rn_ibu_car',
-};
-
 export const CHANNEL_TYPE_UNION = {
   CTRIP: 'rn_car_app',
   TRIP: 'rn_ibu_car_app',
@@ -61,4 +55,11 @@ export const CHANNEL_ID = {
   CTRIP_MAIN_APP: '7',
   CTRIP_MAIN_H5: '5',
   ZUCHE: '610',
+};
+
+export const RENTAL_GAP = {
+  ISD: 2,
+  OSD: 7,
+  IBU: 3,
+  UNKNOW: 7,
 };

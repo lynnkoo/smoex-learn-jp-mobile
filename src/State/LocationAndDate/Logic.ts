@@ -62,9 +62,8 @@ export const setGroupIdByIndex = createLogic({
     const data = action.data || {};
     const { fromEvent } = data;
     if (fromEvent === 'changeRentalLocation') {
-      const { isOneWay } = getRentalLocation(getState());
-      // todo: isOneWay 含义统一
-      const newData = getLoactionFromEvent(data, !isOneWay);
+      const { isShowDropOff } = getRentalLocation(getState());
+      const newData = getLoactionFromEvent(data, isShowDropOff);
       next({
         ...action,
         data: newData,

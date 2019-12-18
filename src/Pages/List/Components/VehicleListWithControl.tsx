@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
-  View, Animated, Dimensions,
+  View, Animated, Dimensions, StyleSheet,
 } from 'react-native';
 import { Toast } from '@ctrip/crn';
 import BbkThemeProvider from '@ctrip/bbk-theming';
@@ -12,10 +12,13 @@ import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 
+// todo: 性能优化 allCars 预留 Index
+
 interface VehicleListWithControlProps {
   maxIndex?: number;
   minIndex?: number;
-  initIndex: number;
+  index: number;
+  progress?: number;
   listData?: any;
   initialNumToRender?: number;
   theme?: any;
@@ -28,15 +31,23 @@ interface VehicleListWithControlProps {
 
 interface VehicleListWithControlState {
   index: number;
+  initIndex: number;
   isDark: boolean;
   translateYAnim: any;
 }
 
-export default class VehicleListWithControl extends Component<VehicleListWithControlProps, VehicleListWithControlState> {
+const styles = StyleSheet.create({
+  vehicleListWrap: {
+    position: 'absolute',
+    width: '100%',
+  },
+});
+
+export default class VehicleListWithControl extends PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
     maxIndex: 0,
     minIndex: 0,
-    initIndex: 0,
+    index: 0,
     listData: {},
     initialNumToRender: 10,
     theme: {},
@@ -47,17 +58,22 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
 
   cacheList = [];
 
+  cacheStyle = [];
+
   scrollerRef = {};
 
   isScrolling = false;
 
   cachePlaceHolder = null;
 
+  animating = false;
+
   constructor(props) {
     super(props);
-    const { initIndex } = props;
+    const { index } = props;
     this.state = {
-      index: initIndex,
+      initIndex: index,
+      index,
       isDark: false,
       translateYAnim: new Animated.Value(0),
     };
@@ -100,10 +116,27 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
     return null;
   }
 
-  animate = (index, callback = () => {}) => {
-    const { translateYAnim } = this.state;
-    const { height, threshold, initIndex: initIdx } = this.props;
+  getStyle(i) {
+    const { initIndex } = this.state;
+    const {
+      threshold, height,
+    } = this.props;
+    const theme = this.getTheme();
     const scrollViewHeight = height - threshold;
+    const offset = i - initIndex;
+    // console.log('【performance】getStyle ', i, initIndex)
+    return [styles.vehicleListWrap, {
+      top: scrollViewHeight * offset,
+      height: scrollViewHeight,
+      backgroundColor: theme.scrollBackgroundColor,
+    }];
+  }
+
+  animate = (index, callback = () => {}) => {
+    const { translateYAnim, initIndex: initIdx } = this.state;
+    const { height, threshold } = this.props;
+    const scrollViewHeight = height - threshold;
+    // console.log('【performance】animate ', initIdx, index)
     Animated.timing(
       translateYAnim,
       {
@@ -115,8 +148,11 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
       this.isScrolling = false;
       callback();
     });
-    this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+    if (this.scrollerRef[index]) {
+      this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+    }
     this.props.setActiveGroupId({ activeGroupIndex: index });
+    this.animating = true;
   }
 
   onLoadMore = (callback) => {
@@ -141,7 +177,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
   }
 
   // eslint-disable-next-line
-  renderVehicleListDom = (index, style, placeHolder) => {
+  renderVehicleListDom = (index, placeHolder) => {
     const {
       listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
@@ -163,9 +199,11 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
 
     const cache = this.cacheList[index];
     if (!cache) {
+      const style = this.getStyle(index);
       if (placeHolder) {
         return <View style={style} key={index} />;
       }
+      // console.log('【performance】cache ', index, placeHolder)
       this.cacheList[index] = (
         <VehicleList
           stickySectionHeadersEnabled
@@ -195,60 +233,53 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           endFillColor={theme.scrollBackgroundColor || color.grayBg}
         />
       );
-    } else if (this.scrollerRef[index]) {
-      this.scrollerRef[index].setNativeProps({
-        style,
-      });
     }
 
     return this.cacheList[index];
   }
 
-  tabScroll = (index) => {
-    const { translateYAnim } = this.state;
-    this.setState({
-      index,
-    });
+  tabScroll = (nextIndex) => {
+    if (this.animating) {
+      this.animating = false;
+      return;
+    }
+    const { translateYAnim, initIndex } = this.state;
+    const { height, threshold } = this.props;
+    const scrollViewHeight = height - threshold;
+    // console.log('【performance】tabScroll ', initIndex, nextIndex)
     Animated.timing(
       translateYAnim,
       {
-        toValue: 0,
+        toValue: scrollViewHeight * (initIndex - nextIndex),
         duration: 0,
         useNativeDriver: true,
       },
     ).start();
-    this.renderAllVehicleListDom(index);
+    this.setState({
+      index: nextIndex,
+    });
   }
 
   // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(props) {
-    if (props.initIndex !== this.props.initIndex) {
-      this.tabScroll(props.initIndex);
+    if (props.index !== this.props.index) {
+      this.tabScroll(props.index);
     }
   }
 
-  renderAllVehicleListDom($index) {
+  renderAllVehicleListDom() {
     const dom = [];
-    const reset = $index !== undefined;
-    const index = reset ? $index : this.state.index;
+    const { index } = this.state;
     const {
-      minIndex, maxIndex, threshold, height,
+      minIndex, maxIndex,
     } = this.props;
-    const scrollViewHeight = height - threshold;
-    const theme = this.getTheme();
 
+    // console.log('【performance】renderAllVehicleListDom ', $index, reset)
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
-      const offset = i - index;
-      const style = {
-        position: 'absolute',
-        top: scrollViewHeight * offset,
-        height: scrollViewHeight,
-        width: '100%',
-        backgroundColor: theme.scrollBackgroundColor,
-      };
-      const placeHolder = Math.abs(offset) > 1;
-      dom[i] = this.renderVehicleListDom(i, style, placeHolder);
+      const placeHolder = Math.abs(i - index) > 0;
+      dom[i] = this.renderVehicleListDom(i, placeHolder);
     }
+
 
     return dom;
   }
@@ -274,7 +305,7 @@ export default class VehicleListWithControl extends Component<VehicleListWithCon
           zIndex: -1,
         }}
         >
-          {this.renderAllVehicleListDom(undefined)}
+          {this.renderAllVehicleListDom()}
         </Animated.View>
       </BbkThemeProvider>
     );

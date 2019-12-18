@@ -63,7 +63,7 @@ const formatLocationFromEvent = (location) => {
     pickup: {...}, // 见 formatLocationFromEvent from
     dropoff: {...},
   }
- * @param {boolean} isOneWay 是否关闭异地取还按钮
+ * @param {boolean} isShowDropOff 是否异地取还
  * @returns {any}
   {
     pickUp: {...}, // 见 formatLocationFromEvent to
@@ -71,14 +71,14 @@ const formatLocationFromEvent = (location) => {
     isShowDropOff: false,
   }
  */
-export const getLoactionFromEvent = (data, isOneWay) => {
+export const getLoactionFromEvent = (data, isShowDropOff) => {
   const { pickup, dropoff } = data;
   const res: any = {};
   res.pickUp = pickup && formatLocationFromEvent(pickup);
-  if (isOneWay) {
-    res.dropOff = res.pickUp;
-  } else {
+  if (isShowDropOff) {
     res.dropOff = dropoff && formatLocationFromEvent(dropoff);
+  } else {
+    res.dropOff = res.pickUp;
   }
   return res;
 };

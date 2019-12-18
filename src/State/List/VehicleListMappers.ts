@@ -3,8 +3,10 @@ import {
   tokenType,
   icon,
 } from '@ctrip/bbk-tokens';
+import memoizeOne from 'memoize-one';
 
 import { BbkUtils } from '@ctrip/bbk-utils';
+import { getSharkValue } from '@ctrip/bbk-shark';
 import { Utils } from '../../Util/Index';
 import {
   listDay, Reviews, total,
@@ -93,6 +95,7 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
       vehicleLabels: vehicleLabels.filter(v => v),
     },
     recommendDesc,
+    count,
   };
 };
 
@@ -111,6 +114,8 @@ const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
       price: currentDailyPrice,
       currency: currentCurrencyCode,
     },
+    // todo: bbk更新selector
+    // [currentOriginalDailyPrice && 'originPrice']: {
     originPrice: {
       // todo: 没有日价时需要取总价
       price: currentOriginalDailyPrice,
@@ -144,7 +149,7 @@ const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: str
 
 const getSoldOutLabel = text => text && getVendorLabel()({
   text,
-  iconContent: htmlDecode(icon.default.circleWithSighFilled),
+  iconContent: htmlDecode(icon.circleWithSighFilled),
 });
 
 interface labelList {
@@ -189,7 +194,7 @@ const getVendorLabelItems = (vendor) => {
   if (platformName) {
     labels.provider = [
       getNormalVendorLabel({
-        text: platformName,
+        text: getSharkValue('list_serviceProvidedBy', platformName),
       }),
     ];
   }
@@ -229,7 +234,7 @@ const getVendorHeaderProps = (vendor) => {
   };
 };
 
-const getVendorItemData = (vendor) => {
+const getVendorItemData = (vendor, vendorIndex) => {
   const {
     priceInfo, reference, privilegesPromotions, stockDesc,
   } = vendor;
@@ -244,32 +249,38 @@ const getVendorItemData = (vendor) => {
     soldOutLabel,
     vendorHeaderProps,
     reference,
+    vendorIndex,
   };
 };
 
-const getVendorListData = vendorPriceList => _.map(vendorPriceList, (vendor) => {
-  const vendorItemData = getVendorItemData(vendor);
+const getVendorListData = (vendorPriceList, vehicleIndex) => _.map(vendorPriceList, (vendor, vendorIndex) => {
+  const vendorItemData = getVendorItemData(vendor, `${vehicleIndex}-${vendorIndex}`);
   return vendorItemData;
 });
 
-export const getVehicleListData = () => {
-  const { productGroups, vehicleList } = getVehAndProductList();
-  const groupListData = productGroups.map((group) => {
-    const { productList } = group;
-    const vehicleListData = productList.map((product, vehicleIndex) => {
-      const { vehicleCode, vendorPriceList } = product;
-      const vehicleItemData = getVehicleItemData(vehicleList, vehicleCode);
-      const vendorListData = getVendorListData(vendorPriceList);
-      return {
-        vehicleIndex,
-        ...vehicleItemData,
-        data: [vendorListData],
-      };
+export const getVehicleListData = memoizeOne(
+  // eslint-disable-next-line
+  (progress) => {
+    // console.log('【performance】getVehicleListData ---------- ', progress)
+    count = 0;
+    const { productGroups, vehicleList } = getVehAndProductList();
+    const groupListData = productGroups.map((group) => {
+      const { productList } = group;
+      const vehicleListData = productList.map((product, vehicleIndex) => {
+        const { vehicleCode, vendorPriceList } = product;
+        const vehicleItemData = getVehicleItemData(vehicleList, vehicleCode);
+        const vendorListData = getVendorListData(vendorPriceList, vehicleIndex);
+        return {
+          vehicleIndex,
+          ...vehicleItemData,
+          data: [vendorListData],
+        };
+      });
+      return vehicleListData;
     });
-    return vehicleListData;
-  });
-  return groupListData;
-};
+    return groupListData;
+  },
+);
 
 export const getGroupLength = () => {
   const vehGroupList = getVehGroupList();

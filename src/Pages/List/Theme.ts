@@ -1,4 +1,4 @@
-import { color, setOpacity } from '@ctrip/bbk-tokens';
+import { color, setOpacity, tokenType } from '@ctrip/bbk-tokens';
 
 export const themeLight = {
   vendorDescLowColor: color.fontSubDark,
@@ -11,6 +11,20 @@ export const themeLight = {
   orangePrice: color.orangePrice,
   fontSubLight: color.fontSubLight,
   redBorder: color.redBorder,
+
+  /**
+   * Vehicle
+   */
+  bbkPriceDescPricePrimaryColor: color.blueBase,
+  bbkVehicleNameBorderBottomColor: color.white,
+  bbkVehicleDescSplitLineColor: setOpacity(color.white, 0.7),
+  /**
+   * Label & Button
+   */
+  [tokenType.ColorType.Red]: {
+    labelColor: color.white,
+    labelBgColor: color.redBg,
+  },
 };
 
 export const themeDark = {
@@ -28,4 +42,18 @@ export const themeDark = {
     labelColor: color.white,
   },
   fontPrimaryColor: color.white,
+
+  /**
+   * Vehicle
+   */
+  bbkPriceDescPricePrimaryColor: color.blueBase,
+  bbkVehicleNameBorderBottomColor: color.white,
+  bbkVehicleDescSplitLineColor: setOpacity(color.white, 0.7),
+  /**
+   * Label & Button
+   */
+  [tokenType.ColorType.Red]: {
+    labelColor: color.white,
+    labelBgColor: color.redBg,
+  },
 };

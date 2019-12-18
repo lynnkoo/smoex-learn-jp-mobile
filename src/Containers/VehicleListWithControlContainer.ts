@@ -1,18 +1,20 @@
 import { connect } from 'react-redux';
-
 import VehicleListWithControl from '../Pages/List/Components/VehicleListWithControl';
-import { getActiveGroupIndex } from '../State/List/Selectors';
+import { getActiveGroupIndex, getProgress } from '../State/List/Selectors';
 import { setActiveGroupId } from '../State/List/Actions';
 import { getVehicleListData, getGroupLength } from '../State/List/VehicleListMappers';
 
 
 const mapStateToProps = (state) => {
   const { minIndex, maxIndex } = getGroupLength();
+  const progress = getProgress(state);
+  // console.log('【performance】mapStateToProps ', getActiveGroupIndex(state))
   return {
-    initIndex: getActiveGroupIndex(state),
+    index: getActiveGroupIndex(state),
     minIndex,
     maxIndex,
-    listData: getVehicleListData(),
+    progress,
+    listData: getVehicleListData(progress),
   };
 };
 

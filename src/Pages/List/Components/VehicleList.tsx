@@ -1,6 +1,6 @@
-// eslint-disable-next-line
-import React, { memo, useState, useEffect } from 'react';
-// eslint-disable-next-line
+import React, {
+  memo, useMemo, useCallback, useState, useEffect,
+} from 'react';
 import _ from 'lodash';
 import { View, StyleSheet } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
@@ -34,16 +34,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const NoMatch = () => (
-  <View style={styles.noMatchWrap}>
-    <BbkListNoMatch
-      type={ImgType.No_Search_Result}
-      title={getSharkValue('listCombine_filterModalNoResult')}
-      subTitle=""
-      isShowOperateButton={false}
-      isShowRentalDate={false}
-    />
-  </View>
+const NoMatch = () => useMemo(
+  () => (
+    <View style={styles.noMatchWrap}>
+      <BbkListNoMatch
+        type={ImgType.No_Search_Result}
+        title={getSharkValue('listCombine_filterModalNoResult')}
+        subTitle=""
+        isShowOperateButton={false}
+        isShowRentalDate={false}
+      />
+    </View>
+  ),
+  [],
 );
 
 const VehicleList = (props: any) => {
@@ -52,32 +55,32 @@ const VehicleList = (props: any) => {
     showMax,
     ...passThroughProps
   } = props;
-  const [showMoreArr, setShowMoreArr] = useState(sections.map(({ data }) => data[0].length > showMax));
+  const [showMoreArr, setShowMoreArr] = useState(() => sections.map(({ data }) => data[0].length > showMax));
   const [showFooter, setShowFooter] = useState(false);
+  const sectionsLen = sections.length;
 
-
-  const renderItem = (data) => {
-    const vhicleData = data;
+  const renderItem = useCallback((data) => {
+    let { item } = data;
     if (showMoreArr[data.section.vehicleIndex]) {
-      vhicleData.item = data.item.slice(0, showMax);
+      item = data.item.slice(0, showMax);
     }
+    // console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
     return (
       <Vehicle
-        {...vhicleData}
+        item={item}
+        section={data.section}
       />
     );
-  };
+  }, [showMax, showMoreArr]);
 
-  const renderSectionHeader = ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
+  const renderSectionHeader = useCallback(({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
     <VehicleHeader
       vehicleHeader={vehicleHeader}
-      onLayout={() => {
-        if (vehicleIndex === sections.length - 1) {
-          setShowFooter(true);
-        }
-      }}
+      vehicleIndex={vehicleIndex}
+      sectionsLen={sectionsLen}
+      setShowFooter={setShowFooter}
     />
-  );
+  ), [sectionsLen]);
 
   const [showLoginItem, setShowLoginItem] = useState(false);
 
@@ -88,25 +91,27 @@ const VehicleList = (props: any) => {
 
   useEffect(() => {
     isLogin();
-  });
+  }, []);
+
+  // useEffect(() => {
+  //   console.log('【performance】Vehicle List ', props.index, getGroupNameByIndex(props.index))
+  // })
 
   const onLogin = () => {
     User.toLogin();
   };
 
-  const renderSectionFooter = ({ section: { data, vehicleIndex } }: sectionProps) => {
+  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
-
-    const showMoreHandler = () => {
-      setShowMoreArr(showMoreArr.map((value, i) => (i === vehicleIndex ? !value : value)));
-    };
 
     return (
       <>
         <VehicleFooter
           moreNumber={showMore ? moreNumber : showMore}
-          onPress={showMoreHandler}
+          setShowMoreArr={setShowMoreArr}
+          vehicleIndex={vehicleIndex}
+          showMoreArr={showMoreArr}
         />
 
         {
@@ -119,7 +124,7 @@ const VehicleList = (props: any) => {
         }
       </>
     );
-  };
+  }, [showLoginItem, showMax, showMoreArr]);
 
   return (
     <SectionListWithControl
@@ -136,9 +141,4 @@ const VehicleList = (props: any) => {
   );
 };
 
-// const shouldUpdate = (prevProps, nextProps) => {
-//   return _.get(prevProps, 'section.vehicleHeader.vehicleName') !== _.get(nextProps, 'section.vehicleHeader.vehicleName');
-// };
-
-// export default memo(VehicleList, shouldUpdate);
-export default VehicleList;
+export default memo(VehicleList);

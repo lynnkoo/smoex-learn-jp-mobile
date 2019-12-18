@@ -75,16 +75,13 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     return isIos ? this.onScroll : _.throttle(this.onScroll, throttle, { trailing: false });
   }
 
-  // eslint-disable-next-line
-  triggerScroll = (event, debugInfo?: string) => {
+  triggerScroll = (event) => {
     const { threshold } = this.props;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
     const contentHeight = event.nativeEvent.contentSize.height;
     let load = false;
     let refresh = false;
-
-    // console.log(`${debugInfo}-->`, y + height, contentHeight);
 
     if (isIos) {
       if (y + height > contentHeight + threshold) {
@@ -117,7 +114,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     const {
       load,
       refresh,
-    } = this.triggerScroll(event, 'onScroll');
+    } = this.triggerScroll(event);
 
     if (load) {
       this.setState({
@@ -136,7 +133,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     const {
       load,
       refresh,
-    } = this.triggerScroll(event, 'onScrollEndDrag');
+    } = this.triggerScroll(event);
 
     if (load) {
       const { showFooter } = this.props;
@@ -165,6 +162,15 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         refreshing: false,
       });
     }
+  }
+
+  // to fix control state
+  // onScrollEndDrag could be triggered before onScroll finished
+  onMomentumScrollEnd = () => {
+    this.setState({
+      onLoading: false,
+      refreshing: false,
+    });
   }
 
   refFn = (ref) => {
@@ -221,10 +227,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         scrollEventThrottle={throttle}
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle()}
-        // onScrollToIndexFailed={(index, highestMeasuredFrameIndex, averageItemLength) => {
-        //   console.log('----------', index, highestMeasuredFrameIndex, averageItemLength)
-        // }}
-        // refreshControl={
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
         ListHeaderComponent={(
           // @ts-ignore
           <RefreshControl

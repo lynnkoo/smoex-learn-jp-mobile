@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+/* eslint-disable */
 export const ListProductRes = {
   baseResponse: {
     isSuccess: true,

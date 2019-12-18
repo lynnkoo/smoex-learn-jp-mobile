@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+import React, {
+  memo, useCallback,
+} from 'react';
 import { View } from 'react-native';
 // eslint-disable-next-line
 import _ from 'lodash';
@@ -12,22 +14,24 @@ import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkCarImage from '@ctrip/bbk-component-car-image';
 import { VehicleListStyle as style } from '../Styles';
-import Verdor from '../../../Containers/VendorContainer';
+import Vendor from '../../../Containers/VendorContainer';
 import { listShowMore } from '../Texts';
 
 const { selector } = BbkUtils;
 
 
-export const Vehicle = withTheme(
+export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
-    const { recommendDesc, vehicleDesc } = section;
+    const {
+      recommendDesc, vehicleDesc, vehicleHeader,
+    } = section;
     const {
       imgUrl, vehicleImageLabel, vehicleLabelsHorizontal, vehicleLabels,
     } = vehicleDesc;
 
-    useEffect(() => {
-      // console.log('--------------Vehicle', _.get(section, 'vehicleHeader.vehicleName'))
-    });
+    // useEffect(() => {
+    //   console.log('√【performance】Vehicle Item ', vehicleHeader.vehicleName)
+    // })
 
     return (
       <View style={[style.wrap, { backgroundColor: theme.backgroundColor }]}>
@@ -61,41 +65,67 @@ export const Vehicle = withTheme(
         }
 
         {
-          item.map((data, index) => (
+          _.map(item, (data, index) => (
             // eslint-disable-next-line
-            <Verdor key={index} {...data} />
+            <Vendor key={index} {...data} vehicleName={vehicleHeader.vehicleName} />
           ))
         }
       </View>
     );
   },
-);
+));
 
-export const VehicleHeader = withTheme(
-  ({ vehicleHeader, onLayout, theme }) => {
+export const VehicleHeader = memo(withTheme(
+  ({
+    vehicleHeader, vehicleIndex, sectionsLen, setShowFooter, theme,
+  }) => {
     const {
       vehicleName,
       groupName,
       isSimilar,
       isHotLabel,
     } = vehicleHeader;
+
+    // useEffect(() => {
+    //   console.log('√【performance】Vehicle Header ', vehicleHeader.vehicleName)
+    // })
+
+    const onLayout = useCallback(() => {
+      if (vehicleIndex === sectionsLen - 1) {
+        setShowFooter(true);
+      }
+    }, [vehicleIndex, sectionsLen, setShowFooter]);
+
     return (
       <View style={{ backgroundColor: theme.backgroundColor }} onLayout={onLayout}>
         <BbkVehicleName name={vehicleName} groupName={groupName} isSimilar={isSimilar} isHotLabel={isHotLabel} />
       </View>
     );
   },
-);
+));
 
-export const VehicleFooter = withTheme(
-  ({ moreNumber, onPress, theme }) => {
+export const VehicleFooter = memo(withTheme(
+  ({
+    moreNumber,
+    setShowMoreArr,
+    showMoreArr,
+    vehicleIndex, theme,
+  }) => {
     const moreTextStyle = [style.moreText, {
       color: theme.blueBase,
     }];
 
+    // useEffect(() => {
+    //   console.log('√【performance】Vehicle Footer ')
+    // })
+
+    const showMoreHandler = useCallback(() => {
+      setShowMoreArr(showMoreArr.map((value, i) => (i === vehicleIndex ? !value : value)));
+    }, [setShowMoreArr, showMoreArr, vehicleIndex]);
+
     return selector(
       moreNumber,
-      <BbkTouchable onPress={onPress}>
+      <BbkTouchable onPress={showMoreHandler}>
         <BbkCarRightIcon
           text={listShowMore(moreNumber)}
           style={[style.more, style.vehicleMarginBottom, {
@@ -110,4 +140,4 @@ export const VehicleFooter = withTheme(
       <View style={style.vehicleMarginBottom} />,
     );
   },
-);
+));

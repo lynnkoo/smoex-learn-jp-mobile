@@ -222,18 +222,18 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
           <FilterAndSortModal filterModalRef={this.filterModalRef} />
           <VehGroupNav pageId={this.getPageId()} />
-          {curStage === PAGESTAGE.INIT
-            && (
-              <View style={{ overflow: 'hidden' }}>
-                <BbkSkeletonLoading visible pageName={PageType.List} />
-              </View>
-            )
-          }
-          {
-            curStage === PAGESTAGE.FAIL
-            && <ListNoMatch datePickerRef={this.datePickerRef} />
-          }
         </View>
+        {curStage === PAGESTAGE.INIT
+          && (
+            <View style={{ overflow: 'hidden' }}>
+              <BbkSkeletonLoading visible pageName={PageType.List} />
+            </View>
+          )
+        }
+        {
+          curStage === PAGESTAGE.FAIL
+          && <ListNoMatch datePickerRef={this.datePickerRef} />
+        }
         {/** 供应商报价 */}
         {curStage === PAGESTAGE.SHOW
           && (

@@ -10,7 +10,7 @@ export const initDateDropoff = moment()
   .add(14, 'd')
   .hours(10);
 
-export const initRentalLocation = {
+export const CtripOsdInitRentalLocation = {
   pickUp: {
     cid: 347,
     cname: '洛杉矶',

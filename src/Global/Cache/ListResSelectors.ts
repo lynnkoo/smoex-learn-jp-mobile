@@ -1,5 +1,6 @@
-import { getProductGroups } from '@ctrip/bbk-logic';
+import { getProductGroupsAndCount } from '@ctrip/bbk-logic';
 import { FrontEndConfig } from '../../Constants/Index';
+// import { getStore } from '../../State/Store';
 
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
@@ -9,9 +10,19 @@ export const getBaseResData = () => ListReqAndResData.getData(ListReqAndResData.
 // 获取服务端返回的基础的车型组报价数据
 export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 
-// 获取所有车型组下的报价数据(包含全部车型)
-// todo 需调排序的
-export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
+// 获取所有筛选项列表
+export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [];
+
+// 获取筛选后的所有车型组下的报价数据(包含全部车型)
+export const getAllProductGroupsAndCount = () => {
+  // todo
+  // const state = getStore().getState();
+  // const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
+  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
+  return filterResult;
+};
+
+export const getAllProductGroups = () => getAllProductGroupsAndCount().productGroups;
 
 export const getRequestInfo = () => getBaseResData().requestInfo || {};
 
@@ -39,9 +50,6 @@ export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;
 
 // 获取所有报价个数
 export const getAllVendorPriceCount = () => getBaseResData().allVendorPriceCount || 0;
-
-// 获取所有筛选项列表
-export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [];
 
 const getFilterItemsByHierarchy = (hierarchy: number) => {
   const targetList = [];

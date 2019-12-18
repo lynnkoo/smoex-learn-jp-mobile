@@ -220,6 +220,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           />
           {/** todo FilterBar 展开动画 */}
           <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
+          <FilterAndSortModal filterModalRef={this.filterModalRef} />
           <VehGroupNav pageId={this.getPageId()} />
           {curStage === PAGESTAGE.INIT
             && (
@@ -242,7 +243,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
         <SearchPanelModal />
-        <FilterAndSortModal filterModalRef={this.filterModalRef} />
+       
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
       </ViewPort>
     );

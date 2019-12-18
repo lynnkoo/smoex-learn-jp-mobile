@@ -6,6 +6,7 @@ import {
   getDefaultPageName, getPageName, getParams, checkParams,
 } from './Helpers';
 import { setDateInfo, setLocationInfo } from '../LocationAndDate/Actions';
+import {setAge} from '../DriverAgeAndNumber/Actions';
 import { AppContext, Utils } from '../../Util/Index';
 
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=192826013
@@ -36,6 +37,7 @@ export const load = createLogic({
             dropoff: Utils.dateTimeFormat(_.get(params, 'rentalDate.dropOff.dateTime')),
           }));
           dispatch(setLocationInfo({ ...params.rentalLocation }));
+          dispatch(setAge({age: params.age}));
           dispatch(loadMarketCompleted({ landingto: pageName }));
           isLoadSuccess = true;
         }

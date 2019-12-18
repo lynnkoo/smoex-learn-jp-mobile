@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   progressWrap: {
     width: BbkUtils.vw(100),
-    height: BbkUtils.getPixel(90),
+    height: BbkUtils.getPixel(84),
     backgroundColor: color.white,
     alignItems: 'center',
     justifyContent: 'center',
@@ -36,11 +36,18 @@ const styles = StyleSheet.create({
 
 const ListProgress = (props: IPropsType) => {
   const [isFinished, setIsFinished] = useState(false);
-  const [animatedOpacity] = useState(new Animated.Value(1));
-  const [animatedProgress] = useState(new Animated.Value(0));
+  const [animatedOpacity, setAnimatedOpacity] = useState(new Animated.Value(1));
+  const [animatedProgress, setAnimatedProgress] = useState(new Animated.Value(0));
 
   const { progress, vehCount, priceCount } = props;
   useEffect(() => {
+
+    if (isFinished && progress === 0) {
+      setIsFinished(false);
+      setAnimatedOpacity(new Animated.Value(1));
+      setAnimatedProgress(new Animated.Value(0));
+    }
+
     let progressToVal = 0;
     if (progress > 0) {
       progressToVal = progress === 1 ? width : 0.9 * width;
@@ -64,7 +71,6 @@ const ListProgress = (props: IPropsType) => {
 
   if (isFinished) return null;
 
-  // todo shark key
   const tips = listFetchResult([priceCount, vehCount]);
   return (
     <Animated.View style={[styles.mainWrap, { opacity: animatedOpacity }]}>

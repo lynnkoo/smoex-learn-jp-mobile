@@ -1,6 +1,6 @@
 import { getProductGroupsAndCount } from '@ctrip/bbk-logic';
 import { FrontEndConfig } from '../../Constants/Index';
-import { getStore } from '../../State/Store';
+// import { getStore } from '../../State/Store';
 
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
@@ -15,11 +15,10 @@ export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [
 
 // 获取筛选后的所有车型组下的报价数据(包含全部车型)
 export const getAllProductGroupsAndCount = () => {
-  const state = getStore().getState();
-  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
-
-  console.log('测试+++filterResult', filterResult);
-
+  // todo
+  // const state = getStore().getState();
+  // const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
+  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
   return filterResult;
 };
 

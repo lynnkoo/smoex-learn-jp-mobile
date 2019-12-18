@@ -2,8 +2,8 @@ import { IBUCountry } from '@ctrip/crn';
 import { createLogic } from 'redux-logic';
 import { GET_COUNTRY_INFO } from './Types';
 import { setCountryInfo } from './Actions';
-import { Utils } from '../../Util/Index';
-import * as InitCountryInfo from '../../__datas__/CountryInfo';
+import { Utils, CarFetch } from '../../Util/Index';
+import { FrontEndConfig } from '../../Constants/Index';
 
 export const getCountryInfo = createLogic({
   type: GET_COUNTRY_INFO,
@@ -11,30 +11,24 @@ export const getCountryInfo = createLogic({
   async process({ }, dispatch, done) {
     const curResidency = await Utils.promisable(IBUCountry.getCurrentCountry)('callback');
     if (curResidency) {
-      // const param = {
-      //   countryCode: curResidency.countryCode,
-      // };
-
-      // todo
-      // const fetchAppCountryId = await CarFetch.queryAppCountryId(param);
-      // const result = await fetchAppCountryId.post();
-
-      // test
-      const result = {
-        isSuccessful: true,
-        countryId: 66,
+      let countryInfo = FrontEndConfig.CountryDefaultConfig;
+      const param = {
+        countryCode: curResidency.countryCode,
       };
 
-      const countryId = result && result.isSuccessful && result.countryId;
-      let countryInfo;
+      const res = await CarFetch.queryAppCountryId(param).catch(() => {
+        dispatch(setCountryInfo(countryInfo));
+        done();
+        // todo log
+      });
+      const countryId = res && res.isSuccessful && res.countryId;
+
       if (countryId) {
         countryInfo = {
           countryId,
           countryCode: curResidency.countryCode,
           countryName: curResidency.localizationName,
         };
-      } else {
-        countryInfo = InitCountryInfo;
       }
       dispatch(setCountryInfo(countryInfo));
     }

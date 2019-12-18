@@ -1,5 +1,5 @@
 import { getProductGroups } from '@ctrip/bbk-logic';
-import { allCars } from '../../Pages/List/Texts';
+import { FrontEndConfig } from '../../Constants/Index';
 
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
@@ -11,10 +11,7 @@ export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 
 // 获取所有车型组下的报价数据(包含全部车型)
 // todo 需调排序的
-export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), {
-  groupCode: 'all',
-  groupName: allCars,
-});
+export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
 
 export const getRequestInfo = () => getBaseResData().requestInfo || {};
 

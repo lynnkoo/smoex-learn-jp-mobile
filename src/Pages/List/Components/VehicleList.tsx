@@ -64,7 +64,7 @@ const VehicleList = (props: any) => {
     if (showMoreArr[data.section.vehicleIndex]) {
       item = data.item.slice(0, showMax);
     }
-    console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
+    // console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
     return (
       <Vehicle
         item={item}

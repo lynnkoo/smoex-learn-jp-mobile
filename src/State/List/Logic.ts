@@ -54,15 +54,8 @@ export const apiListQueryProductsCallback = createLogic({
   async process({ action, getState }, dispatch, done) {
     // @ts-ignore
     const { param, res } = action.data || {};
-    // const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false; // todo
-    const isSuccess = (res && res.productGroups && res.productGroups.length > 0) || false;
+    const isSuccess = (res && res.baseResponse && res.baseResponse.isSuccess) || false;
     const resCode = res && res.baseResponse && res.baseResponse.code;
-    if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
-      ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
-      const initGId = FrontEndConfig.AllCarsConfig.groupCode;
-      dispatch(initActiveGroupId({ activeGroupId: initGId }));
-    }
-
     // @ts-ignore
     const newBatchesRequest = getState().List.batchesRequest;
     // 记录当前响应的结果
@@ -82,11 +75,20 @@ export const apiListQueryProductsCallback = createLogic({
     // 计算进度条的进度值
     const curProgress = totalCount >= REQUEST_COUNT ? 1 : (totalCount > 0 ? 0.6 : 0);
     const has200 = newBatchesRequest.find(f => f.resCode === ApiResCode.ListResCode.C200);
+    // 更新Cache
+    if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
+      ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
+      const initGId = FrontEndConfig.AllCarsConfig.groupCode;
+      dispatch(initActiveGroupId({ activeGroupId: initGId }));
+    } else if (!isSuccess && (totalCount >= REQUEST_COUNT || has200)) {
+      ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
+    }
+
     // 当前页面有数据展示，则不展示loading
     const curPageResData = ListResSelectors.getBaseResData();
     const hasResult = (curPageResData && curPageResData.productGroups && curPageResData.productGroups.length > 0) || false;
     const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
-    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1); // todo 待确认, 如果是第一批失败的话, 是否会展示白屏？
+    const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1);
     const nextProgress = (hasResult || !has200) ? curProgress : 1;
     dispatch(setStatus({ isLoading: nextIsLoading, isFail: nextFailed, progress: nextProgress }));
     done();

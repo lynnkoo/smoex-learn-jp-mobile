@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import _ from 'lodash';
+import memoizeOne from 'memoize-one';
 import { URL } from '@ctrip/crn';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkPriceDesc from '@ctrip/bbk-component-car-price-desc';
@@ -9,6 +10,13 @@ import { withTheme } from '@ctrip/bbk-theming';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import { VehicleListStyle as style } from '../Styles';
 import VerdorHeader from './VendorHeader';
+
+const getLabelWrapStyle = memoizeOne(
+  (type) => {
+    const rowTypes = ['normal', 'feature'];
+    return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
+  },
+);
 
 export default withTheme(
   ({
@@ -25,7 +33,7 @@ export default withTheme(
       //   ...locationAndDate,
       //   book: reference,
       // };
-      // todo: test
+      // TODO-DYY: 填写页新接口联调
       const data: any = {
         rentalLocation: {
           pickUp: {
@@ -87,11 +95,6 @@ export default withTheme(
       },
     };
 
-    const getLabelWrapStyle = (type) => {
-      const rowTypes = ['normal', 'feature'];
-      return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
-    };
-
     const getLabelProps = (labelProps, type) => {
       const themeMap = {
         feature: {
@@ -112,6 +115,10 @@ export default withTheme(
     };
 
     const labelTypes = _.keys(vendorLabelItems);
+
+    // useEffect(() => {
+    //   console.log('【performance】Vendor Item ', vehicleName, vendorIndex)
+    // })
 
     return (
       <View style={[style.vendor, { borderBottomColor: setOpacity(theme.black, 0.1) }]}>

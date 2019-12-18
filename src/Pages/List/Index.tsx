@@ -2,15 +2,14 @@ import React from 'react';
 import {
   Platform, StatusBar, View, StyleSheet,
 } from 'react-native';
-import { ViewPort, IBasePageProps, Event } from '@ctrip/crn';
+import {
+  ViewPort, IBasePageProps, Event, Toast,
+} from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
-import { ListPropsModel, ListServiceModel } from '../../Global/Business/Index';
-import FilterAndSortModal from './Components/FilterAndSortModal';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -19,6 +18,8 @@ import VehicleListWithControl from '../../Containers/VehicleListWithControlConta
 import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
+import { ListReqAndResData } from '../../Global/Cache/Index';
+import { AppContext } from '../../Util/Index';
 
 interface ListStateType extends IStateType {
   filterAndSortModalVisible: boolean;
@@ -46,9 +47,8 @@ interface IListPropsType extends IBasePageProps {
   rentalDate: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
-  setPageStatus: (data: any) => void;
+  progress: number;
   fetchList: () => void;
-  fetchApiListCallback: (data: any) => void;
   setLocationInfo: (rentalLocation: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
@@ -63,6 +63,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   datePickerRef: any;
 
+  hasInitFetch: boolean;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -70,6 +72,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       listThreshold: 0,
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
+    ListReqAndResData.removeData();
+    this.hasInitFetch = false;
   }
 
   getPageId() {
@@ -79,8 +83,19 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    this.props.fetchList();
+    this.getListProduct();
     this.registerEvents();
+  }
+
+  componentDidUpdate() {
+    this.getListProduct();
+  }
+
+  getListProduct = () => {
+    if (!this.hasInitFetch && AppContext.LanguageInfo.currency) {
+      this.props.fetchList();
+      this.hasInitFetch = true;
+    }
   }
 
   componentWillUnmount() {
@@ -105,17 +120,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   pageGoBack = () => {
     this.pop();
     // todo log
-  }
-
-  // 调用获取列表页数据接口
-  fetchListProduct = () => {
-    this.batchesRequest = [];
-    ListServiceModel.apiListBatchQuery(this.apiListQueryProductsCallback);
-  }
-
-  apiListQueryProductsCallback = (data) => {
-    this.props.setPageStatus({ batchesRequest: this.batchesRequest, ...data });
-    this.props.fetchApiListCallback({ batchesRequest: this.batchesRequest, ...data });
   }
 
   getCurStage() {
@@ -168,6 +172,15 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
+  handlePressHeader = () => {
+    if (this.props.progress !== 1) {
+      Toast.show('加载中，请稍候...'); // todo shark key
+      return;
+    }
+    this.props.setLocationAndDatePopIsShow({ visible: true });
+    // todo Log
+  }
+
   render() {
     const { listThreshold } = this.state;
     const curStage = this.getCurStage();
@@ -185,10 +198,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )}
           <ListHeader
             handleBackPress={this.pageGoBack}
-            onPressCurrency={() => { }}
+            showSearchSelectorWrap={this.handlePressHeader}
             style={BbkStyleUtil.getMB(4)}
           />
-          <BbkFilterBar {...ListPropsModel.getFilterBarProps(this.handlePopularFilterPress)} />
           <VehGroupNav pageId={this.getPageId()} />
 
           {curStage === PAGESTAGE.INIT
@@ -215,11 +227,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
         <SearchPanelModal />
 
-        <FilterAndSortModal
-          visible={this.state.filterAndSortModalVisible}
-          {...ListPropsModel.getFilterAndSortModalProps()}
-          onHide={this.controlFilterModalIsShow}
-        />
 
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
 

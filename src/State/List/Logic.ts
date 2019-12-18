@@ -38,7 +38,11 @@ export const apiListQueryProducts = createLogic({
     // 获取请求的批次
     // @ts-ignore
     const param = packageListReqParam(getState(), action.data);
-    const res = await CarFetch.getListProduct(param); // todo catch
+    const res = await CarFetch.getListProduct(param).catch((err) => {
+      // todo Log
+      dispatch(fetchApiListCallback({ param, res: null, err }));
+      done();
+    });
     dispatch(fetchApiListCallback({ param, res }));
     done();
   },
@@ -56,7 +60,7 @@ export const apiListQueryProductsCallback = createLogic({
     if (isSuccess && (resCode === ApiResCode.ListResCode.C200 || resCode === ApiResCode.ListResCode.C201)) {
       ListReqAndResData.setData(ListReqAndResData.keyList.listProductRes, res);
       const initGId = FrontEndConfig.AllCarsConfig.groupCode;
-      dispatch(initActiveGroupId({ activeGroupId: initGId })); // todo allcars
+      dispatch(initActiveGroupId({ activeGroupId: initGId }));
     }
 
     // @ts-ignore

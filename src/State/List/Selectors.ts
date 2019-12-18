@@ -9,6 +9,10 @@ export const getProgress = state => state.List.progress;
 
 export const getActiveGroupId = state => state.List.activeGroupId;
 
+export const getActiveFilterBarCode = (state: any): string => state.List.activeFilterBarCode;
+
+export const getSelectedFilters = state => state.List.selectedFilters;
+
 export const getActiveGroupIndex = (state) => {
   const vehGroupList = getVehGroupList();
   const activeGroupId = getActiveGroupId(state);

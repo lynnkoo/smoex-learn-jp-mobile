@@ -24,8 +24,14 @@ interface VehGroupNavStateType {
 
 const styles = StyleSheet.create({
   container: {
-    height: BbkUtils.getPixel(88),
+    height: BbkUtils.getPixel(90),
     backgroundColor: color.white,
+  },
+  shadowStyle: {
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 4,
+    shadowColor: color.modalShadow,
+    shadowOpacity: 1,
   },
   mainWrap: {
     borderBottomWidth: 0,
@@ -91,11 +97,11 @@ export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGrou
     const { activeGroupId, progress } = this.props;
     if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.shadowStyle]}>
         <BbkHorizontalNav
           style={[styles.mainWrap, styles.topBorder]}
           indicatorWidth={BbkUtils.getPixel(40)}
-          indicatorHeight={BbkUtils.getPixel(3)}
+          indicatorHeight={BbkUtils.getPixel(6)}
           selectedId={activeGroupId}
         >
           {vehGroupNav}

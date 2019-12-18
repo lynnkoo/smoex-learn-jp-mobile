@@ -75,7 +75,6 @@ const SearchPanelModal = (props: IPropsType) => {
 
   const onTimeChange = (data) => {
     props.setDateInfo({ pickup: data.ptime, dropoff: data.rtime });
-    // todo sendEvent + log
   };
 
   const onTimeCancel = () => {

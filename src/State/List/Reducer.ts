@@ -1,5 +1,7 @@
 import {
   SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID, FETCH_LIST_BATCH, FETCH_LIST, FETCH_LIST_CALLBACK,
+  SET_ACTIVE_FILTER_BAR_CODE,
+  UPDATE_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
   RESET,
@@ -10,6 +12,15 @@ const getInitalState = () => ({
   isFail: false,
   progress: 0,
   activeGroupId: '',
+  activeFilterBarCode: '',
+  selectedFilters: {
+    sortFilter: '1',
+    priceFilter: [],
+    bitsFilter: [],
+  },
+  bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
+    filter: [],
+  },
   batchesRequest: [], // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
   locationDatePopVisible: false,
   datePickerVisible: false,
@@ -35,6 +46,10 @@ export default (state = initalState, action) => {
       return initActiveGroupId(state, action);
     case SET_GROUPID:
       return { ...state, activeGroupId: action.data.activeGroupId || state.activeGroupId };
+    case SET_ACTIVE_FILTER_BAR_CODE:
+      return { ...state, activeFilterBarCode: action.data.activeFilterBarCode };
+    case UPDATE_SELECTED_FILTER:
+      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
     case SET_LOCATIONDATEPOP_VISIBLE:
       return { ...state, locationDatePopVisible: action.data.visible };
     case SET_DATEPICKER_VISIBLE:

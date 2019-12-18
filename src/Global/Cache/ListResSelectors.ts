@@ -1,5 +1,5 @@
 import { getProductGroups } from '@ctrip/bbk-logic';
-import { allCars } from '../../Pages/List/Texts';
+import { FrontEndConfig } from '../../Constants/Index';
 
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
@@ -11,10 +11,7 @@ export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 
 // 获取所有车型组下的报价数据(包含全部车型)
 // todo 需调排序的
-export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), {
-  groupCode: 'all',
-  groupName: allCars,
-});
+export const getAllProductGroups = () => getProductGroups(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
 
 export const getRequestInfo = () => getBaseResData().requestInfo || {};
 
@@ -72,3 +69,39 @@ export const getRecommendInfo = () => getBaseResData().recommendInfo || {};
 
 // 是否为异地取还
 export const isDiffLocation = () => getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName;
+
+// 遍历筛选code
+const mapCode = (filterMenu, result) => {
+  if (filterMenu.filterGroups && filterMenu.filterGroups.length > 0) {
+    filterMenu.filterGroups.forEach((group) => {
+      if (group.filterItems && group.filterItems.length > 0) {
+        group.filterItems.forEach((filter) => {
+          result.push(filter.itemCode);
+        });
+      }
+    });
+  }
+
+  return result;
+};
+
+// 获取filterbar上每个选项所含有的筛选项的全部code
+export const getFilterBarItemsCode = () => {
+  const popularFilterList = getPopularFilterItems().map(item => ({
+    type: item.code.indexOf('Vendor_') > -1 ? 'Supplier' : item.code,
+    codeList: mapCode(item, []),
+  })) || [];
+
+  let filterList = [];
+
+  getFilterItems().forEach((item) => {
+    filterList = filterList.concat(mapCode(item, []));
+  });
+
+  popularFilterList.push({
+    type: 'Filter',
+    codeList: filterList,
+  });
+
+  return popularFilterList;
+};

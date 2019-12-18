@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 
 import List from '../Pages/List/Index';
 import {
-  initActiveGroupId, getStatus, fetchListBatchQuery, setDatePickerIsShow, setLocationAndDatePopIsShow,
+  initActiveGroupId, getStatus, fetchListBatchQuery, setDatePickerIsShow, setLocationAndDatePopIsShow, setActiveFilterBarCode,
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 
 import {
-  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible,
+  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getProgress,
 } from '../State/List/Selectors';
 import { getFormatRentalDate } from '../State/LocationAndDate/Selectors';
 
@@ -15,6 +15,7 @@ const mapStateToProps = state => ({
   isLoading: getIsLoading(state),
   isFail: getIsFail(state),
   rentalDate: getFormatRentalDate(state),
+  progress: getProgress(state),
   datePickerVisible: getDatePickerVisible(state),
   locationDatePopVisible: getLocationDatePopVisible(state),
 });
@@ -24,6 +25,7 @@ const mapDispatchToProps = dispatch => ({
   setPageStatus: data => dispatch(getStatus(data)),
   fetchList: () => dispatch(fetchListBatchQuery()),
   setLocationInfo: rentalLocation => dispatch(setLocationInfo(rentalLocation)),
+  setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
   setDatePickerIsShow: data => dispatch(setDatePickerIsShow(data)),
   setLocationAndDatePopIsShow: data => dispatch(setLocationAndDatePopIsShow(data)),
 });

@@ -18,6 +18,7 @@ export const getAllProductGroupsAndCount = () => {
   // todo
   // const state = getStore().getState();
   // const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
+  // @ts-ignore
   const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
   return filterResult;
 };

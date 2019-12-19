@@ -61,3 +61,4 @@ crnwebconf.js
 
 # todo: error  Parsing error: Unexpected token, expected ","
 src/Components/App/CPage.tsx
+src/Components/App/WithLogCode.tsx

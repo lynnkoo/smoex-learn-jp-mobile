@@ -65,47 +65,47 @@ const initFilterData = (type, tempFilterData) => {
 const RenderInner: React.FC<IFilterInner> = ({
   type, filterData, updateSelectedFilter, updateTempFilter, updateTempPrice, setModalVisible,
 }: IFilterInner) => (
-    <View>
-      {type === FilterBarType.Sort ? (
-        <BbkComponentSelectMenu
-          filterData={initFilterData(type, filterData)}
-          type={SelectMenuType.Single}
-          onToggle={(code) => {
-            updateSelectedFilter({ sortFilter: code });
-            setModalVisible(false);
-          }}
-        />
-      ) : type === FilterBarType.Supplier ? (
-        <BbkComponentFilterList
-          filterGroups={initFilterData(type, filterData)}
-          changeTempFilterData={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-        />
-      ) : type === FilterBarType.Seats ? (
-        <BbkComponentSelectMenu
-          filterData={initFilterData(type, filterData)}
-          type={SelectMenuType.Multiple}
-          onToggle={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-        />
-      ) : type === FilterBarType.Filter ? (
-        <BbkComponentFilterList
-          filterGroups={initFilterData(type, filterData)}
-          changeTempFilterData={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-          updateStartPrice={(startPrice) => {
-            updateTempPrice(startPrice, 'start');
-          }}
-          updateEndPrice={(endPrice) => {
-            updateTempPrice(endPrice, 'end');
-          }}
-        />
-      ) : null}
-    </View>
-  );
+  <View>
+    {type === FilterBarType.Sort ? (
+      <BbkComponentSelectMenu
+        filterData={initFilterData(type, filterData)}
+        type={SelectMenuType.Single}
+        onToggle={(code) => {
+          updateSelectedFilter({ sortFilter: code });
+          setModalVisible(false);
+        }}
+      />
+    ) : type === FilterBarType.Supplier ? (
+      <BbkComponentFilterList
+        filterGroups={initFilterData(type, filterData)}
+        changeTempFilterData={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+      />
+    ) : type === FilterBarType.Seats ? (
+      <BbkComponentSelectMenu
+        filterData={initFilterData(type, filterData)}
+        type={SelectMenuType.Multiple}
+        onToggle={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+      />
+    ) : type === FilterBarType.Filter ? (
+      <BbkComponentFilterList
+        filterGroups={initFilterData(type, filterData)}
+        changeTempFilterData={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+        updateStartPrice={(startPrice) => {
+          updateTempPrice(startPrice, 'start');
+        }}
+        updateEndPrice={(endPrice) => {
+          updateTempPrice(endPrice, 'end');
+        }}
+      />
+    ) : null}
+  </View>
+);
 
 const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   filterData,

@@ -17,7 +17,6 @@ import { getVehAndProductList, getVehGroupList, isDiffLocation } from '../../Glo
 const { getPixel, htmlDecode } = BbkUtils;
 let count = 0;
 
-// todo: memoize
 const getVehicleItemData = (vehicleList, vehicleCode) => {
   const vehicle = _.find(vehicleList, {
     vehicleCode,
@@ -62,9 +61,7 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
   ];
   return {
     vehicleHeader: {
-      // todo: test
-      vehicleName: `${name} ${count}`,
-      // vehicleName: name,
+      vehicleName: name,
       groupName,
       isSimilar: !isSpecialized,
       isHotLabel: isHot,

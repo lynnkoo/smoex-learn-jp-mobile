@@ -26,13 +26,13 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
         menu.filterGroups.forEach((group) => {
           const filterItems = [];
           const priceIsSelected = selectedFilters.priceList && selectedFilters.priceList.length > 0;
-          const isPriceGroup = group.code === 'Price';
+          const isPriceGroup = group.groupCode === 'Price';
 
           if (group.filterItems && group.filterItems.length > 0) {
             group.filterItems.forEach((item) => {
               filterItems.push({
                 name: item.name,
-                code: selector(isPriceGroup, item.code, item.itemCode),
+                code: item.itemCode,
                 isSelected:
                   isPriceGroup && priceIsSelected
                     ? `${selectedFilters.priceList[0].min}-${selectedFilters.priceList[0].max}`
@@ -53,6 +53,11 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
                   filterItems.some(f => f.isSelected),
                 ),
                 filterItems,
+              },
+              isPriceGroup ? {
+                isSingleChoice: true,
+              } : {
+                isSingleChoice: false,
               },
               isPriceGroup && priceIsSelected
                 ? {
@@ -155,9 +160,7 @@ const mapStateToProps = state => ({
 
 /* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
-  updateSelectedFilter: (data) => {
-    dispatch(updateSelectedFilter(data));
-  },
+  updateSelectedFilter: data => dispatch(updateSelectedFilter(data)),
   setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
 });
 

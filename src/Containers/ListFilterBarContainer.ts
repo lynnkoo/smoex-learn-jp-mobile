@@ -1,13 +1,7 @@
 import { connect } from 'react-redux';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
-import { getActiveFilterBarCode } from '../State/List/Selectors';
-import { getPopularFilterItems } from '../Global/Cache/ListResSelectors';
-
-// const getPopularFiltersHasFilter = (name) => {
-//   const codeList = getFilterBarItemsCode().popularFilterList.map(item => item.name === name);
-
-//   console.log(codeList);
-// };
+import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
+import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
 
 const getFilterBarData = (state) => {
   const filterItemList = [];
@@ -16,7 +10,7 @@ const getFilterBarData = (state) => {
   const sort = {
     text: 'Sort', // todo - shark key
     isActive: getActiveFilterBarCode(state) === 'Sort',
-    hasFilter: false,
+    hasFilter: getSelectedFilters(state).sortFilter !== '1',
   };
   filterItemList.push(sort);
   // 第二步 获取服务端返回的热门项的状态
@@ -25,7 +19,9 @@ const getFilterBarData = (state) => {
     const item = {
       text: m.name,
       isActive: getActiveFilterBarCode(state) === m.name,
-      hasFilter: false,
+      hasFilter: getFilterBarItemsCode()
+        .find(v => v.type === m.name)
+        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
     };
     filterItemList.push(item);
   });
@@ -33,7 +29,11 @@ const getFilterBarData = (state) => {
   const filter = {
     text: 'Filter', // todo - shark key
     isActive: getActiveFilterBarCode(state) === 'Filter',
-    hasFilter: false,
+    hasFilter:
+      getFilterBarItemsCode()
+        .find(v => v.type === 'Filter')
+        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c))
+      || getSelectedFilters(state).priceFilter.length > 0,
   };
   filterItemList.push(filter);
 

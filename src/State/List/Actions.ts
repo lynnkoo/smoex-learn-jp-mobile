@@ -1,6 +1,16 @@
 import {
-  SET_STATUS, GET_STATUS, SET_GROUPID, INIT_SET_GROUPID, FETCH_LIST, FETCH_LIST_BATCH, FETCH_LIST_CALLBACK, SET_ACTIVE_FILTER_BAR_CODE, UPDATE_SELECTED_FILTER,
+  SET_STATUS,
+  GET_STATUS,
+  SET_GROUPID,
+  INIT_SET_GROUPID,
+  FETCH_LIST,
+  FETCH_LIST_BATCH,
+  FETCH_LIST_CALLBACK,
   SET_BATCH_REQUEST,
+  SET_ACTIVE_FILTER_BAR_CODE,
+  UPDATE_SELECTED_FILTER,
+  DELETE_SELECTED_FILTER,
+  CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
   RESET,
@@ -57,6 +67,16 @@ export const setActiveFilterBarCode = data => ({
 
 export const updateSelectedFilter = data => ({
   type: UPDATE_SELECTED_FILTER,
+  data,
+});
+
+export const deleteSelectedFilter = data => ({
+  type: DELETE_SELECTED_FILTER,
+  data,
+});
+
+export const clearSelectedFilter = data => ({
+  type: CLEAR_SELECTED_FILTER,
   data,
 });
 

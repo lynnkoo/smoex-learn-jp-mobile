@@ -115,8 +115,6 @@ class CarLog {
   static LogMetric = (data: LogMetricType) => {
     Log.logMetric(data.key, data.value, { ...CarLog.logBasicInfo(), ...data.info });
   }
-
-  
 }
 
 export default CarLog;

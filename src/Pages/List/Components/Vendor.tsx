@@ -142,7 +142,7 @@ export default withTheme(
           }
 
           <View style={style.priceWrap}>
-            <BbkPriceDesc {...priceDescProps} />
+            {priceDescProps && <BbkPriceDesc {...priceDescProps} />}
             {
               soldOutLabel && <BbkLabel {...soldoutLabelProps} />
             }

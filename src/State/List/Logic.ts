@@ -7,7 +7,7 @@ import {
 import { ApiResCode, FrontEndConfig } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
-  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter
+  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter,
 } from './Actions';
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';

@@ -41,7 +41,6 @@ const ListProgress = (props: IPropsType) => {
 
   const { progress, vehCount, priceCount } = props;
   useEffect(() => {
-
     if (isFinished && progress === 0) {
       setIsFinished(false);
       setAnimatedOpacity(new Animated.Value(1));
@@ -67,7 +66,7 @@ const ListProgress = (props: IPropsType) => {
         });
       }
     });
-  }, [animatedOpacity, animatedProgress, progress]);
+  }, [animatedOpacity, animatedProgress, isFinished, progress]);
 
   if (isFinished) return null;
 

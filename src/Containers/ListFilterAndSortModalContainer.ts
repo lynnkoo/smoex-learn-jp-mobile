@@ -62,7 +62,7 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               isPriceGroup && priceIsSelected
                 ? {
                   minPrice: selectedFilters.priceList[0].min,
-                  maxPrice: selectedFilters.priceList[0].max,                 
+                  maxPrice: selectedFilters.priceList[0].max,
                 }
                 : {},
             ),

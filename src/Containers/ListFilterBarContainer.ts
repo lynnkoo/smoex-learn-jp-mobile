@@ -32,8 +32,8 @@ const getFilterBarData = (state) => {
     hasFilter:
       getFilterBarItemsCode()
         .find(v => v.type === 'Filter')
-        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)) ||
-      getSelectedFilters(state).priceFilter.length > 0,
+        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c))
+      || getSelectedFilters(state).priceFilter.length > 0,
   };
   filterItemList.push(filter);
 

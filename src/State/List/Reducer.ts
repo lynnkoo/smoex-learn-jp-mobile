@@ -2,6 +2,8 @@ import {
   SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID, FETCH_LIST_BATCH, FETCH_LIST, FETCH_LIST_CALLBACK,
   SET_ACTIVE_FILTER_BAR_CODE,
   UPDATE_SELECTED_FILTER,
+  DELETE_SELECTED_FILTER,
+  CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
   RESET,
@@ -58,6 +60,10 @@ export default (state = initalState, action) => {
         datePickerVisible: action.data.visible,
         datePickerFocusOnRtime: action.data.focurOnRTime !== undefined ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
       };
+    case DELETE_SELECTED_FILTER:
+      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
+    case CLEAR_SELECTED_FILTER:
+      return { ...state, selectedFilters: Object.assign({ ...state.selectedFilters }, { priceFilter: [], bitsFilter: [] }) };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
     case GET_STATUS:

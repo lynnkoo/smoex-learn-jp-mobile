@@ -101,9 +101,10 @@ const VehicleList = (props: any) => {
     User.toLogin();
   };
 
-  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex } }: sectionProps) => {
+  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
+    const { vehicleName }: any = vehicleHeader || {};
 
     return (
       <>
@@ -112,6 +113,7 @@ const VehicleList = (props: any) => {
           setShowMoreArr={setShowMoreArr}
           vehicleIndex={vehicleIndex}
           showMoreArr={showMoreArr}
+          vehicleName={vehicleName}
         />
 
         {

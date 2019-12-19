@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 import _ from 'lodash';
 import memoizeOne from 'memoize-one';
@@ -9,6 +9,8 @@ import { setOpacity } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import { VehicleListStyle as style } from '../Styles';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 import VerdorHeader from './VendorHeader';
 
 const getLabelWrapStyle = memoizeOne(
@@ -28,7 +30,7 @@ export default withTheme(
     // locationAndDate,
     // reference,
   }) => {
-    const onVerdorHeaderPress = () => {
+    const onVerdorHeaderPress = useCallback(() => {
       // const data: any = {
       //   ...locationAndDate,
       //   book: reference,
@@ -86,7 +88,8 @@ export default withTheme(
       // 跳转Trip详情页地址
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&data=${encodeURIComponent(JSON.stringify(data))}`;
       URL.openURL(url);
-    };
+      CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
+    }, []);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

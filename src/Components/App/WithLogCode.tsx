@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { CarLog } from '../../Util/Index';
+import BbkTouchable from '@ctrip/bbk-component-touchable';
 
 interface WrappedComponentPropsType {
   pageId: string;
@@ -9,8 +10,8 @@ interface WrappedComponentPropsType {
   logOtherInfo?: Object;
 }
 
-const WithLogCode = (WrappedComponent) => {
-  class WithLogCodeComponent extends Component<WrappedComponentPropsType> {
+const WithLogCode = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+  class WithLogCodeComponent extends Component<P & WrappedComponentPropsType> {
     handlePress = () => {
       const {
         onPress, pageId, enName, logOtherInfo,
@@ -23,7 +24,6 @@ const WithLogCode = (WrappedComponent) => {
       onPress();
     }
 
-
     render() {
       const { ...passThroughProps } = this.props;
       return (
@@ -31,11 +31,11 @@ const WithLogCode = (WrappedComponent) => {
       );
     }
   }
-
   return WithLogCodeComponent;
-};
+}
 
 export default WithLogCode;
 
 export const TextWithLogCode = WithLogCode(Text);
-export const TouchableOpacityWithLogCode = WithLogCode(TouchableOpacity); // todo 需替换成@ctrip/bbk-component-touchable
+export const TouchableOpacityWithLogCode = WithLogCode(TouchableOpacity);
+export const BbkTouchableWithLogCode = WithLogCode(BbkTouchable);

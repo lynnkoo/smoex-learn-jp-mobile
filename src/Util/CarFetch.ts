@@ -1,6 +1,7 @@
 import {
   fetch, cancelFetch, Device, Application,
 } from '@ctrip/crn';
+import _ from 'lodash';
 import uuid from 'uuid';
 import Utils from './Utils';
 import { REST_SOA } from '../Constants/Platform';
@@ -40,7 +41,7 @@ class FetchBase implements FetchBaseType {
     const curParam = Object.assign({}, params);
     const requestId = curParam.requestId || uuid();
     const parentRequestId = curParam.parentRequestId || '';
-    const { latitude, longitude, mac } = Device.deviceInfo;
+    const { latitude, longitude, mac }: any = Device.deviceInfo || {};
     return {
       sourceFrom: AppContext.CarEnv.apptype,
       requestId,
@@ -50,7 +51,7 @@ class FetchBase implements FetchBaseType {
       sourceCountryId: 1, // todo
       channelId: AppContext.MarketInfo.channelId,
       clientVersion: AppContext.CarEnv.BuildTime,
-      clientid: Device.deviceInfo.clientID || '',
+      clientid: _.get(Device, 'deviceInfo.clientID') || '',
       vid: '',
       mobileInfo: {
         customerGPSLat: Number(latitude) || 0,

@@ -35,7 +35,7 @@ interface VehicleListWithControlState {
 }
 
 const styles = StyleSheet.create({
-  vehicleListWrap: {
+  absoluteWrap: {
     position: 'absolute',
     width: '100%',
   },
@@ -123,7 +123,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     const scrollViewHeight = height - threshold;
     const offset = i - initIndex;
     // console.log('【performance】getStyle ', i, initIndex)
-    return [styles.vehicleListWrap, {
+    return [styles.absoluteWrap, {
       top: scrollViewHeight * offset,
       height: scrollViewHeight,
       backgroundColor: theme.scrollBackgroundColor,
@@ -284,25 +284,31 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     const {
       translateYAnim,
     } = this.state;
-    const { threshold, height } = this.props;
+    const {
+      threshold, height, maxIndex, minIndex,
+    } = this.props;
     const theme = this.getTheme();
+    const scrollViewHeight = height - threshold;
 
     return (
       <BbkThemeProvider theme={theme} channel={null}>
-        <Animated.View style={{
-          position: 'absolute',
+        <View style={[styles.absoluteWrap, {
           top: threshold,
-          height: height - threshold,
-          width: '100%',
-          transform: [{
-            translateY: translateYAnim,
-          }],
-          overFlow: 'hidden',
-          zIndex: -1,
-        }}
+          height: scrollViewHeight,
+          overflow: 'hidden',
+        }]}
         >
-          {this.renderAllVehicleListDom()}
-        </Animated.View>
+          <Animated.View style={[styles.absoluteWrap, {
+            top: 0,
+            height: (maxIndex - minIndex + 1) * scrollViewHeight,
+            transform: [{
+              translateY: translateYAnim,
+            }],
+          }]}
+          >
+            {this.renderAllVehicleListDom()}
+          </Animated.View>
+        </View>
       </BbkThemeProvider>
     );
   }

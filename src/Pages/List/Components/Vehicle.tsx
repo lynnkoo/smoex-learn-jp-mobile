@@ -16,6 +16,8 @@ import BbkCarImage from '@ctrip/bbk-component-car-image';
 import { VehicleListStyle as style } from '../Styles';
 import Vendor from '../../../Containers/VendorContainer';
 import { listShowMore } from '../Texts';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 const { selector } = BbkUtils;
 
@@ -109,6 +111,7 @@ export const VehicleFooter = memo(withTheme(
     moreNumber,
     setShowMoreArr,
     showMoreArr,
+    vehicleName,
     vehicleIndex, theme,
   }) => {
     const moreTextStyle = [style.moreText, {
@@ -121,7 +124,8 @@ export const VehicleFooter = memo(withTheme(
 
     const showMoreHandler = useCallback(() => {
       setShowMoreArr(showMoreArr.map((value, i) => (i === vehicleIndex ? !value : value)));
-    }, [setShowMoreArr, showMoreArr, vehicleIndex]);
+      CarLog.LogCode({ enName: ClickKey.C_LIST_SHOW_MORE.KEY, vehicleIndex, vehicleName });
+    }, [setShowMoreArr, showMoreArr, vehicleIndex, vehicleName]);
 
     return selector(
       moreNumber,

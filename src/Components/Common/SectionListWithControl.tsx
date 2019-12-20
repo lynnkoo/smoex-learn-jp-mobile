@@ -37,14 +37,19 @@ interface SectionListWithControlState {
   refreshing: boolean;
   onLoading: boolean;
   refreshResult: boolean;
+  showAndroidLoad: boolean;
+  showAndroidRefresh: boolean;
 }
 
 const styles = StyleSheet.create({
   controlWrap: {
     position: 'absolute',
     // refreshControl 的默认高度
-    top: isIos ? -35 : 0,
+    top: -35,
     width: '100%',
+  },
+  androidRefreshWrap: {
+    marginTop: -35,
   },
   iconStyle: {
     color: color.blueBase,
@@ -67,6 +72,8 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       refreshing: false,
       onLoading: false,
       refreshResult: null,
+      showAndroidLoad: false,
+      showAndroidRefresh: false,
     };
   }
 
@@ -75,13 +82,21 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     return isIos ? this.onScroll : _.throttle(this.onScroll, throttle, { trailing: false });
   }
 
-  triggerScroll = (event) => {
+  // eslint-disable-next-line
+  triggerScroll = (event, triggerEnd = false) => {
     const { threshold } = this.props;
+    let { showAndroidLoad, showAndroidRefresh } = this.state;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
     const contentHeight = event.nativeEvent.contentSize.height;
     let load = false;
     let refresh = false;
+
+    // if(triggerEnd) {
+    //   console.log('onScrollEndDrag ', y, height, contentHeight, threshold)
+    // } else {
+    //   console.log('onScroll ', y, height, contentHeight, threshold)
+    // }
 
     if (isIos) {
       if (y + height > contentHeight + threshold) {
@@ -91,17 +106,24 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         refresh = true;
       }
     } else {
-      if (y + height > contentHeight - threshold) {
+      const nextShowAndroidLoad = y + height > contentHeight - threshold;
+      if (nextShowAndroidLoad && showAndroidLoad) {
         load = true;
       }
-      if (y < threshold) {
+      showAndroidLoad = nextShowAndroidLoad;
+
+      const nextShowAndroidRefresh = y < threshold;
+      if (nextShowAndroidRefresh && showAndroidRefresh) {
         refresh = true;
       }
+      showAndroidRefresh = nextShowAndroidRefresh;
     }
 
     return {
       load,
       refresh,
+      showAndroidLoad,
+      showAndroidRefresh,
     };
   }
 
@@ -116,24 +138,24 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       refresh,
     } = this.triggerScroll(event);
 
-    if (load) {
-      this.setState({
-        onLoading: true,
-      });
-    }
-
-    if (refresh) {
-      this.setState({
-        refreshing: true,
-      });
-    }
+    this.setState({
+      onLoading: load,
+      refreshing: refresh,
+    });
   }
 
   onScrollEndDrag = (event) => {
     const {
       load,
       refresh,
-    } = this.triggerScroll(event);
+      showAndroidLoad,
+      showAndroidRefresh,
+    } = this.triggerScroll(event, true);
+
+    const nextState: any = {
+      showAndroidLoad,
+      showAndroidRefresh,
+    };
 
     if (load) {
       const { showFooter } = this.props;
@@ -146,9 +168,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         });
       });
     } else {
-      this.setState({
-        onLoading: false,
-      });
+      nextState.onLoading = false;
     }
 
     if (refresh) {
@@ -158,10 +178,10 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         });
       });
     } else {
-      this.setState({
-        refreshing: false,
-      });
+      nextState.refreshing = false;
     }
+
+    this.setState(nextState);
   }
 
   // to fix control state
@@ -185,6 +205,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       refreshing,
       onLoading,
       refreshResult,
+      showAndroidRefresh,
     } = this.state;
     const {
       throttle = 50,
@@ -227,11 +248,11 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         scrollEventThrottle={throttle}
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle()}
-        onMomentumScrollEnd={this.onMomentumScrollEnd}
+        onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
         ListHeaderComponent={(
           // @ts-ignore
           <RefreshControl
-            style={styles.controlWrap}
+            style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
             iconStyle={styles.iconStyle}
             textStyle={styles.textStyle}
             // @ts-ignore

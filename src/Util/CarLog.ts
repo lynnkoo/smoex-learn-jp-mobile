@@ -1,4 +1,5 @@
 import { Channel, Application, Log } from '@ctrip/crn';
+import _ from 'lodash';
 import moment from 'moment';
 import Utils from './Utils';
 import AppContext from './AppContext';
@@ -6,9 +7,10 @@ import { getStore } from '../State/Store';
 import { AgeConfig, ClickKey, LogKey } from '../Constants/Index';
 
 export interface LogCodeType {
-  pageId: string,
+  pageId?: string,
   enName: string,
-  name?: string
+  name?: string,
+  [key: string]: any,
 }
 
 export interface LogTraceType {
@@ -23,6 +25,15 @@ export interface LogMetricType {
     pageId: string
   }
 }
+
+const getPageId = (newData) => {
+  const res = { ...newData };
+  const getPageIdFn = _.get(AppContext, 'PageInstance.getPageId');
+  if (!res.pageId && typeof getPageIdFn === 'function') {
+    res.pageId = getPageIdFn();
+  }
+  return res;
+};
 
 class CarLog {
   // Get the return time and location information
@@ -92,7 +103,7 @@ class CarLog {
   }
 
   static LogCode = (data: LogCodeType) => {
-    const newData = data;
+    const newData = getPageId(data);
     if (!data.name && ClickKey[data.enName]) newData.name = ClickKey[data.enName].NAME;
     Log.logCode(LogKey.CLICK_KEY, { ...CarLog.logBasicInfo(), ...newData });
   }

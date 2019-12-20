@@ -19,6 +19,7 @@ interface IFilterInner {
   updateSelectedFilter?: (data: any) => void;
   updateTempFilter?: (data: any, handleType: string, type: string) => void;
   updateTempPrice?: (data: any, handleType: string) => void;
+  setActiveFilterBarCode: (data: any) => void;
   setModalVisible: (visible: boolean) => void;
 }
 export interface IFilterAndSort extends IFilterInner {
@@ -28,7 +29,6 @@ export interface IFilterAndSort extends IFilterInner {
   allFilters: any;
   isShowFooter: boolean;
   filterModalRef: RefObject<any>;
-  setActiveFilterBarCode: (data: any) => void;
 }
 
 const initFilterData = (type, tempFilterData) => {
@@ -63,49 +63,50 @@ const initFilterData = (type, tempFilterData) => {
 };
 
 const RenderInner: React.FC<IFilterInner> = ({
-  type, filterData, updateSelectedFilter, updateTempFilter, updateTempPrice, setModalVisible,
+  type, filterData, updateSelectedFilter, updateTempFilter, updateTempPrice, setActiveFilterBarCode, setModalVisible,
 }: IFilterInner) => (
-    <View>
-      {type === FilterBarType.Sort ? (
-        <BbkComponentSelectMenu
-          filterData={initFilterData(type, filterData)}
-          type={SelectMenuType.Single}
-          onToggle={(code) => {
-            updateSelectedFilter({ sortFilter: code });
-            setModalVisible(false);
-          }}
-        />
-      ) : type === FilterBarType.Supplier ? (
-        <BbkComponentFilterList
-          filterGroups={initFilterData(type, filterData)}
-          changeTempFilterData={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-        />
-      ) : type === FilterBarType.Seats ? (
-        <BbkComponentSelectMenu
-          filterData={initFilterData(type, filterData)}
-          type={SelectMenuType.Multiple}
-          onToggle={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-        />
-      ) : type === FilterBarType.Filter ? (
-        <BbkComponentFilterList
-          filterGroups={initFilterData(type, filterData)}
-          changeTempFilterData={(code, handleType) => {
-            updateTempFilter(code, handleType, type);
-          }}
-          updateStartPrice={(startPrice) => {
-            updateTempPrice(startPrice, 'start');
-          }}
-          updateEndPrice={(endPrice) => {
-            updateTempPrice(endPrice, 'end');
-          }}
-        />
-      ) : null}
-    </View>
-  );
+  <View>
+    {type === FilterBarType.Sort ? (
+      <BbkComponentSelectMenu
+        filterData={initFilterData(type, filterData)}
+        type={SelectMenuType.Single}
+        onToggle={(code) => {
+          updateSelectedFilter({ sortFilter: code });
+          setActiveFilterBarCode('');
+          setModalVisible(false);
+        }}
+      />
+    ) : type === FilterBarType.Supplier ? (
+      <BbkComponentFilterList
+        filterGroups={initFilterData(type, filterData)}
+        changeTempFilterData={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+      />
+    ) : type === FilterBarType.Seats ? (
+      <BbkComponentSelectMenu
+        filterData={initFilterData(type, filterData)}
+        type={SelectMenuType.Multiple}
+        onToggle={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+      />
+    ) : type === FilterBarType.Filter ? (
+      <BbkComponentFilterList
+        filterGroups={initFilterData(type, filterData)}
+        changeTempFilterData={(code, handleType) => {
+          updateTempFilter(code, handleType, type);
+        }}
+        updateStartPrice={(startPrice) => {
+          updateTempPrice(startPrice, 'start');
+        }}
+        updateEndPrice={(endPrice) => {
+          updateTempPrice(endPrice, 'end');
+        }}
+      />
+    ) : null}
+  </View>
+);
 
 const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   filterData,
@@ -183,7 +184,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
     updateSelectedFilter({
       bitsFilter: savedFilter,
-      priceFilter: [tempPrice],
+      priceFilter: JSON.stringify(tempPrice) === '{}' ? [] : [tempPrice],
     });
     setModalVisible(false);
     setActiveFilterBarCode('');
@@ -206,6 +207,10 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
         newMenu.filterGroups.forEach((group) => {
           const newGroup = group;
           newGroup.isSelected = false;
+          if (newGroup.code === 'Price') {
+            newGroup.minPrice = newGroup.minRange;
+            newGroup.maxPrice = newGroup.maxRange;
+          }
           if (newGroup && newGroup.filterItems.length > 0) {
             newGroup.filterItems.forEach((item) => {
               const newItem = item;
@@ -218,6 +223,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       return menu;
     });
 
+    setTempPrice({});
     setFilterDataState(tempFilterDataState);
     setTempFilterCode(tempCode);
   };
@@ -248,6 +254,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
         updateSelectedFilter={updateSelectedFilter}
         updateTempFilter={updateTempFilter}
         updateTempPrice={updateTempPrice}
+        setActiveFilterBarCode={setActiveFilterBarCode}
         setModalVisible={setModalVisible}
       />
     </BbkComponentCarFilterModal>

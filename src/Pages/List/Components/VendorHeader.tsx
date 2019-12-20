@@ -28,6 +28,7 @@ export const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingBottom: space.spaceL,
+    marginTop: space.spaceS,
   },
   comment: {
     color: color.fontSubDark,

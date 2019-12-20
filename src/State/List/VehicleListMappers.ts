@@ -97,25 +97,18 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
 };
 
 const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
+  // todo: 去掉默认值
   const {
-    currentOriginalDailyPrice, currentTotalPrice, currentCurrencyCode, currentDailyPrice,
+    currentOriginalDailyPrice = 0, currentTotalPrice = 0, currentCurrencyCode = '', currentDailyPrice = 0,
   } = priceInfo;
   const { title }: any = privilegesPromotions;
+  if (!currentTotalPrice) {
+    return null;
+  }
   // 国内资源可能没有天价，因为异地还车费不确定
-  return {
+  const res = {
     totalPrice: {
       price: currentTotalPrice,
-      currency: currentCurrencyCode,
-    },
-    dayPrice: {
-      price: currentDailyPrice,
-      currency: currentCurrencyCode,
-    },
-    // todo: bbk更新selector
-    // [currentOriginalDailyPrice && 'originPrice']: {
-    originPrice: {
-      // todo: 没有日价时需要取总价
-      price: currentOriginalDailyPrice,
       currency: currentCurrencyCode,
     },
     totolText: total,
@@ -124,6 +117,22 @@ const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
     dayText: `/${listDay}`,
     [title && 'saleLabel']: title,
   };
+
+  // todo: bbk更新selector
+  // if (currentOriginalDailyPrice) {
+  res.originPrice = {
+    // todo: 没有日价时需要取总价
+    price: currentOriginalDailyPrice,
+    currency: currentCurrencyCode,
+  };
+  // }
+  // if (currentDailyPrice) {
+  res.dayPrice = {
+    price: currentDailyPrice,
+    currency: currentCurrencyCode,
+  };
+  // }
+  return res;
 };
 
 const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: string) => ({ text, iconContent }: {text:string, iconContent?: string}) => ({

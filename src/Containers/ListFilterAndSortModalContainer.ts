@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import memoizeOne from 'memoize-one';
+import _ from 'lodash';
 import { FilterType } from '@ctrip/bbk-logic';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import FilterAndSortModal from '../Pages/List/Components/FilterAndSortModal';
@@ -15,11 +17,35 @@ import {
 
 const { selector } = BbkUtils;
 
+const getPriceRange = memoizeOne(
+  (filterItem) => {
+    let priceRange = {
+      minRange: 0,
+      maxRange: 1000,
+    };
+
+    try {
+      const minPriceDesc = filterItem[0].code;
+      const maxPriceDesc = filterItem[filterItem.length - 1].code;
+      const minPrice = parseInt(minPriceDesc.slice(minPriceDesc.indexOf('_') + 1, minPriceDesc.indexOf('-')), 10);
+      const maxPrice = parseInt(maxPriceDesc.slice(maxPriceDesc.indexOf('-') + 1), 10);
+      priceRange = {
+        minRange: minPrice,
+        maxRange: maxPrice,
+      };
+    } catch (e) {
+      console.log(e);
+    }
+
+    return priceRange;
+  },
+);
+
 const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
   const filterMenus = [];
 
   if (filterMenuItem && filterMenuItem.length > 0) {
-    filterMenuItem.forEach((menu) => {
+    filterMenuItem.forEach((menu, index) => {
       if (menu.filterGroups && menu.filterGroups.length > 0) {
         const filterGroups = [];
 
@@ -54,8 +80,15 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
                 ),
                 filterItems,
               },
+              {
+                isShow: index < 2,
+              },
               isPriceGroup ? {
                 isSingleChoice: true,
+                minRange: getPriceRange(filterItems).minRange,
+                maxRange: getPriceRange(filterItems).maxRange,
+                minPrice: getPriceRange(filterItems).minRange,
+                maxPrice: getPriceRange(filterItems).maxRange,
               } : {
                 isSingleChoice: false,
               },
@@ -147,7 +180,7 @@ const getFilterData = (state) => {
     filterData,
     isShowFooter,
     type: filterBarType,
-    selectedFilters: getSelectedFilters(state),
+    selectedFilters: _.cloneDeep(getSelectedFilters(state)),
     allFilters: getFilterBarItemsCode() || [],
   };
 };

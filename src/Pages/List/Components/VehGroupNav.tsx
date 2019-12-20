@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkHorizontalNav, { BbkHorizontalNavItem } from '@ctrip/bbk-component-horizontal-nav';
-// import { WithLogCode } from '../../../Components/Index';
-// import { ClickKey } from '../../../Constants/Index';
+import { WithLogCode } from '../../../Components/Index';
+import { ClickKey } from '../../../Constants/Index';
 import ListProgress from '../../../Containers/ListProgressContainer';
 
 interface VehGroupNavPropsType {
@@ -57,34 +57,23 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
   renderVehGroup = (): React.ReactNode[] => {
     const vehGroupNavList = [];
     const { vehGroupList, activeGroupId } = this.props;
-    // const { pageId } = this.props;
     vehGroupList.forEach((item) => {
-      // todo
-      // const BbkHorizontalNavItemWithLogCode = WithLogCode(BbkHorizontalNavItem);
-      // const obj = {
-      //   id: item.gId,
-      //   title: item.title,
-      //   style: styles.navItemWrap,
-      // };
-      // vehGroupNavList.push(
-      //   <BbkHorizontalNavItemWithLogCode
-      //     pageId={pageId}
-      //     enName={ClickKey.C_LIST_VEHICLEGROUP.KEY}
-      //     onPress={() => { this.onPressNav(item.gId); }}
-      //     {...obj}
-      //   />,
-      // );
-      const { gId, title } = item;
+      const BbkHorizontalNavItemWithLogCode = WithLogCode(BbkHorizontalNavItem);
+      const { gId, title, count } = item;
       const isSelect = gId === activeGroupId;
+      const navItemProps = {
+        id: gId,
+        title,
+        selected: isSelect,
+        disabled: !isSelect && count === 0,
+        style: styles.navItemWrap,
+      };
       vehGroupNavList.push(
-        <BbkHorizontalNavItem
+        <BbkHorizontalNavItemWithLogCode
           key={BbkUtils.uuid()}
-          id={gId}
-          title={title}
-          style={styles.navItemWrap}
-          selected={isSelect}
-          disabled={false} // todo
-          onPress={() => { this.onPressNav(gId); }}
+          enName={ClickKey.C_LIST_VEHICLEGROUP.KEY}
+          onPress={() => { this.onPressNav(item.gId); }}
+          {...navItemProps}
         />,
       );
     });

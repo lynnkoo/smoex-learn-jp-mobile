@@ -21,33 +21,40 @@ export interface AbResultType {
 }
 
 export const AbTestingKey = {
-  ListSort: {
-    key: '190711_var_olist',
+  // ListSort: {
+  //   key: '190711_var_olist',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: true,
+  // },
+  // PredictCache: {
+  //   key: '190718_var_osdap',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  // Booking: {
+  //   key: '190423_var_write',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  // IndexSearchBar: {
+  //   key: '190708_var_chome',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  List: {
+    key: '191210_DSJT_list',
     defaultValue: 'B',
     isActive: true,
     noVersionVal: true,
     isSync: true,
-  },
-  PredictCache: {
-    key: '190718_var_osdap',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
-  },
-  Booking: {
-    key: '190423_var_write',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
-  },
-  IndexSearchBar: {
-    key: '190708_var_chome',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
   },
 };
 

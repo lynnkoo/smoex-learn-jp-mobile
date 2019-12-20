@@ -11,7 +11,8 @@ import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 import LoginItem from './LoginItem';
-import { User } from '../../../Util/Index';
+import { User, CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 
 const { selector, getPixel } = BbkUtils;
@@ -98,12 +99,14 @@ const VehicleList = (props: any) => {
   // })
 
   const onLogin = () => {
+    CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
     User.toLogin();
   };
 
-  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex } }: sectionProps) => {
+  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
+    const { vehicleName }: any = vehicleHeader || {};
 
     return (
       <>
@@ -112,6 +115,7 @@ const VehicleList = (props: any) => {
           setShowMoreArr={setShowMoreArr}
           vehicleIndex={vehicleIndex}
           showMoreArr={showMoreArr}
+          vehicleName={vehicleName}
         />
 
         {

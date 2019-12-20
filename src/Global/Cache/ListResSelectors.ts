@@ -1,6 +1,6 @@
 import { getProductGroupsAndCount } from '@ctrip/bbk-logic';
 import { FrontEndConfig } from '../../Constants/Index';
-// import { getStore } from '../../State/Store';
+import { getStore } from '../../State/Store';
 
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
@@ -10,16 +10,15 @@ export const getBaseResData = () => ListReqAndResData.getData(ListReqAndResData.
 // 获取服务端返回的基础的车型组报价数据
 export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 
+export const getHashCode = () => getBaseResData().productGroupsHashCode;
+
 // 获取所有筛选项列表
 export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [];
 
 // 获取筛选后的所有车型组下的报价数据(包含全部车型)
 export const getAllProductGroupsAndCount = () => {
-  // todo
-  // const state = getStore().getState();
-  // const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
-  // @ts-ignore
-  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), FrontEndConfig.AllCarsConfig);
+  const state = getStore().getState();
+  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), getHashCode(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
   return filterResult;
 };
 
@@ -40,6 +39,7 @@ export const getVehGroupList = () => {
     vehGroupList.push({
       gId: item.groupCode,
       title: item.groupName,
+      count: item.productList.length, // todo lodash.get
     });
   });
 

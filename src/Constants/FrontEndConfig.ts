@@ -15,7 +15,7 @@ export const AgeConfig = {
 
 export const AllCarsConfig = {
   groupCode: 'all',
-  groupName: getSharkValue('list_allCars'),
+  groupName: getSharkValue('listCombine_allCars'),
 };
 
 export const CountryDefaultConfig = {

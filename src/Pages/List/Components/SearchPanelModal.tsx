@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { URL } from '@ctrip/crn';
 import BbkComponentSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
 
@@ -22,36 +22,32 @@ const SearchPanelModal = (props: IPropsType) => {
   const {
     visible, rentalLocation, ptime, rtime, age,
   } = props;
-  const [backPTime, setBackUpPTime] = useState(null);
-  const [backRTime, setBackUpRTime] = useState(null);
-  const [backUpRentalLocation, setBackUpRentalLocation] = useState(null);
-  const [backUpAge, setBackUpAge] = useState('');
 
   useEffect(() => {
     if (visible) {
-      // backup
-      setBackUpPTime(ptime);
-      setBackUpRTime(rtime);
-      setBackUpRentalLocation(rentalLocation);
-      setBackUpAge(age);
+      // backup processing
+      this.backPTime = ptime;
+      this.backRTime = rtime;
+      this.backUpRentalLocation = rentalLocation;
+      this.backUpAge = age;
     }
-  /* eslint-disable */
+    /* eslint-disable */
   }, [visible]);
 
   const onCancel = useCallback(() => {
-    console.log('onCancel+++');
     props.setLocationAndDatePopIsShow({ visible: false });
     // reset reducer
-    props.setDateInfo({ pickup: backPTime, dropoff: backRTime });
-    if (backUpRentalLocation) {
+    props.setDateInfo({ pickup: this.backPTime, dropoff: this.backRTime });
+    if (this.backUpRentalLocation) {
       props.setLocationInfo({
-        pickUp: backUpRentalLocation.pickUp,
-        dropOff: backUpRentalLocation.dropOff,
-        isShowDropOff: backUpRentalLocation.isShowDropOff,
+        pickUp: this.backUpRentalLocation.pickUp,
+        dropOff: this.backUpRentalLocation.dropOff,
+        isShowDropOff: this.backUpRentalLocation.isShowDropOff,
       });
     }
-    props.setAge({ age: backUpAge });
-  /* eslint-disable */
+    props.setAge({ age: this.backUpAge });
+
+    /* eslint-disable */
   }, []);
 
   const onPressPickupLocation = () => {

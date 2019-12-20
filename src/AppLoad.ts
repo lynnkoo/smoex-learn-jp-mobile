@@ -47,7 +47,7 @@ const initialiseAppContext = async () => {
   }
 
   // init sId
-  const ubt = await Utils.getUBT();
+  const ubt = Utils.getUBT();
   const wakeResult = await Business.getWakeUpDataSync();
   if (propsUrl.sid) {
     AppContext.MarketInfo.sId = propsUrl.sid;

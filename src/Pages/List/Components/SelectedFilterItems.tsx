@@ -8,6 +8,8 @@ import BbkTouchable from '@ctrip/bbk-component-touchable';
 import BbkText from '@ctrip/bbk-component-text';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { BbkUtils } from '@ctrip/bbk-utils';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 const { htmlDecode, selector } = BbkUtils;
 
@@ -48,7 +50,10 @@ const styles = StyleSheet.create({
 });
 
 const SelectedFilterItem = ({ id, text, clearFilter }: SelectedFilterItemProps) => {
-  const onPress = () => clearFilter(id);
+  const onPress = () => {
+    clearFilter(id);
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CLEAR_BOTTOM_FILTER.KEY, text });
+  };
   return (
     <BbkTouchable onPress={onPress}>
       <BbkCarRightIcon

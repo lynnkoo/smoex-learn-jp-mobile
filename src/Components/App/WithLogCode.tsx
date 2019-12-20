@@ -4,9 +4,9 @@ import { CarLog } from '../../Util/Index';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 
 interface WrappedComponentPropsType {
-  pageId: string;
   enName: string;
   onPress: Function;
+  pageId?: string;
   logOtherInfo?: Object;
 }
 

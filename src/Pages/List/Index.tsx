@@ -243,7 +243,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
         <SearchPanelModal />
-
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
       </ViewPort>
     );

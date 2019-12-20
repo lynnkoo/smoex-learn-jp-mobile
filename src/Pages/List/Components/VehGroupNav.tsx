@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
@@ -42,11 +42,11 @@ const styles = StyleSheet.create({
   },
   navItemWrap: {
     height: BbkUtils.getPixel(78),
-    paddingHorizontal: BbkUtils.getPixel(24),
+    paddingHorizontal: BbkUtils.getPixel(20),
   },
 });
 
-export default class VehGroupNav extends Component<VehGroupNavPropsType, VehGroupNavStateType> {
+export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, VehGroupNavStateType> {
   onPressNav = (gId: string) => {
     const { activeGroupId } = this.props;
     if (gId !== activeGroupId) {

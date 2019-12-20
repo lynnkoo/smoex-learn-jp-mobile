@@ -5,7 +5,7 @@ import {
 import BbkText from '@ctrip/bbk-component-text';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color, font } from '@ctrip/bbk-tokens';
-import { listFetchResult } from '../Texts';
+import { getSharkValue } from '@ctrip/bbk-shark';
 
 const { width } = Dimensions.get('window');
 
@@ -70,12 +70,14 @@ const ListProgress = (props: IPropsType) => {
 
   if (isFinished) return null;
 
-  const tips = listFetchResult([priceCount, vehCount]);
+  const tip1 = getSharkValue('listCombine_fetchResult', priceCount);
+  const tip2 = getSharkValue('listCombine_fetchResult2', vehCount);
+  const combineTip = tip1 + tip2;
   return (
     <Animated.View style={[styles.mainWrap, { opacity: animatedOpacity }]}>
       <View style={styles.progressWrap}>
         <BbkText style={[font.subTitle2Style, { color: color.fontSecondary }]}>
-          {tips}
+          {combineTip}
         </BbkText>
       </View>
       <Animated.View style={[styles.progressBar, { width: animatedProgress }]} />

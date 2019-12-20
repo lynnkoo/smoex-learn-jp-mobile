@@ -1,4 +1,4 @@
-import { Env, Storage } from '@ctrip/crn';
+import { Env, Log } from '@ctrip/crn';
 import _ from 'lodash';
 import {
   ENV_TYPE,
@@ -100,13 +100,18 @@ class Utils {
   }
 
   // get ubt info
-  static async getUBT(): Promise<{ sid?: string }> {
-    const ubt = await Storage.loadSync({
-      key: 'CTRIP_UBT_M',
-      domain: 'fx.ubt',
-    });
+  static getUBT(): any {
+    let ubt = {};
+    const crnPV = Log.createPV({});
+    /* eslint-disable */
+    // @ts-ignore
+    if (crnPV && crnPV._pv && crnPV._pv.data) {
+      /* eslint-disable */
+      // @ts-ignore
+      ubt = crnPV._pv.data;
+    }
 
-    return ubt ? JSON.parse(ubt) : {};
+    return ubt;
   }
 
   static promisable(asyncFunc: Function): any {

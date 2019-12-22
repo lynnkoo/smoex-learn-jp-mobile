@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkHorizontalNav, { BbkHorizontalNavItem } from '@ctrip/bbk-component-horizontal-nav';
@@ -26,6 +26,12 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(84),
     backgroundColor: color.white,
+    ...Platform.select({
+      android: {
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: color.grayBorder
+      },
+  }),
   },
   shadowStyle: {
     shadowOffset: { width: 0, height: 5 },

@@ -41,7 +41,7 @@
     "@ctrip/bbk-car-translation-key": "0.0.24",
     "@ctrip/bbk-component-car-date-picker": "0.0.13",
     "@ctrip/bbk-component-car-filter-bar": "0.0.27",
-    "@ctrip/bbk-component-car-filter-modal": "0.0.15",
+    "@ctrip/bbk-component-car-filter-modal": "0.0.16",
     "@ctrip/bbk-component-car-header": "0.0.14",
     "@ctrip/bbk-component-car-image": "0.0.9",
     "@ctrip/bbk-component-car-price-desc": "0.0.14",

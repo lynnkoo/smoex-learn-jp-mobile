@@ -17,12 +17,11 @@ const getFilterBarData = (state) => {
   // 第二步 获取服务端返回的热门项的状态
   const popularFilterItems = getPopularFilterItems();
   popularFilterItems.forEach((m) => {
+    const codeItem = getFilterBarItemsCode().find(v => v.type === m.name);
     const item = {
       text: m.name,
       isActive: getActiveFilterBarCode(state) === m.name,
-      hasFilter: getFilterBarItemsCode()
-        .find(v => v.type === m.name)
-        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
+      hasFilter: codeItem && codeItem.codeList && codeItem.codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
     };
     filterItemList.push(item);
   });

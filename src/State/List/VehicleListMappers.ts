@@ -97,9 +97,8 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
 };
 
 const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
-  // todo: 去掉默认值
   const {
-    currentOriginalDailyPrice = 0, currentTotalPrice = 0, currentCurrencyCode = '', currentDailyPrice = 0,
+    currentOriginalDailyPrice, currentTotalPrice, currentCurrencyCode = '', currentDailyPrice,
   } = priceInfo;
   const { title }: any = privilegesPromotions;
   if (!currentTotalPrice) {
@@ -118,20 +117,19 @@ const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
     [title && 'saleLabel']: title,
   };
 
-  // todo: bbk更新selector
-  // if (currentOriginalDailyPrice) {
-  res.originPrice = {
-    // todo: 没有日价时需要取总价
-    price: currentOriginalDailyPrice,
-    currency: currentCurrencyCode,
-  };
-  // }
-  // if (currentDailyPrice) {
-  res.dayPrice = {
-    price: currentDailyPrice,
-    currency: currentCurrencyCode,
-  };
-  // }
+  if (currentOriginalDailyPrice) {
+    res.originPrice = {
+      // todo: 没有日价时需要取总价
+      price: currentOriginalDailyPrice,
+      currency: currentCurrencyCode,
+    };
+  }
+  if (currentDailyPrice) {
+    res.dayPrice = {
+      price: currentDailyPrice,
+      currency: currentCurrencyCode,
+    };
+  }
   return res;
 };
 

@@ -80,7 +80,7 @@ export const getLoactionFromEvent = (data, isShowDropOff) => {
   const { pickup, dropoff } = data;
   const res: any = {};
   res.pickUp = pickup && formatLocationFromEvent(pickup);
-  
+
   // 和国际站首页逻辑保持一致
   // 异地开关开时，更改取车地点，同时更改还车地点
   res.dropOff = res.pickUp;

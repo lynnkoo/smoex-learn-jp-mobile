@@ -39,7 +39,7 @@ export const LogListFinalTrace = (param, res) => {
   let vendorCount = 0;
   if (res && res.vehicleList) {
     vehCount = res.vehicleList.length;
-    res.vehList.forEach((m) => {
+    res.vehicleList.forEach((m) => {
       vehCodeList.push(m.vehicleCode);
     });
   }

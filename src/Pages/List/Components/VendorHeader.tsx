@@ -73,7 +73,9 @@ const VerdorHeader = (props: VerdorHeaderProps) => {
       <View style={[style.scoreDescWrap]}>
         <BbkText style={scoreDescStyle}>
           {scoreDesc}
-          <BbkText style={style.comment}>{` ${commentDesc} >`}</BbkText>
+          {/* 一期没有点评弹层 */}
+          {/* <BbkText style={style.comment}>{` ${commentDesc} >`}</BbkText> */}
+          <BbkText style={style.comment}>{commentDesc}</BbkText>
         </BbkText>
       </View>
     </BbkTouchable>

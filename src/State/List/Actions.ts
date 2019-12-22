@@ -75,9 +75,8 @@ export const deleteSelectedFilter = data => ({
   data,
 });
 
-export const clearSelectedFilter = data => ({
+export const clearSelectedFilter = () => ({
   type: CLEAR_SELECTED_FILTER,
-  data,
 });
 
 export const setLocationAndDatePopIsShow = data => ({

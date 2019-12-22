@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import {
@@ -67,7 +67,7 @@ const SelectedFilterItem = ({ id, text, clearFilter }: SelectedFilterItemProps) 
   );
 };
 
-const SelectedFilterItems = ({ filters, clearFilter }: SelectedFilterItemsProps) => selector(
+const SelectedFilterItems = ({ filters = [], clearFilter }: SelectedFilterItemsProps) => selector(
   filters.length > 0,
   <View style={styles.filterWrapper}>
     <BbkText style={styles.filterTitle}>
@@ -86,4 +86,4 @@ const SelectedFilterItems = ({ filters, clearFilter }: SelectedFilterItemsProps)
   </View>,
 );
 
-export default SelectedFilterItems;
+export default memo(SelectedFilterItems);

@@ -53,5 +53,6 @@ export const packageListReqParam = (state, data: { vendorGroup: number, requestI
       },
     },
     searchType: 1,
+    now: new Date(),
   };
 };

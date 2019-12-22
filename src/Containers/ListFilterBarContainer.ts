@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
+import { getSharkValue } from '@ctrip/bbk-shark';
 import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
 import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
 
@@ -8,7 +9,7 @@ const getFilterBarData = (state) => {
 
   // 第一步 获取固定项-排序的状态
   const sort = {
-    text: 'Sort', // todo - shark key
+    text: getSharkValue('sort'), // todo - shark key
     isActive: getActiveFilterBarCode(state) === 'Sort',
     hasFilter: getSelectedFilters(state).sortFilter !== '1',
   };
@@ -16,18 +17,17 @@ const getFilterBarData = (state) => {
   // 第二步 获取服务端返回的热门项的状态
   const popularFilterItems = getPopularFilterItems();
   popularFilterItems.forEach((m) => {
+    const codeItem = getFilterBarItemsCode().find(v => v.type === m.name);
     const item = {
       text: m.name,
       isActive: getActiveFilterBarCode(state) === m.name,
-      hasFilter: getFilterBarItemsCode()
-        .find(v => v.type === m.name)
-        .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
+      hasFilter: codeItem && codeItem.codeList && codeItem.codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
     };
     filterItemList.push(item);
   });
   // 第三步 获取固定项-筛选的状态
   const filter = {
-    text: 'Filter', // todo - shark key
+    text: getSharkValue('list_filters'), // todo - shark key
     isActive: getActiveFilterBarCode(state) === 'Filter',
     hasFilter:
       getFilterBarItemsCode()

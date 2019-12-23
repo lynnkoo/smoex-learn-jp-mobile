@@ -18,6 +18,7 @@ import {
 } from '../LocationAndDate/Selectors';
 
 import { AgeConfig } from '../../Constants/Index';
+import { getPromotionFilterItems } from '../../Global/Cache/ListResSelectors';
 
 /* eslint-disable import/prefer-default-export */
 export const packageListReqParam = (state, data: { vendorGroup: number, requestId: string }) => {
@@ -53,5 +54,16 @@ export const packageListReqParam = (state, data: { vendorGroup: number, requestI
       },
     },
     searchType: 1,
+    now: new Date(),
   };
+};
+
+export const getPromotionFilterText = () => {
+  let text = '';
+  const promotionFilterItems = getPromotionFilterItems();
+  if (promotionFilterItems && promotionFilterItems.length > 0) {
+    const curPromotionFilter = promotionFilterItems[0];
+    text = curPromotionFilter.filterGroups[0].filterItems[0].promotion.title;
+  }
+  return text;
 };

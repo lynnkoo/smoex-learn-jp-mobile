@@ -1,4 +1,5 @@
 import { Env, Log } from '@ctrip/crn';
+import {Platform, Dimensions, StatusBar} from 'react-native'
 import _ from 'lodash';
 import {
   ENV_TYPE,
@@ -176,6 +177,10 @@ class Utils {
     }
     return RENTAL_GAP.UNKNOW;
   }
+
+  static isAndroid = Platform.OS === 'android'
+
+  static heightWithStatusBar = Dimensions.get('window').height + (StatusBar.currentHeight || 0)
 }
 
 export default Utils;

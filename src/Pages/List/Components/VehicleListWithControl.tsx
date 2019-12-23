@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Animated, Dimensions, StyleSheet,
+  View, Animated, StyleSheet,
 } from 'react-native';
 import { Toast } from '@ctrip/crn';
 import BbkThemeProvider from '@ctrip/bbk-theming';
@@ -11,6 +11,7 @@ import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
+import { Utils } from '../../../Util/Index';
 
 interface VehicleListWithControlProps {
   maxIndex?: number;
@@ -39,6 +40,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
   },
+  wrap: {
+    flex: 1,
+    overflow: 'hidden',
+  },
 });
 
 export default class VehicleListWithControl extends PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
@@ -49,7 +54,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     listData: {},
     initialNumToRender: 10,
     theme: {},
-    height: Dimensions.get('window').height,
+    height: Utils.heightWithStatusBar,
     threshold: 0,
     showMax: 2,
   };
@@ -292,12 +297,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
 
     return (
       <BbkThemeProvider theme={theme} channel={null}>
-        <View style={[styles.absoluteWrap, {
-          top: threshold,
-          height: scrollViewHeight,
-          overflow: 'hidden',
-        }]}
-        >
+        <View style={styles.wrap}>
           <Animated.View style={[styles.absoluteWrap, {
             top: 0,
             height: (maxIndex - minIndex + 1) * scrollViewHeight,

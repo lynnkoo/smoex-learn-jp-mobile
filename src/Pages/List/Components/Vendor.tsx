@@ -36,7 +36,7 @@ export default withTheme(
         book: reference,
       };
       // 跳转Trip详情页地址
-      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&data=${encodeURIComponent(JSON.stringify(data))}`;
+      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
     }, [locationAndDate, reference]);

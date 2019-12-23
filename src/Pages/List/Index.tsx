@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import {
-  Platform, StatusBar, View, StyleSheet,
+  View, StyleSheet,
 } from 'react-native';
 import {
   ViewPort, IBasePageProps, Event, Toast,
@@ -206,14 +206,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     return (
       <ViewPort style={styles.page}>
         <View style={styles.wrapper} onLayout={this.setVehicleListThreshold}>
-          {Platform.OS === 'android' && (
-            <StatusBar
-              backgroundColor="transparent"
-              barStyle="dark-content"
-              hidden={false}
-              translucent
-            />
-          )}
           <ListHeader
             handleBackPress={this.pageGoBack}
             showSearchSelectorWrap={this.handlePressHeader}

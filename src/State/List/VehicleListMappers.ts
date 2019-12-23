@@ -4,7 +4,6 @@ import {
   icon,
 } from '@ctrip/bbk-tokens';
 import memoizeOne from 'memoize-one';
-
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { Utils } from '../../Util/Index';
@@ -12,7 +11,9 @@ import {
   listDay, Reviews, total,
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
-import { getVehAndProductList, getVehGroupList, isDiffLocation } from '../../Global/Cache/ListResSelectors';
+import {
+  getVehAndProductList, getVehGroupList, isDiffLocation,
+} from '../../Global/Cache/ListResSelectors';
 
 const { getPixel, htmlDecode } = BbkUtils;
 let count = 0;
@@ -166,21 +167,22 @@ interface labelList {
 
 const getVendorLabelItems = (vendor) => {
   const {
-    pStoreRouteDesc, rStoreRouteDesc, positiveTagList = [], platformName,
+    pStoreRouteDesc, rStoreRouteDesc, allTags = [], platformName,
   } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);
 
+  // 1：正向，2：负向，3：营销
   const tagType = {
-    0: {
-      typeKey: 'normal',
-      args: [tokenType.ColorType.BlueGray],
-    },
     1: {
       typeKey: 'feature',
       args: [],
     },
     2: {
+      typeKey: 'normal',
+      args: [tokenType.ColorType.BlueGray],
+    },
+    3: {
       typeKey: 'promotion',
       args: [null, false, 'primary'],
     },
@@ -203,7 +205,7 @@ const getVendorLabelItems = (vendor) => {
     ];
   }
 
-  positiveTagList.forEach((tag) => {
+  allTags.forEach((tag) => {
     const { type, title = 'Free Cancellation', icon: iconContent = '\uf2bf' } = tag;
     const params = tagType[type] || {};
     const getVendorLabelFn = getVendorLabel(...params.args);
@@ -264,7 +266,7 @@ const getVendorListData = (vendorPriceList, vehicleIndex) => _.map(vendorPriceLi
 
 export const getVehicleListData = memoizeOne(
   // eslint-disable-next-line
-  (progress) => {
+  (progress, selectedFilters) => {
     // console.log('【performance】getVehicleListData ---------- ', progress)
     count = 0;
     const { productGroups, vehicleList } = getVehAndProductList();
@@ -284,6 +286,7 @@ export const getVehicleListData = memoizeOne(
     });
     return groupListData;
   },
+  (newArgs, oldArgs) => _.isEqual(oldArgs, newArgs),
 );
 
 export const getGroupLength = () => {

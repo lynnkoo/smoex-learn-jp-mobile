@@ -43,7 +43,7 @@ const ListTips = (props: IPropsType) => {
         isPrometFlightChecked={promotionFilterSelected}
         text={promotionFilterText}
         onTipsPress={handleTipPress}
-        style={{paddingLeft: BbkUtils.getPixel(10), paddingRight: BbkUtils.getPixel(10)}}
+        style={{ paddingLeft: BbkUtils.getPixel(10), paddingRight: BbkUtils.getPixel(10) }}
       />
     </View>
   );

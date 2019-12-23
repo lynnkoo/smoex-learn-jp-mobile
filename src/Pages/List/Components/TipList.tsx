@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import BbkTips, { TIPS_TYPE } from '@ctrip/bbk-component-tips';
 import { FilterType } from '@ctrip/bbk-logic';
+import { color } from '@ctrip/bbk-tokens';
 
 interface IPropsType {
   promotionFilterText: string;
@@ -36,14 +37,14 @@ const ListTips = (props: IPropsType) => {
 
   if (!promotionFilterText) return null;
   return (
-    <View style={{ paddingVertical: BbkUtils.getPixel(24), paddingHorizontal: BbkUtils.getPixel(32) }}>
+    <View style={{ paddingVertical: BbkUtils.getPixel(24), paddingHorizontal: BbkUtils.getPixel(32), backgroundColor: color.white }}>
       <BbkTips
         type={TIPS_TYPE.PROMOTE_FLIGHT}
         isPrometFlightChecked={promotionFilterSelected}
         text={promotionFilterText}
         onTipsPress={handleTipPress}
+        style={{paddingLeft: BbkUtils.getPixel(10), paddingRight: BbkUtils.getPixel(10)}}
       />
-
     </View>
   );
 };

@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   mainWrap: {
     position: 'absolute',
     top: 0,
-    zIndex: 300,
   },
   progressWrap: {
     width: BbkUtils.vw(100),

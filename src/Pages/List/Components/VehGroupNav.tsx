@@ -28,16 +28,10 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     ...Platform.select({
       android: {
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          borderBottomColor: color.grayBorder
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: color.grayBorder,
       },
-  }),
-  },
-  shadowStyle: {
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 4,
-    shadowColor: color.modalShadow,
-    shadowOpacity: 1,
+    }),
   },
   mainWrap: {
     borderBottomWidth: 0,
@@ -92,7 +86,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
     const { activeGroupId, progress } = this.props;
     if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
-      <View style={[styles.container, styles.shadowStyle]}>
+      <View style={[styles.container]}>
         <BbkHorizontalNav
           style={[styles.mainWrap, styles.topBorder]}
           indicatorWidth={BbkUtils.getPixel(80)}

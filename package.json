@@ -64,7 +64,7 @@
     "@ctrip/bbk-component-tips": "0.0.13",
     "@ctrip/bbk-component-touchable": "0.0.33",
     "@ctrip/bbk-component-vendor-logo": "0.0.18",
-    "@ctrip/bbk-logic": "0.0.28",
+    "@ctrip/bbk-logic": "0.0.29",
     "@ctrip/bbk-shark": "0.0.46",
     "@ctrip/bbk-theming": "0.0.43",
     "@ctrip/bbk-tokens": "0.0.43",

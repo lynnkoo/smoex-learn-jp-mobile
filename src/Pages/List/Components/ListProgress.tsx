@@ -69,8 +69,8 @@ const ListProgress = (props: IPropsType) => {
 
   if (isFinished) return null;
 
-  const tip1 = getSharkValue('listCombine_fetchResult', priceCount);
-  const tip2 = getSharkValue('listCombine_fetchResult2', vehCount);
+  const tip1 = getSharkValue('listCombine_fetchResult', vehCount);
+  const tip2 = getSharkValue('listCombine_fetchResult2', priceCount);
   const combineTip = tip1 + tip2;
   return (
     <Animated.View style={[styles.mainWrap, { opacity: animatedOpacity }]}>

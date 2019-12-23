@@ -21,7 +21,6 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
-import TipList from '../../Containers/ListTipListContainer';
 import { AppContext } from '../../Util/Index';
 
 const { selector } = BbkUtils;
@@ -232,14 +231,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {/** todo FilterBar 展开动画 */}
           <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
           <VehGroupNav pageId={this.getPageId()} />
-          <TipList />
         </View>
-        {curStage === PAGESTAGE.INIT
-          && (
-            <View style={{ overflow: 'hidden' }}>
-              <BbkSkeletonLoading visible pageName={PageType.List} />
-            </View>
-          )
+        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
         }
         {
           curStage === PAGESTAGE.FAIL

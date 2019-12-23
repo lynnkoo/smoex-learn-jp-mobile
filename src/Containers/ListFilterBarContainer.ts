@@ -28,10 +28,10 @@ const getFilterBarData = (state) => {
   // 第三步 获取固定项-筛选的状态
   const filter = {
     text: getSharkValue('list_filters'), // todo - shark key
-    isActive: getActiveFilterBarCode(state) === 'Filter',
+    isActive: getActiveFilterBarCode(state) === 'Filters',
     hasFilter:
       getFilterBarItemsCode()
-        .find(v => v.type === 'Filter')
+        .find(v => v.type === 'Filters')
         .codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c))
       || getSelectedFilters(state).priceFilter.length > 0,
   };

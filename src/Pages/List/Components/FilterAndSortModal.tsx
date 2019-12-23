@@ -38,7 +38,7 @@ const initFilterData = (type, tempFilterData) => {
       filterData = tempFilterData;
       break;
     case FilterBarType.Supplier:
-    case FilterBarType.Filter:
+    case FilterBarType.Filters:
       tempFilterData.forEach((item) => {
         if (item.filterGroups && item.filterGroups.length > 0) {
           filterData.push(item.filterGroups[0]);
@@ -91,7 +91,7 @@ const RenderInner: React.FC<IFilterInner> = ({
           updateTempFilter(code, handleType, type);
         }}
       />
-    ) : type === FilterBarType.Filter ? (
+    ) : type === FilterBarType.Filters ? (
       <BbkComponentFilterList
         filterGroups={initFilterData(type, filterData)}
         changeTempFilterData={(code, handleType) => {

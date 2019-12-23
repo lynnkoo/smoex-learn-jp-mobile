@@ -161,7 +161,7 @@ const getFilterData = (state) => {
       });
       isShowFooter = false;
       break;
-    case 'Filter':
+    case 'Filters':
       filterData = setFilterMenu(allFilterItems, displaySelectedFilters);
       isShowFooter = true;
       break;

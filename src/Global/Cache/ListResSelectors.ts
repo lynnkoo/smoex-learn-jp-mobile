@@ -108,7 +108,7 @@ export const getFilterBarItemsCode = () => {
   });
 
   popularFilterList.push({
-    type: 'Filter',
+    type: 'Filters',
     codeList: filterList,
   });
 

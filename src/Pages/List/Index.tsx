@@ -6,7 +6,7 @@ import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkStyleUtil, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
@@ -23,7 +23,8 @@ import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 import { AppContext } from '../../Util/Index';
 
-const { selector } = BbkUtils;
+const { selector, fixOffsetTop } = BbkUtils;
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 
 interface ListStateType extends IStateType {
   filterAndSortModalVisible: boolean;
@@ -43,6 +44,19 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: color.white,
   },
+  header: {
+    ...BbkStyleUtil.getMB(4),
+    position: 'absolute',
+    zIndex: 10,
+    borderBottomWidth: 0,
+  },
+  filterBar: {
+    position: 'absolute',
+    left: 0,
+    top: DEFAULT_HEADER_HEIGHT + fixOffsetTop(),
+    zIndex: 10,
+  },
+
 });
 
 interface IListPropsType extends IBasePageProps {
@@ -216,11 +230,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListHeader
             handleBackPress={this.pageGoBack}
             showSearchSelectorWrap={this.handlePressHeader}
-            style={BbkStyleUtil.getMB(4)}
+            style={[BbkStyleUtil.getMB(4), {
+              position: 'absolute',
+              zIndex: 10,
+              borderBottomWidth: 0,
+            }]}
           />
           {/** todo FilterBar 展开动画 */}
-          <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
-          <FilterAndSortModal filterModalRef={this.filterModalRef} />
+          <ListFilterBar style={{ position: 'absolute', left: 0, top: DEFAULT_HEADER_HEIGHT + fixOffsetTop(), zIndex: 10 }} onPressFilterBar={this.onPressFilterBar} />
           <VehGroupNav pageId={this.getPageId()} />
         </View>
         {curStage === PAGESTAGE.INIT
@@ -243,6 +260,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           )
         }
         <SearchPanelModal />
+        <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
       </ViewPort>
     );

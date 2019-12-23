@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import {
   View, Animated, StyleSheet,
 } from 'react-native';
+import _ from 'lodash';
 import { Toast } from '@ctrip/crn';
 import BbkThemeProvider from '@ctrip/bbk-theming';
 import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
@@ -179,9 +180,9 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     return null;
   }
 
-  renderVehicleListDom = (index, placeHolder) => {
+  renderVehicleListDom = (index, placeHolder, listData) => {
     const {
-      listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
+      minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
@@ -267,19 +268,28 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     if (props.index !== this.props.index) {
       this.tabScroll(props.index);
     }
+    if (!_.isEqual(props.listData, this.props.listData)) {
+      this.renderAllVehicleListDom(props.listData);
+    }
   }
 
-  renderAllVehicleListDom() {
+  renderAllVehicleListDom(newListData = null) {
     const dom = [];
     const { index } = this.state;
     const {
-      minIndex, maxIndex,
+      minIndex, maxIndex, listData,
     } = this.props;
 
-    // console.log('【performance】renderAllVehicleListDom ', $index, reset)
+    const $listData = newListData || listData;
+
+    if (newListData) {
+      this.cacheList = [];
+    }
+
+    // console.log('【performance】renderAllVehicleListDom ')
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
       const placeHolder = Math.abs(i - index) > 0;
-      dom[i] = this.renderVehicleListDom(i, placeHolder);
+      dom[i] = this.renderVehicleListDom(i, placeHolder, $listData);
     }
 
     return dom;

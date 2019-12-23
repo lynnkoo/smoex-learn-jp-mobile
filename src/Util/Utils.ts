@@ -1,5 +1,5 @@
 import { Env, Log } from '@ctrip/crn';
-import {Platform, Dimensions, StatusBar} from 'react-native'
+import { Platform, Dimensions, StatusBar } from 'react-native';
 import _ from 'lodash';
 import {
   ENV_TYPE,

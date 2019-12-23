@@ -4,7 +4,6 @@ import {
   icon,
 } from '@ctrip/bbk-tokens';
 import memoizeOne from 'memoize-one';
-
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { Utils } from '../../Util/Index';
@@ -12,7 +11,9 @@ import {
   listDay, Reviews, total,
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
-import { getVehAndProductList, getVehGroupList, isDiffLocation } from '../../Global/Cache/ListResSelectors';
+import {
+  getVehAndProductList, getVehGroupList, isDiffLocation,
+} from '../../Global/Cache/ListResSelectors';
 
 const { getPixel, htmlDecode } = BbkUtils;
 let count = 0;
@@ -264,7 +265,7 @@ const getVendorListData = (vendorPriceList, vehicleIndex) => _.map(vendorPriceLi
 
 export const getVehicleListData = memoizeOne(
   // eslint-disable-next-line
-  (progress) => {
+  (progress, selectedFilters) => {
     // console.log('【performance】getVehicleListData ---------- ', progress)
     count = 0;
     const { productGroups, vehicleList } = getVehAndProductList();
@@ -284,6 +285,7 @@ export const getVehicleListData = memoizeOne(
     });
     return groupListData;
   },
+  (newArgs, oldArgs) => _.isEqual(oldArgs, newArgs),
 );
 
 export const getGroupLength = () => {

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkHorizontalNav, { BbkHorizontalNavItem } from '@ctrip/bbk-component-horizontal-nav';
@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(84),
     backgroundColor: color.white,
-  },
-  shadowStyle: {
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 4,
-    shadowColor: color.modalShadow,
-    shadowOpacity: 1,
+    ...Platform.select({
+      android: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: color.grayBorder,
+      },
+    }),
   },
   mainWrap: {
     borderBottomWidth: 0,
@@ -86,7 +86,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
     const { activeGroupId, progress } = this.props;
     if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
-      <View style={[styles.container, styles.shadowStyle]}>
+      <View style={[styles.container]}>
         <BbkHorizontalNav
           style={[styles.mainWrap, styles.topBorder]}
           indicatorWidth={BbkUtils.getPixel(80)}

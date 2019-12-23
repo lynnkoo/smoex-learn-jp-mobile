@@ -20,9 +20,7 @@ export const VehicleListStyle = StyleSheet.create({
     marginTop: space.spaceXL,
   },
   vendor: {
-    marginTop: space.spaceXXL,
     paddingBottom: space.spaceXXL,
-    borderBottomWidth: border.borderSizeSm,
     overflow: 'hidden',
   },
   flexRow: {

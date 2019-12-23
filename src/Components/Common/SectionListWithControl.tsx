@@ -7,7 +7,7 @@ import { RefreshControl, LoadControl } from '@ctrip/crn';
 import { color } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 
-const { isIos, selector } = BbkUtils;
+const { isIos, lazySelector } = BbkUtils;
 
 // @ts-ignore
 interface SectionListWithControlProps extends SectionListProps<any> {
@@ -29,6 +29,7 @@ interface SectionListWithControlProps extends SectionListProps<any> {
   refFn?: (any) => void;
   pullIcon?: string;
   loadingContent?: string;
+  ListHeaderExtraComponent?: ReactElement;
   ListFooterExtraComponent?: ReactElement;
   ListEmptyComponent?: ReactElement;
 }
@@ -230,9 +231,62 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
       initialNumToRender,
       endFillColor,
+      ListHeaderExtraComponent,
       ListFooterExtraComponent,
       ListEmptyComponent,
     } = this.props;
+
+    const refreshControl = (
+      // ts-ignore
+      <RefreshControl
+        style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
+        iconStyle={styles.iconStyle}
+        textStyle={styles.textStyle}
+        // @ts-ignore
+        ref={ref => this.refreshControl = ref} // eslint-disable-line
+        // @ts-ignore
+        isRefreshing={refreshing}
+        refreshResult={refreshResult}
+        pullIcon={pullIcon}
+        pullStartContent={pullStartContent}
+        pullContinueContent={pullContinueContent}
+        refreshingIcon={refreshingIcon}
+        refreshingContent={refreshingContent}
+      />
+    );
+
+    const listHeaderComponent = (
+      <>
+        {ListHeaderExtraComponent}
+        {refreshControl}
+      </>
+    );
+
+    const loadControl = (
+      <LoadControl
+        style={styles.controlWrap}
+        iconStyle={styles.iconStyle}
+        textStyle={styles.textStyle}
+        // eslint-disable-next-line
+        ref={ref => this.loadControl = ref}
+        isLoading={onLoading}
+        noMore={noMore}
+        noMoreContent={noMoreContent}
+        noticeContent={noticeContent}
+        loadingContent={loadingContent}
+      />
+    );
+
+    const listFooterComponent = lazySelector(
+      showFooter,
+      () => (
+        <>
+          {ListFooterExtraComponent}
+          {loadControl}
+        </>
+      )
+      ,
+    );
 
     return (
       <SectionList
@@ -249,43 +303,8 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle()}
         onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
-        ListHeaderComponent={(
-          // @ts-ignore
-          <RefreshControl
-            style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
-            iconStyle={styles.iconStyle}
-            textStyle={styles.textStyle}
-            // @ts-ignore
-            ref={ref => this.refreshControl = ref} // eslint-disable-line
-            // @ts-ignore
-            isRefreshing={refreshing}
-            refreshResult={refreshResult}
-            pullIcon={pullIcon}
-            pullStartContent={pullStartContent}
-            pullContinueContent={pullContinueContent}
-            refreshingIcon={refreshingIcon}
-            refreshingContent={refreshingContent}
-          />
-        )}
-        ListFooterComponent={selector(
-          showFooter,
-          <>
-            {ListFooterExtraComponent}
-            <LoadControl
-              style={styles.controlWrap}
-              iconStyle={styles.iconStyle}
-              textStyle={styles.textStyle}
-              // eslint-disable-next-line
-              ref={ref => this.loadControl = ref}
-              isLoading={onLoading}
-              noMore={noMore}
-              noMoreContent={noMoreContent}
-              noticeContent={noticeContent}
-              loadingContent={loadingContent}
-            />
-          </>
-          ,
-        )}
+        ListHeaderComponent={listHeaderComponent}
+        ListFooterComponent={listFooterComponent}
         ListEmptyComponent={ListEmptyComponent}
       />
     );

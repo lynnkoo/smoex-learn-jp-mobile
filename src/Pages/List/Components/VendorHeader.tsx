@@ -18,7 +18,7 @@ export const style = StyleSheet.create({
     marginBottom: space.spaceL,
   },
   scoreLabel: {
-    marginLeft: space.spaceM,
+    marginLeft: space.spaceL,
     marginRight: space.spaceS,
   },
   scoreDesc: {
@@ -72,8 +72,10 @@ const VerdorHeader = (props: VerdorHeaderProps) => {
       </View>
       <View style={[style.scoreDescWrap]}>
         <BbkText style={scoreDescStyle}>
-          {scoreDesc}
-          <BbkText style={style.comment}>{` ${commentDesc} >`}</BbkText>
+          {`${scoreDesc} `}
+          {/* 一期没有点评弹层 */}
+          {/* <BbkText style={style.comment}>{` ${commentDesc} >`}</BbkText> */}
+          <BbkText style={style.comment}>{commentDesc}</BbkText>
         </BbkText>
       </View>
     </BbkTouchable>

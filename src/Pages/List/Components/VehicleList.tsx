@@ -14,6 +14,7 @@ import LoginItem from './LoginItem';
 import { User, CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
+import TipList from '../../../Containers/ListTipListContainer';
 
 const { selector, getPixel } = BbkUtils;
 
@@ -137,6 +138,7 @@ const VehicleList = (props: any) => {
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
+      ListHeaderExtraComponent={<TipList />}
       ListFooterExtraComponent={<SelectedFilterItems />}
       ListEmptyComponent={<NoMatch />}
       threshold={50}

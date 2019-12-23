@@ -68,6 +68,8 @@ export const getPopularFilterItems = () => getFilterItemsByHierarchy(1);
 // 获取点击'Filter'后对应的所有筛选项列表
 export const getFilterItems = () => getFilterItemsByHierarchy(2);
 
+export const getPromotionFilterItems = () => getFilterItemsByHierarchy(3);
+
 // 获取排序列表
 export const getSortList = () => {
   const { basicData } = getBaseResData();

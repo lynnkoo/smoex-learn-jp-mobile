@@ -18,6 +18,8 @@ import {
 } from '../LocationAndDate/Selectors';
 
 import { AgeConfig } from '../../Constants/Index';
+import { getPromotionFilterItems } from '../../Global/Cache/ListResSelectors';
+import { getSelectedFilters } from './Selectors';
 
 /* eslint-disable import/prefer-default-export */
 export const packageListReqParam = (state, data: { vendorGroup: number, requestId: string }) => {
@@ -53,5 +55,36 @@ export const packageListReqParam = (state, data: { vendorGroup: number, requestI
       },
     },
     searchType: 1,
+    now: new Date(),
   };
 };
+
+const getCurPromotionFilter = () => {
+  let curPromotionFilter = null;
+  const promotionFilterItems = getPromotionFilterItems();
+  if (promotionFilterItems && promotionFilterItems.length > 0) {
+    curPromotionFilter = promotionFilterItems[0];
+  }
+  return curPromotionFilter;
+};
+
+
+export const getPromotionFilterText = () => {
+  let text = '';
+  const curPromotionFilter = getCurPromotionFilter();
+  if (curPromotionFilter) {
+    text = curPromotionFilter.filterGroups[0].filterItems[0].name;
+  }
+  return text;
+};
+
+export const getPromotionFilterCode = () => {
+  let code = '';
+  const curPromotionFilter = getCurPromotionFilter();
+  if (curPromotionFilter) {
+    code = curPromotionFilter.filterGroups[0].filterItems[0].itemCode;
+  }
+  return code;
+};
+
+export const getPromotionFilterIsSelect = state => getSelectedFilters(state).bitsFilter.includes(getPromotionFilterCode());

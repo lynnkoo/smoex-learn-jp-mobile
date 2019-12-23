@@ -75,15 +75,26 @@ const formatLocationFromEvent = (location) => {
     isShowDropOff: false,
   }
  */
+// eslint-disable-next-line
 export const getLoactionFromEvent = (data, isShowDropOff) => {
   const { pickup, dropoff } = data;
   const res: any = {};
   res.pickUp = pickup && formatLocationFromEvent(pickup);
-  if (isShowDropOff) {
-    res.dropOff = dropoff && formatLocationFromEvent(dropoff);
-  } else {
-    res.dropOff = res.pickUp;
+
+  // 和国际站首页逻辑保持一致
+  // 异地开关开时，更改取车地点，同时更改还车地点
+  res.dropOff = res.pickUp;
+  if (dropoff) {
+    res.dropOff = formatLocationFromEvent(dropoff);
   }
+
+  // ctrip 逻辑
+  // 异地开关开时，更改取车地点，不更改还车地点
+  // if (isShowDropOff) {
+  //   res.dropOff = dropoff && formatLocationFromEvent(dropoff);
+  // } else {
+  //   res.dropOff = res.pickUp;
+  // }
   return res;
 };
 

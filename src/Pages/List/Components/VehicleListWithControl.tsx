@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Animated, Dimensions, StyleSheet,
+  View, Animated, StyleSheet,
 } from 'react-native';
+import _ from 'lodash';
 import { Toast } from '@ctrip/crn';
 import BbkThemeProvider from '@ctrip/bbk-theming';
 import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
@@ -11,6 +12,7 @@ import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import VehicleList from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
+import { Utils } from '../../../Util/Index';
 
 interface VehicleListWithControlProps {
   maxIndex?: number;
@@ -39,6 +41,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
   },
+  wrap: {
+    flex: 1,
+    overflow: 'hidden',
+  },
 });
 
 export default class VehicleListWithControl extends PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
@@ -49,7 +55,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     listData: {},
     initialNumToRender: 10,
     theme: {},
-    height: Dimensions.get('window').height,
+    height: Utils.heightWithStatusBar,
     threshold: 0,
     showMax: 2,
   };
@@ -174,9 +180,9 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     return null;
   }
 
-  renderVehicleListDom = (index, placeHolder) => {
+  renderVehicleListDom = (index, placeHolder, listData) => {
     const {
-      listData, minIndex, maxIndex, initialNumToRender, theme, showMax,
+      minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
@@ -262,19 +268,28 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     if (props.index !== this.props.index) {
       this.tabScroll(props.index);
     }
+    if (!_.isEqual(props.listData, this.props.listData)) {
+      this.renderAllVehicleListDom(props.listData);
+    }
   }
 
-  renderAllVehicleListDom() {
+  renderAllVehicleListDom(newListData = null) {
     const dom = [];
     const { index } = this.state;
     const {
-      minIndex, maxIndex,
+      minIndex, maxIndex, listData,
     } = this.props;
 
-    // console.log('【performance】renderAllVehicleListDom ', $index, reset)
+    const $listData = newListData || listData;
+
+    if (newListData) {
+      this.cacheList = [];
+    }
+
+    // console.log('【performance】renderAllVehicleListDom ')
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
       const placeHolder = Math.abs(i - index) > 0;
-      dom[i] = this.renderVehicleListDom(i, placeHolder);
+      dom[i] = this.renderVehicleListDom(i, placeHolder, $listData);
     }
 
     return dom;
@@ -292,12 +307,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
 
     return (
       <BbkThemeProvider theme={theme} channel={null}>
-        <View style={[styles.absoluteWrap, {
-          top: threshold,
-          height: scrollViewHeight,
-          overflow: 'hidden',
-        }]}
-        >
+        <View style={styles.wrap}>
           <Animated.View style={[styles.absoluteWrap, {
             top: 0,
             height: (maxIndex - minIndex + 1) * scrollViewHeight,

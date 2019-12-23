@@ -16,7 +16,7 @@ export const themeLight = {
    * Vehicle
    */
   bbkPriceDescPricePrimaryColor: color.blueBase,
-  bbkVehicleNameBorderBottomColor: color.white,
+  bbkVehicleNameBorderBottomColor: color.black,
   bbkVehicleDescSplitLineColor: setOpacity(color.white, 0.7),
   /**
    * Label & Button
@@ -47,7 +47,7 @@ export const themeDark = {
    * Vehicle
    */
   bbkPriceDescPricePrimaryColor: color.blueBase,
-  bbkVehicleNameBorderBottomColor: color.white,
+  bbkVehicleNameBorderBottomColor: color.black,
   bbkVehicleDescSplitLineColor: setOpacity(color.white, 0.7),
   /**
    * Label & Button

@@ -1,5 +1,6 @@
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
 import React, {createContext, ContextType} from 'react';
+import {StatusBar} from 'react-native';
 import {
   Page,
   ViewPort,
@@ -9,10 +10,11 @@ import {
 } from '@ctrip/crn';
 import { IntlProvider } from 'react-intl';
 import { Text } from 'react-native';
-import { AppContext, CarLog } from '../../Util/Index';
+import { AppContext, CarLog, Utils } from '../../Util/Index';
 import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
 import AppUnLoad from '../../AppUnLoad';
 import BbkTranslationKey from '@ctrip/bbk-car-translation-key'
+import { color } from '@ctrip/bbk-tokens';
 
 export interface IStateType {
   lang?: string,
@@ -75,6 +77,12 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
 
   componentDidMount() {
     this.pageShowTime = new Date();
+    if (Utils.isAndroid) {
+      // 安卓沉浸式状态栏
+      StatusBar.setBackgroundColor(color.transparent, false);
+      StatusBar.setTranslucent(true);
+      StatusBar.setBarStyle('dark-content');
+    }
     if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
       IBUSharkUtil.fetchSharkData(this.getSharkConfig())
         .then(({ lang, messages }) => {

@@ -232,12 +232,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
           <VehGroupNav pageId={this.getPageId()} />
         </View>
-        {curStage === PAGESTAGE.INIT
-          && (
-            <View style={{ overflow: 'hidden' }}>
-              <BbkSkeletonLoading visible pageName={PageType.List} />
-            </View>
-          )
+        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
         }
         {
           curStage === PAGESTAGE.FAIL

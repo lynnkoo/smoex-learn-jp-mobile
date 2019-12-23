@@ -6,7 +6,7 @@ import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
+import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
@@ -43,6 +43,24 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     backgroundColor: color.white,
+    zIndex: 1,
+  },
+  shadowStyle: {
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 4,
+    shadowColor: color.modalShadow,
+    shadowOpacity: 1,
+    elevation: 4,
+  },
+  headerStyle: {
+    elevation: 0,
+    borderBottomWidth: 0,
+    marginBottom: BbkUtils.getPixel(4),
+  },
+  filterBarStyle: {
+    elevation: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: color.grayBorder,
   },
 });
 
@@ -205,14 +223,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
-        <View style={styles.wrapper} onLayout={this.setVehicleListThreshold}>
+        <View style={[styles.wrapper, styles.shadowStyle]} onLayout={this.setVehicleListThreshold}>
           <ListHeader
             handleBackPress={this.pageGoBack}
             showSearchSelectorWrap={this.handlePressHeader}
-            style={BbkStyleUtil.getMB(4)}
+            style={styles.headerStyle}
           />
           {/** todo FilterBar 展开动画 */}
-          <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
+          <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
           <VehGroupNav pageId={this.getPageId()} />
           <TipList />
         </View>

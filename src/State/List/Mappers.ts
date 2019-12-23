@@ -63,7 +63,7 @@ export const getPromotionFilterText = () => {
   const promotionFilterItems = getPromotionFilterItems();
   if (promotionFilterItems && promotionFilterItems.length > 0) {
     const curPromotionFilter = promotionFilterItems[0];
-    text = curPromotionFilter.filterGroups[0].filterItems[0].promotion.title;
+    text = curPromotionFilter.filterGroups[0].filterItems[0].name;
   }
   return text;
 };

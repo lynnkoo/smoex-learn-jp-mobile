@@ -5,7 +5,7 @@ import memoizeOne from 'memoize-one';
 import { URL } from '@ctrip/crn';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkPriceDesc from '@ctrip/bbk-component-car-price-desc';
-import { setOpacity } from '@ctrip/bbk-tokens';
+import { setOpacity, border } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import { VehicleListStyle as style } from '../Styles';
@@ -29,6 +29,7 @@ export default withTheme(
     soldOutLabel,
     locationAndDate,
     reference,
+    index,
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
@@ -74,7 +75,8 @@ export default withTheme(
     // })
 
     return (
-      <View style={[style.vendor, { borderBottomColor: setOpacity(theme.black, 0.1) }]}>
+
+      <View style={[style.vendor, index !== 0 && { borderTopWidth: border.borderSizeSm, borderTopColor: setOpacity(theme.black, 0.1) }]}>
         <VerdorHeader
           onPress={onVerdorHeaderPress}
           {...vendorHeaderProps}

@@ -167,21 +167,22 @@ interface labelList {
 
 const getVendorLabelItems = (vendor) => {
   const {
-    pStoreRouteDesc, rStoreRouteDesc, positiveTagList = [], platformName,
+    pStoreRouteDesc, rStoreRouteDesc, allTags = [], platformName,
   } = vendor;
 
   const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);
 
+  // 1：正向，2：负向，3：营销
   const tagType = {
-    0: {
-      typeKey: 'normal',
-      args: [tokenType.ColorType.BlueGray],
-    },
     1: {
       typeKey: 'feature',
       args: [],
     },
     2: {
+      typeKey: 'normal',
+      args: [tokenType.ColorType.BlueGray],
+    },
+    3: {
       typeKey: 'promotion',
       args: [null, false, 'primary'],
     },
@@ -204,7 +205,7 @@ const getVendorLabelItems = (vendor) => {
     ];
   }
 
-  positiveTagList.forEach((tag) => {
+  allTags.forEach((tag) => {
     const { type, title = 'Free Cancellation', icon: iconContent = '\uf2bf' } = tag;
     const params = tagType[type] || {};
     const getVendorLabelFn = getVendorLabel(...params.args);

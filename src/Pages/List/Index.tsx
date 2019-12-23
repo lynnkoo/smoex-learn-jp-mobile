@@ -230,14 +230,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           <ListHeader
             handleBackPress={this.pageGoBack}
             showSearchSelectorWrap={this.handlePressHeader}
-            style={[BbkStyleUtil.getMB(4), {
-              position: 'absolute',
-              zIndex: 10,
-              borderBottomWidth: 0,
-            }]}
+            style={[BbkStyleUtil.getMB(4)]}
           />
           {/** todo FilterBar 展开动画 */}
-          <ListFilterBar style={{ position: 'absolute', left: 0, top: DEFAULT_HEADER_HEIGHT + fixOffsetTop(), zIndex: 10 }} onPressFilterBar={this.onPressFilterBar} />
+          <ListFilterBar onPressFilterBar={this.onPressFilterBar} />
           <VehGroupNav pageId={this.getPageId()} />
         </View>
         {curStage === PAGESTAGE.INIT

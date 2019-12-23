@@ -22,17 +22,23 @@ interface IFilterInner {
   setActiveFilterBarCode: (data: any) => void;
   setModalVisible: (visible: boolean) => void;
 }
+
+interface IFilterType extends FilterType {
+  filterLabels: any;
+}
+
 export interface IFilterAndSort extends IFilterInner {
   allVehicleCount: number;
   allVendorPriceCount: number;
-  selectedFilters: FilterType;
+  selectedFilters: IFilterType;
   allFilters: any;
   isShowFooter: boolean;
   filterModalRef: RefObject<any>;
 }
 
-const initFilterData = (type, tempFilterData) => {
+const initFilterData = (filterType, tempFilterData) => {
   let filterData = [];
+  const type = filterType && filterType.indexOf('Vendor_0') > -1 ? FilterBarType.Supplier : filterType;
   switch (type) {
     case FilterBarType.Sort:
       filterData = tempFilterData;
@@ -70,32 +76,32 @@ const RenderInner: React.FC<IFilterInner> = ({
       <BbkComponentSelectMenu
         filterData={initFilterData(type, filterData)}
         type={SelectMenuType.Single}
-        onToggle={(code) => {
-          updateSelectedFilter({ sortFilter: code });
+        onToggle={(label) => {
+          updateSelectedFilter({ sortFilter: label.code });
           setActiveFilterBarCode('');
           setModalVisible(false);
         }}
       />
-    ) : type === FilterBarType.Supplier ? (
+    ) : type === FilterBarType.Supplier || (type && type.indexOf('Vendor_') > -1) ? ( // 供应商筛选项code为Vendor_
       <BbkComponentFilterList
         filterGroups={initFilterData(type, filterData)}
-        changeTempFilterData={(code, handleType) => {
-          updateTempFilter(code, handleType, type);
+        changeTempFilterData={(label, handleType) => {
+          updateTempFilter(label, handleType, type);
         }}
       />
     ) : type === FilterBarType.Seats ? (
       <BbkComponentSelectMenu
         filterData={initFilterData(type, filterData)}
         type={SelectMenuType.Multiple}
-        onToggle={(code, handleType) => {
-          updateTempFilter(code, handleType, type);
+        onToggle={(label, handleType) => {
+          updateTempFilter(label, handleType, type);
         }}
       />
     ) : type === FilterBarType.Filters ? (
       <BbkComponentFilterList
         filterGroups={initFilterData(type, filterData)}
-        changeTempFilterData={(code, handleType) => {
-          updateTempFilter(code, handleType, type);
+        changeTempFilterData={(label, handleType) => {
+          updateTempFilter(label, handleType, type);
         }}
         updateStartPrice={(startPrice) => {
           updateTempPrice(startPrice, 'start');
@@ -121,7 +127,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   setActiveFilterBarCode,
 }: IFilterAndSort) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [tempFilterCode, setTempFilterCode] = useState([]);
+  const [tempFilterLabel, settempFilterLabel] = useState([]);
   const [tempPrice, setTempPrice] = useState({});
   const [filterDataState, setFilterDataState] = useState([]);
 
@@ -132,11 +138,11 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   useEffect(() => {
     const initFilterCode = allFilters.map(item => ({
       type: item.type,
-      selectedCodeList: selectedFilters.bitsFilter.filter(code => item.codeList.includes(code)) || [],
+      selectedLabelList: selectedFilters.filterLabels.filter(label => item.codeList.includes(label.code)) || [],
     }));
 
-    setTempFilterCode(initFilterCode);
-  }, [selectedFilters.bitsFilter, allFilters]);
+    settempFilterLabel(initFilterCode);
+  }, [selectedFilters.filterLabels, allFilters]);
 
   useEffect(() => {
     setTempPrice(selectedFilters.priceFilter && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
@@ -144,23 +150,26 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
   const onHide = () => {
     setActiveFilterBarCode('');
+    setFilterDataState([]);
     setModalVisible(false);
   };
 
-  const updateTempFilter = (code, handleType, typeName) => {
-    const temp = tempFilterCode.map((item) => {
+  const updateTempFilter = (label, handleType, typeName) => {
+    const temp = tempFilterLabel.map((item) => {
       if (item.type === typeName) {
         if (handleType === 'add') {
-          item.selectedCodeList.push(code);
+          item.selectedLabelList.push({ code: label.code, name: label.name });
         } else {
-          _.pull(item.selectedCodeList, code);
+          const deleteLabel = item.selectedLabelList.find(v => v && v.code === label.code);
+
+          _.pull(item.selectedLabelList, deleteLabel);
         }
       }
 
       return item;
     });
 
-    setTempFilterCode(temp);
+    settempFilterLabel(temp);
   };
 
   const updateTempPrice = (price, priceType) => {
@@ -177,24 +186,27 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
   const onSaveFilter = () => {
     let savedFilter = [];
+    let bitsFilter = [];
 
-    tempFilterCode.forEach((temp) => {
-      savedFilter = savedFilter.concat(temp.selectedCodeList);
+    tempFilterLabel.forEach((temp) => {
+      savedFilter = savedFilter.concat(temp.selectedLabelList);
     });
+
+    bitsFilter = savedFilter.map(filter => filter && filter.code);
 
     updateSelectedFilter({
-      bitsFilter: savedFilter,
+      bitsFilter,
+      filterLabels: savedFilter,
       priceFilter: JSON.stringify(tempPrice) === '{}' ? [] : [tempPrice],
     });
-    setModalVisible(false);
-    setActiveFilterBarCode('');
+    onHide();
   };
 
   const onClearFilter = () => {
-    const tempCode = tempFilterCode.map((item) => {
+    const tempCode = tempFilterLabel.map((item) => {
       const newItem = item;
       if (newItem.type === type) {
-        newItem.selectedCodeList = [];
+        newItem.selectedLabelList = [];
       }
 
       return newItem;
@@ -225,7 +237,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
     setTempPrice({});
     setFilterDataState(tempFilterDataState);
-    setTempFilterCode(tempCode);
+    settempFilterLabel(tempCode);
   };
 
   const privateFilterModalRef = useRef();
@@ -235,6 +247,10 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     },
     hide: onHide,
   }));
+
+  if (filterDataState && filterDataState.length === 0) {
+    return null;
+  }
 
   return (
     <BbkComponentCarFilterModal

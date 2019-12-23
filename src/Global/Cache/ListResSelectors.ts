@@ -97,7 +97,7 @@ const mapCode = (filterMenu, result) => {
 // 获取filterbar上每个选项所含有的筛选项的全部code
 export const getFilterBarItemsCode = () => {
   const popularFilterList = getPopularFilterItems().map(item => ({
-    type: item.code.indexOf('Vendor_') > -1 ? 'Supplier' : item.code,
+    type: item.code,
     codeList: mapCode(item, []),
   })) || [];
 

@@ -168,9 +168,8 @@ const getFilterData = (state) => {
     default:
       filterData = setFilterMenu(
         popularFilterItems.filter(
-          (f: any) => f.code === filterBarType
-            || (filterBarType === 'Supplier' && f.code.indexOf('Vendor_') > -1),
-        ), // 供应商筛选项code为Vendor_
+          (f: any) => f.code === filterBarType,
+        ),
         displaySelectedFilters,
       );
       isShowFooter = true;

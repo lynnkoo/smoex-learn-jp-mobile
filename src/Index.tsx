@@ -7,6 +7,7 @@ import pages from './Routers/Index';
 import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
 import appLoad, { loadLanguageAsync } from './AppLoad';
+import AppUnLoad from './AppUnLoad';
 import { APP_ID } from './Constants/Platform';
 import { AppContext } from './Util/Index';
 
@@ -32,6 +33,10 @@ export default class RnCarApp extends Component<any, StateType> {
       isPreloadFinished: false,
     };
     this.preLoad(props);
+  }
+
+  componentWillUnmount() {
+    AppUnLoad();
   }
 
   preLoad = async (props) => {

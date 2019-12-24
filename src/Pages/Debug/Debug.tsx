@@ -7,7 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { ViewPort, HeaderView, IBasePageProps } from '@ctrip/crn';
+import {
+  ViewPort, HeaderView, IBasePageProps, Toast,
+} from '@ctrip/crn';
 import { AppContext, CarLog } from '../../Util/Index';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { PageId } from '../../Constants/Index';
@@ -60,7 +62,7 @@ interface StateType extends IStateType {
   age: number,
 }
 
-export default class MagicGate extends CPage<PropsType, StateType> {
+export default class Debug extends CPage<PropsType, StateType> {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,15 +82,21 @@ export default class MagicGate extends CPage<PropsType, StateType> {
   }
 
   getAppContext = () => {
-    const contexts = Object.keys(AppContext)
-      .map((name): string => `${name}:${JSON.stringify(AppContext[name])}`);
+    const contexts = [];
+    Object.keys(AppContext).forEach((name) => {
+      if (name !== 'PageInstance'
+        && name !== 'SharkKeys'
+        && typeof AppContext[name] !== 'function') {
+        contexts.push(`${name}:${JSON.stringify(AppContext[name])}`);
+      }
+    });
     return contexts.join('\n');
   }
 
   renderPageContent() {
     return (
       <ViewPort>
-        <HeaderView title={this.getPageId()} />
+        <HeaderView title={this.getPageId()} page={this} />
         <ScrollView style={styles.container}>
           <View>
             <TextInput
@@ -145,7 +153,12 @@ export default class MagicGate extends CPage<PropsType, StateType> {
             </TouchableOpacity>
           </View>
           <View style={styles.container2}>
-            <TextWithLogCode pageId={this.getPageId()} enName="test textLogCode" logOtherInfo={{ code: 1 }} onPress={() => { console.log('test withLogCode'); }}>
+            <TextWithLogCode
+              pageId={this.getPageId()}
+              enName="test textLogCode"
+              logOtherInfo={{ code: 1 }}
+              onPress={() => { Toast.show('test withLogCode'); }}
+            >
               {'测试TextWithLogCode组件'}
             </TextWithLogCode>
           </View>
@@ -154,7 +167,7 @@ export default class MagicGate extends CPage<PropsType, StateType> {
             <TouchableOpacityWithLogCode
               pageId={this.getPageId()}
               enName="test TouchableOpacityLogCode"
-              onPress={() => { console.log('test TouchableOpacityLogCode'); }}
+              onPress={() => { Toast.show('test TouchableOpacityLogCode'); }}
             >
               <Text>测试TouchableOpacityWithLogCode组件</Text>
             </TouchableOpacityWithLogCode>

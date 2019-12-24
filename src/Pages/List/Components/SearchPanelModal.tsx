@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { URL } from '@ctrip/crn';
 import BbkComponentSearchPanelModal from '@ctrip/bbk-component-search-panel-modal';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 interface IPropsType {
   visible: boolean;
@@ -46,56 +48,69 @@ const SearchPanelModal = (props: IPropsType) => {
       });
     }
     props.setAge({ age: this.backUpAge });
-
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_CLOSE.KEY });
     /* eslint-disable */
   }, []);
 
   const onPressPickupLocation = () => {
     const url = `${addressUrl}&addresstype=pickup`;
     URL.openURL(url);
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_PICKUP_LOCATION.KEY });
   };
 
   const onPressDropoffLocation = () => {
     const url = `${addressUrl}&addresstype=dropoff`;
     URL.openURL(url);
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_DROPOFF_LOCATION.KEY });
   };
 
   const onAgeChange = (data) => {
     props.setAge({ age: data });
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_AGE_CONFIRM.KEY });
   };
 
   const onAgeCancel = () => {
-    console.log('todo+++onAgeCancel+++');
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_AGE_CANCEL.KEY });
   };
 
   const onTimeChange = (data) => {
     props.setDateInfo({ pickup: data.ptime, dropoff: data.rtime });
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_CHANGEDATE_CONFIRM.KEY });
   };
 
   const onTimeCancel = () => {
-    console.log('todo+++onTimeCancel+++');
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_CHANGEDATE_CANCEL.KEY });
   };
 
   const onPressSearch = () => {
     props.fetchList();
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_SEARCH.KEY });
   };
 
   const onPressAgeSelect = () => {
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_AGE.KEY });
   };
 
   const onIsShowDropOffChange = (isShowDropOff) => {
     props.setLocationInfo({ isShowDropOff });
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_SWITCH_DROPOFF.KEY, isShowDropOff });
   };
+
+  const onPressPickUpDate = () => {
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_PICKUP_DATE.KEY });
+  }
+
+  const onPressDropOffDate = () => {
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_DROPOFF_DATE.KEY });
+  }
 
   return (
     <BbkComponentSearchPanelModal
       onCancel={onCancel}
       onPressPickupLocation={onPressPickupLocation}
       onPressDropoffLocation={onPressDropoffLocation}
+      onPressPickUpDate={onPressPickUpDate}
+      onPressDropOffDate={onPressDropOffDate}
       onAgeChange={onAgeChange}
       onAgeCancel={onAgeCancel}
       onTimeChange={onTimeChange}

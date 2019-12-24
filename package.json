@@ -57,7 +57,7 @@
     "@ctrip/bbk-component-right-icon": "0.0.22",
     "@ctrip/bbk-component-score-label": "0.0.22",
     "@ctrip/bbk-component-search-panel": "0.0.26",
-    "@ctrip/bbk-component-search-panel-modal": "0.0.19",
+    "@ctrip/bbk-component-search-panel-modal": "0.0.20",
     "@ctrip/bbk-component-select-menu": "0.0.19",
     "@ctrip/bbk-component-skeleton-loading": "0.0.21",
     "@ctrip/bbk-component-text": "0.0.44",

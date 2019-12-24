@@ -6,6 +6,7 @@ import uuid from 'uuid';
 import Utils from './Utils';
 import { REST_SOA } from '../Constants/Platform';
 import AppContext from './AppContext';
+import { getStore } from '../State/Store';
 
 export interface RequestType {
   sequenceId?: string;
@@ -42,13 +43,17 @@ class FetchBase implements FetchBaseType {
     const requestId = curParam.requestId || uuid();
     const parentRequestId = curParam.parentRequestId || '';
     const { latitude, longitude, mac }: any = Device.deviceInfo || {};
+    const state = getStore().getState();
+    const { CountryInfo } = state;
     return {
       sourceFrom: AppContext.CarEnv.appType,
       requestId,
       parentRequestId,
+      site: AppContext.LanguageInfo.site,
+      language: AppContext.LanguageInfo.language,
       locale: AppContext.LanguageInfo.locale,
       currencyCode: AppContext.LanguageInfo.currency,
-      sourceCountryId: 1, // todo
+      sourceCountryId: CountryInfo.countryId,
       channelId: AppContext.MarketInfo.channelId,
       clientVersion: AppContext.CarEnv.buildTime,
       clientid: _.get(Device, 'deviceInfo.clientID') || '',

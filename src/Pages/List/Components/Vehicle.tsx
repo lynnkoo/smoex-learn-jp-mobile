@@ -69,7 +69,7 @@ export const Vehicle = memo(withTheme(
         {
           _.map(item, (data, index) => (
             // eslint-disable-next-line
-            <Vendor key={index} {...data} vehicleName={vehicleHeader.vehicleName} />
+            <Vendor key={index} index={index} {...data} vehicleName={vehicleHeader.vehicleName} />
           ))
         }
       </View>

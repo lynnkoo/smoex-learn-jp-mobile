@@ -1,13 +1,13 @@
 import React, { Component, ReactElement } from 'react';
 import {
-  SectionList, SectionListProps, StyleSheet,
+  SectionList, SectionListProps, StyleSheet, View,
 } from 'react-native';
 import _ from 'lodash';
 import { RefreshControl, LoadControl } from '@ctrip/crn';
 import { color } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 
-const { isIos, selector } = BbkUtils;
+const { isIos, lazySelector } = BbkUtils;
 
 // @ts-ignore
 interface SectionListWithControlProps extends SectionListProps<any> {
@@ -29,6 +29,7 @@ interface SectionListWithControlProps extends SectionListProps<any> {
   refFn?: (any) => void;
   pullIcon?: string;
   loadingContent?: string;
+  ListHeaderExtraComponent?: ReactElement;
   ListFooterExtraComponent?: ReactElement;
   ListEmptyComponent?: ReactElement;
 }
@@ -64,7 +65,17 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
   loadControl = null;
 
-  scoller = null;
+  refreshControlWrap = null;
+
+  loadControlWrap = null;
+
+  scroller = null;
+
+  scrollerMoveLength = 0;
+
+  static defaultProps = {
+    throttle: 50,
+  };
 
   constructor(props) {
     super(props);
@@ -83,7 +94,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
   }
 
   // eslint-disable-next-line
-  triggerScroll = (event, triggerEnd = false) => {
+  triggerScroll = (event, triggerEvent = 'onScroll') => {
     const { threshold } = this.props;
     let { showAndroidLoad, showAndroidRefresh } = this.state;
     const { y } = event.nativeEvent.contentOffset;
@@ -92,11 +103,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     let load = false;
     let refresh = false;
 
-    // if(triggerEnd) {
-    //   console.log('onScrollEndDrag ', y, height, contentHeight, threshold)
-    // } else {
-    //   console.log('onScroll ', y, height, contentHeight, threshold)
-    // }
+    // console.log(triggerEvent, y, height, contentHeight, threshold)
 
     if (isIos) {
       if (y + height > contentHeight + threshold) {
@@ -144,13 +151,68 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     });
   }
 
+  onScrollBeginDrag = (event) => {
+    if (isIos) {
+      return;
+    }
+
+    const {
+      load,
+      refresh,
+    } = this.triggerScroll(event, 'onScrollBeginDrag');
+    const { throttle } = this.props;
+
+    if (refresh && this.refreshControlWrap) {
+      this.scrollerMoveLength = throttle;
+      this.refreshControlWrap.setNativeProps({
+        style: {
+          paddingTop: this.scrollerMoveLength,
+        },
+      });
+    }
+
+    if (load && this.loadControlWrap) {
+      this.scrollerMoveLength = throttle;
+      this.loadControlWrap.setNativeProps({
+        style: {
+          paddingBottom: this.scrollerMoveLength,
+        },
+      });
+    }
+  }
+
+  recoverMoveLength = () => {
+    if (isIos) {
+      return;
+    }
+
+    this.scrollerMoveLength = 0;
+    if (this.refreshControlWrap) {
+      this.refreshControlWrap.setNativeProps({
+        style: {
+          paddingTop: this.scrollerMoveLength,
+        },
+      });
+    }
+
+    if (this.loadControlWrap) {
+      this.loadControlWrap.setNativeProps({
+        style: {
+          paddingBottom: this.scrollerMoveLength,
+        },
+      });
+    }
+  }
+
   onScrollEndDrag = (event) => {
+    this.recoverMoveLength();
+
     const {
       load,
       refresh,
       showAndroidLoad,
       showAndroidRefresh,
-    } = this.triggerScroll(event, true);
+    } = this.triggerScroll(event, 'onScrollEndDrag');
 
     const nextState: any = {
       showAndroidLoad,
@@ -197,7 +259,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     if (this.props.refFn) {
       this.props.refFn(ref);
     }
-    this.scoller = ref;
+    this.scroller = ref;
   }
 
   render() {
@@ -208,7 +270,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       showAndroidRefresh,
     } = this.state;
     const {
-      throttle = 50,
+      throttle,
       showFooter,
       sections,
       renderItem,
@@ -230,13 +292,66 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
       initialNumToRender,
       endFillColor,
+      ListHeaderExtraComponent,
       ListFooterExtraComponent,
       ListEmptyComponent,
     } = this.props;
 
+    const refreshControl = (
+      // ts-ignore
+      <RefreshControl
+        style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
+        iconStyle={styles.iconStyle}
+        textStyle={styles.textStyle}
+        // @ts-ignore
+        ref={ref => {this.refreshControl = ref}} // eslint-disable-line
+        // @ts-ignore
+        isRefreshing={refreshing}
+        refreshResult={refreshResult}
+        pullIcon={pullIcon}
+        pullStartContent={pullStartContent}
+        pullContinueContent={pullContinueContent}
+        refreshingIcon={refreshingIcon}
+        refreshingContent={refreshingContent}
+      />
+    );
+
+    const listHeaderComponent = (
+      <View ref={(ref) => { this.refreshControlWrap = ref; }}>
+        {ListHeaderExtraComponent}
+        {refreshControl}
+      </View>
+    );
+
+    const loadControl = (
+      <LoadControl
+        style={styles.controlWrap}
+        iconStyle={styles.iconStyle}
+        textStyle={styles.textStyle}
+        // eslint-disable-next-line
+        ref={ref => {this.loadControl = ref}}
+        isLoading={onLoading}
+        noMore={noMore}
+        noMoreContent={noMoreContent}
+        noticeContent={noticeContent}
+        loadingContent={loadingContent}
+      />
+    );
+
+    const listFooterComponent = lazySelector(
+      showFooter,
+      () => (
+        <View ref={(ref) => { this.loadControlWrap = ref; }}>
+          {ListFooterExtraComponent}
+          {loadControl}
+        </View>
+      )
+      ,
+    );
+
     return (
       <SectionList
-        style={[style]}
+        style={style}
         ref={this.refFn}
         initialNumToRender={initialNumToRender}
         endFillColor={endFillColor}
@@ -246,46 +361,12 @@ export default class SectionListWithControl extends Component<SectionListWithCon
         sections={sections}
         keyExtractor={() => `${index}`}
         scrollEventThrottle={throttle}
+        onScrollBeginDrag={this.onScrollBeginDrag}
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle()}
         onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
-        ListHeaderComponent={(
-          // @ts-ignore
-          <RefreshControl
-            style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
-            iconStyle={styles.iconStyle}
-            textStyle={styles.textStyle}
-            // @ts-ignore
-            ref={ref => this.refreshControl = ref} // eslint-disable-line
-            // @ts-ignore
-            isRefreshing={refreshing}
-            refreshResult={refreshResult}
-            pullIcon={pullIcon}
-            pullStartContent={pullStartContent}
-            pullContinueContent={pullContinueContent}
-            refreshingIcon={refreshingIcon}
-            refreshingContent={refreshingContent}
-          />
-        )}
-        ListFooterComponent={selector(
-          showFooter,
-          <>
-            {ListFooterExtraComponent}
-            <LoadControl
-              style={styles.controlWrap}
-              iconStyle={styles.iconStyle}
-              textStyle={styles.textStyle}
-              // eslint-disable-next-line
-              ref={ref => this.loadControl = ref}
-              isLoading={onLoading}
-              noMore={noMore}
-              noMoreContent={noMoreContent}
-              noticeContent={noticeContent}
-              loadingContent={loadingContent}
-            />
-          </>
-          ,
-        )}
+        ListHeaderComponent={listHeaderComponent}
+        ListFooterComponent={listFooterComponent}
         ListEmptyComponent={ListEmptyComponent}
       />
     );

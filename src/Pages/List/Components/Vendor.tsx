@@ -71,7 +71,7 @@ export default withTheme(
     const labelTypes = _.keys(vendorLabelItems);
 
     // useEffect(() => {
-    //   console.log('【performance】Vendor Item ', vehicleName, vendorIndex)
+    //   console.log('【performance】Vendor Item ', vehicleName)
     // })
 
     return (

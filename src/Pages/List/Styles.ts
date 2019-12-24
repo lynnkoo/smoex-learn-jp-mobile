@@ -20,6 +20,7 @@ export const VehicleListStyle = StyleSheet.create({
     marginTop: space.spaceXL,
   },
   vendor: {
+    paddingTop: space.spaceXXL,
     paddingBottom: space.spaceXXL,
     overflow: 'hidden',
   },
@@ -30,7 +31,6 @@ export const VehicleListStyle = StyleSheet.create({
     flexWrap: 'wrap',
   },
   priceWrap: {
-    marginTop: space.spaceL,
     alignItems: 'flex-end',
   },
   verndorLabel: {

@@ -351,7 +351,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
     return (
       <SectionList
-        style={[style, {marginBottom: 200}]}
+        style={style}
         ref={this.refFn}
         initialNumToRender={initialNumToRender}
         endFillColor={endFillColor}

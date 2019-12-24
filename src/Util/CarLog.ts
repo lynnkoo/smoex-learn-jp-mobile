@@ -75,7 +75,7 @@ class CarLog {
     const state = getStore().getState();
     const { age } = state.DriverAgeAndNumber;
     return {
-      sourceFrom: AppContext.CarEnv.apptype,
+      sourceFrom: AppContext.CarEnv.appType,
       businessType: Utils.getBusinessType(),
       distibutionChannelId: Utils.isQunarApp()
         ? AppContext.MarketInfo.childChannelId : AppContext.MarketInfo.channelId,
@@ -86,7 +86,7 @@ class CarLog {
       visitortraceId: AppContext.MarketInfo.visitortraceId,
       sourceId: Channel.sourceId || '',
       abVersion: '', // todo
-      partialVersion: AppContext.CarEnv.BuildTime,
+      partialVersion: AppContext.CarEnv.buildTime,
       crnVersion: Application.version || '',
       uId: AppContext.UserInfo.UserID || '',
       telephone: Channel.telephone || '',

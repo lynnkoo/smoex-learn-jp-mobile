@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     ...Platform.select({
       android: {
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          borderBottomColor: color.grayBorder
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: color.grayBorder,
       },
-  }),
+    }),
   },
   shadowStyle: {
     shadowOffset: { width: 0, height: 5 },

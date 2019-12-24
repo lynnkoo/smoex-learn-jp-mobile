@@ -68,7 +68,7 @@ class Utils {
   }
 
   static isCtripOsd(): boolean {
-    switch (AppContext.CarEnv.apptype) {
+    switch (AppContext.CarEnv.appType) {
       case APP_TYPE.OSD_C_APP:
       case APP_TYPE.OSD_C_H5:
       case APP_TYPE.OSD_Q_APP:
@@ -80,7 +80,7 @@ class Utils {
   }
 
   static isCtripIsd(): boolean {
-    switch (AppContext.CarEnv.apptype) {
+    switch (AppContext.CarEnv.appType) {
       case APP_TYPE.ISD_C_APP:
       case APP_TYPE.ISD_C_H5:
       case APP_TYPE.ISD_Q_APP:
@@ -96,7 +96,7 @@ class Utils {
   }
 
   static isQunarApp(): boolean {
-    return AppContext.CarEnv.apptype === APP_TYPE.OSD_Q_APP;
+    return AppContext.CarEnv.appType === APP_TYPE.OSD_Q_APP;
   }
 
   // get ubt info

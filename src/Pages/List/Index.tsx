@@ -9,7 +9,9 @@ import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-load
 import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
+import { AssistiveTouch } from '../../Components/Index';
 import { PageId } from '../../Constants/Index';
+import { AppContext } from '../../Util/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -22,13 +24,12 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 import TipList from '../../Containers/ListTipListContainer';
-import { AppContext } from '../../Util/Index';
 
 const { selector } = BbkUtils;
 
 interface ListStateType extends IStateType {
   filterAndSortModalVisible: boolean;
-  listThreshold: number
+  listThreshold: number,
 }
 
 const PAGESTAGE = {
@@ -58,6 +59,7 @@ interface IListPropsType extends IBasePageProps {
   setActiveFilterBarCode: (data: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
+  isDebugMode?: boolean;
 }
 
 const removeEvents = () => {
@@ -246,6 +248,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <SearchPanelModal />
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
+        {
+          this.props.isDebugMode
+          && <AssistiveTouch onPress={() => { this.push('Debug'); }} />
+        }
       </ViewPort>
     );
   }

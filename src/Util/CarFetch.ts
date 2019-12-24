@@ -43,14 +43,14 @@ class FetchBase implements FetchBaseType {
     const parentRequestId = curParam.parentRequestId || '';
     const { latitude, longitude, mac }: any = Device.deviceInfo || {};
     return {
-      sourceFrom: AppContext.CarEnv.apptype,
+      sourceFrom: AppContext.CarEnv.appType,
       requestId,
       parentRequestId,
       locale: AppContext.LanguageInfo.locale,
       currencyCode: AppContext.LanguageInfo.currency,
       sourceCountryId: 1, // todo
       channelId: AppContext.MarketInfo.channelId,
-      clientVersion: AppContext.CarEnv.BuildTime,
+      clientVersion: AppContext.CarEnv.buildTime,
       clientid: _.get(Device, 'deviceInfo.clientID') || '',
       vid: '',
       mobileInfo: {

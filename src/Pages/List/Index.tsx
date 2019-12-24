@@ -11,7 +11,7 @@ import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey } from '../../Constants/Index';
-import { AppContext, CarLog } from '../../Util/Index';
+import { CarLog } from '../../Util/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -111,23 +111,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    this.getListProduct();
+    this.props.fetchList();
     this.registerEvents();
   }
 
-  componentDidUpdate() {
-    this.getListProduct();
-  }
-
-  getListProduct = () => {
-    if (!this.hasInitFetch && AppContext.LanguageInfo.currency) {
-      this.props.fetchList();
-      this.hasInitFetch = true;
-    }
-  }
-
   componentWillUnmount() {
-    super.componentWillUnmount();
     removeEvents();
     this.sendEvents();
   }

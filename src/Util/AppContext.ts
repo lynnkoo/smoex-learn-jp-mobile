@@ -1,4 +1,5 @@
 import { Channel } from '@ctrip/crn';
+import _ from 'lodash';
 
 export interface MarketInfoType {
   channelId: string;
@@ -75,6 +76,8 @@ const baseContext = {
   PageInstance: null,
 };
 
+const initalBaseContextClone = _.cloneDeep(baseContext);
+
 const getAppContext = () => Object.assign({}, baseContext);
 
 let appContext = getAppContext();
@@ -120,7 +123,7 @@ const setSharkKeys = (lang, messages) => {
 };
 
 const resetAppContext = () => {
-  appContext = getAppContext();
+  appContext = initalBaseContextClone;
 };
 
 const setPageInstance = (pageInstance) => {

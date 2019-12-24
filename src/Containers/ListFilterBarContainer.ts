@@ -29,7 +29,7 @@ const getFilterBarData = (state) => {
   });
   // 第三步 获取固定项-筛选的状态
   const filter = {
-    text: getSharkValue('list_filters'), 
+    text: getSharkValue('list_filters'),
     code: 'Filters',
     isActive: getActiveFilterBarCode(state) === 'Filters',
     hasFilter:

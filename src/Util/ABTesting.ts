@@ -1,4 +1,4 @@
-import { ABTesting } from '@ctrip/crn';
+import { ABTesting, Util } from '@ctrip/crn';
 import AppContext from './AppContext';
 
 export interface AbItemType {
@@ -83,7 +83,11 @@ const getAbsExpCodesSync = getIsSyncAbs(true);
 
 
 const getAbs = () => {
-  const expCodes = getAbsExpCodes();
+  let expCodes = getAbsExpCodes();
+  if (Util.isInChromeDebug) {
+    expCodes = expCodes.concat(getAbsExpCodesSync());
+  }
+
   // @ts-ignore
   ABTesting.getMultiABTestingInfo(expCodes, (result) => {
     AppContext.setABTesting(result);
@@ -108,7 +112,9 @@ export const getAbExpVersion = (AbInfo: AbItemType) => (
 
 export const initialiseABTesting = () => {
   // sync
-  getAbsSync();
+  if (!Util.isInChromeDebug) {
+    getAbsSync();
+  }
   // async
   getAbs();
 };

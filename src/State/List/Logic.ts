@@ -145,7 +145,7 @@ export const deleteSelectedFilter = createLogic({
 
     _.pull(newSelectedFilters, deleteCode);
     _.pull(newSelectedLabels, deleteLabel);
- 
+
     dispatch(updateSelectedFilter({ bitsFilter: newSelectedFilters, filterLabels: newSelectedLabels }));
     done();
   },

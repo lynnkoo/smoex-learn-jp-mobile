@@ -96,7 +96,7 @@ export default class Debug extends CPage<PropsType, StateType> {
   renderPageContent() {
     return (
       <ViewPort>
-        <HeaderView title={this.getPageId()} />
+        <HeaderView title={this.getPageId()} page={this} />
         <ScrollView style={styles.container}>
           <View>
             <TextInput

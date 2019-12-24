@@ -139,8 +139,14 @@ export const deleteSelectedFilter = createLogic({
     const { deleteCode } = data;
     // @ts-ignore
     const newSelectedFilters = getState().List.selectedFilters.bitsFilter;
+    // @ts-ignore
+    const newSelectedLabels = getState().List.selectedFilters.filterLabels || [];
+    const deleteLabel = newSelectedLabels.find(label => label && label.code === deleteCode);
+
     _.pull(newSelectedFilters, deleteCode);
-    dispatch(updateSelectedFilter({ bitsFilter: newSelectedFilters }));
+    _.pull(newSelectedLabels, deleteLabel);
+ 
+    dispatch(updateSelectedFilter({ bitsFilter: newSelectedFilters, filterLabels: newSelectedLabels }));
     done();
   },
 });

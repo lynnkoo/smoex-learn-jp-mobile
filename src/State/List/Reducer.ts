@@ -19,6 +19,7 @@ const getInitalState = () => ({
     sortFilter: '1',
     priceFilter: [],
     bitsFilter: [],
+    filterLabels: [],
   },
   bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
     filter: [],
@@ -63,7 +64,7 @@ export default (state = initalState, action) => {
     case DELETE_SELECTED_FILTER:
       return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
     case CLEAR_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign({ ...state.selectedFilters }, { priceFilter: [], bitsFilter: [] }) };
+      return { ...state, selectedFilters: Object.assign({ ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }) };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
     case GET_STATUS:

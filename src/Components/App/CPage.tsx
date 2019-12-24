@@ -1,19 +1,12 @@
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=154603234
-import React, {createContext, ContextType} from 'react';
-import {StatusBar} from 'react-native';
+import React from 'react';
+import { StatusBar } from 'react-native';
 import {
   Page,
-  ViewPort,
-  LoadingView,
-  IBUSharkUtil,
   IBasePageProps,
 } from '@ctrip/crn';
-import { IntlProvider } from 'react-intl';
-import { Text } from 'react-native';
 import { AppContext, CarLog, Utils } from '../../Util/Index';
-import { Platform, TranslationKeys, LogKey } from '../../Constants/Index';
-import AppUnLoad from '../../AppUnLoad';
-import BbkTranslationKey from '@ctrip/bbk-car-translation-key'
+import { LogKey } from '../../Constants/Index';
 import { color } from '@ctrip/bbk-tokens';
 
 export interface IStateType {
@@ -34,10 +27,6 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     this.pageLastActiveTime = new Date();
     this.pageAppearCount = 0;
     AppContext.setPageInstance(this);
-    // this.state = {
-    //   lang: '',
-    //   messages: null,
-    // };
   }
 
   getPageId() {
@@ -67,7 +56,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     super.push(name, args);
   }
 
-  pop(name? : string, info? : any) {
+  pop(name?: string, info?: any) {
     super.pop(name, info);
   }
 
@@ -83,76 +72,10 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
       StatusBar.setTranslucent(true);
       StatusBar.setBarStyle('dark-content');
     }
-    if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
-      IBUSharkUtil.fetchSharkData(this.getSharkConfig())
-        .then(({ lang, messages }) => {
-          this.setAppContextSharkKeys(lang, messages);
-          this.setState({ lang, messages });
-          this.sharkFetchDidFinish();
-        })
-        .catch(() => {
-          this.setAppContextSharkKeys('', {});
-          this.setState({ lang: '', messages: {} });
-          this.sharkFetchDidFinish();
-        });
-    } else {
-      this.setAppContextSharkKeys('', {});
-      this.setState({ lang: '', messages: {} });
-      this.sharkFetchDidFinish();
-    }
-  }
-
-  componentWillUnmount() {
-    AppUnLoad();
-  }
-
-  /* eslint-disable class-methods-use-this */
-  sharkFetchDidFinish() {
-  }
-
-  setAppContextSharkKeys(lang, messages) {
-    AppContext.setSharkKeys(lang, messages);
-  }
-
-  /* eslint-disable class-methods-use-this */
-  getSharkConfig() {
-    return {
-      appid: Platform.SHARK_APP_ID.TRIP,
-      keys: { ...BbkTranslationKey },
-    };
-  }
-
-  getLoadingState() {
-    return false;
   }
 
   logPagePerformance() {
     const interactiveTime = +new Date() - +this.pageLastActiveTime;
     CarLog.LogMetric({ key: LogKey.METRIC_PAGE_INTERACTIVE_TIME, value: interactiveTime, info: { pageId: this.getPageId() } });
-  }
-
-  renderPageLoading() {
-    return (
-      <ViewPort>
-        <LoadingView />
-      </ViewPort>
-    );
-  }
-
-  renderPageContent() {
-    return <ViewPort />;
-  }
-
-  render() {
-    const { lang, messages } = this.state;
-    const loading = this.getLoadingState();
-    if (lang && messages && !loading) {
-      return (
-        <IntlProvider locale={lang} messages={messages} textComponent={Text}>
-          {this.renderPageContent()}
-        </IntlProvider>
-      );
-    }
-    return this.renderPageLoading();
   }
 }

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import { Text } from 'react-native';
 import { Provider } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 import { App, LoadingView } from '@ctrip/crn';
 import BBkThemingProvider from '@ctrip/bbk-theming';
 import BbkChannel from '@ctrip/bbk-utils';
 import pages from './Routers/Index';
 import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
-import appLoad, { loadLanguageAsync } from './AppLoad';
-import AppUnLoad from './AppUnLoad';
+import appLoad, { loadLanguageAndSharkAsync } from './AppLoad';
 import { APP_ID } from './Constants/Platform';
 import { AppContext } from './Util/Index';
+import AppUnLoad from './AppUnLoad';
 
 const navigationBarConfig = {
   hide: true,
@@ -42,8 +44,7 @@ export default class RnCarApp extends Component<any, StateType> {
   preLoad = async (props) => {
     /* eslint-disable dot-notation */
     if (global['__crn_appId'] === APP_ID.TRIP) {
-      const language = await loadLanguageAsync();
-      AppContext.setLanguageInfo(language);
+      await loadLanguageAndSharkAsync();
     }
     appLoad(props);
     this.setState({ isPreloadFinished: true });
@@ -58,7 +59,9 @@ export default class RnCarApp extends Component<any, StateType> {
         <ErrorBoundary>
           <Provider store={getStore()}>
             <BBkThemingProvider channel={BbkChannel.getChannel()}>
-              <Car {...this.props} />
+              <IntlProvider locale={AppContext.SharkKeys.lang} messages={AppContext.SharkKeys.messages} textComponent={Text}>
+                <Car {...this.props} />
+              </IntlProvider>
             </BBkThemingProvider>
           </Provider>
         </ErrorBoundary>

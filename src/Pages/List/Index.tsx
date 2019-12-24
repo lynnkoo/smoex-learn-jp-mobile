@@ -10,8 +10,8 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId } from '../../Constants/Index';
-import { AppContext } from '../../Util/Index';
+import { PageId, ClickKey } from '../../Constants/Index';
+import { CarLog } from '../../Util/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -23,7 +23,6 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
-// import TipList from '../../Containers/ListTipListContainer';
 
 const { selector } = BbkUtils;
 
@@ -105,30 +104,18 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     this.filterModalRef = React.createRef();
   }
 
+  /* eslint-disable class-methods-use-this */
   getPageId() {
-    super.getPageId();
     return PageId.List.ID;
   }
 
   componentDidMount() {
     super.componentDidMount();
-    this.getListProduct();
+    this.props.fetchList();
     this.registerEvents();
   }
 
-  componentDidUpdate() {
-    this.getListProduct();
-  }
-
-  getListProduct = () => {
-    if (!this.hasInitFetch && AppContext.LanguageInfo.currency) {
-      this.props.fetchList();
-      this.hasInitFetch = true;
-    }
-  }
-
   componentWillUnmount() {
-    super.componentWillUnmount();
     removeEvents();
     this.sendEvents();
   }
@@ -148,7 +135,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   pageGoBack = () => {
     this.pop();
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_BACK.KEY });
   }
 
   getCurStage() {
@@ -216,7 +203,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       return;
     }
     this.props.setLocationAndDatePopIsShow({ visible: true });
-    // todo Log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
   render() {

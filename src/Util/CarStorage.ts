@@ -87,8 +87,8 @@ class CarStorage {
   static loadSync = (key: string) => {
     if (Util.isInChromeDebug) {
       /* eslint-disable no-console */
-      console.warn(`Warning: In debug model, 
-      Storage.loadSync return type is promise, please caution!`);
+      console.warn('Warning: In debug model, ' +
+        'Storage.loadSync return type is promise, please caution!');
     }
     return Util.isInChromeDebug ? load(key) : loadSync(key);
   }

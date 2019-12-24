@@ -1,4 +1,5 @@
 import { Channel } from '@ctrip/crn';
+import _ from 'lodash';
 
 export interface MarketInfoType {
   channelId: string;
@@ -75,7 +76,7 @@ const baseContext = {
   PageInstance: null,
 };
 
-const getAppContext = () => Object.assign({}, baseContext);
+const getAppContext = () => _.cloneDeep(baseContext);
 
 let appContext = getAppContext();
 

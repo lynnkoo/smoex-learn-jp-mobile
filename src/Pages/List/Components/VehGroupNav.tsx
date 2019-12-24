@@ -72,6 +72,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
         <BbkHorizontalNavItemWithLogCode
           key={BbkUtils.uuid()}
           enName={ClickKey.C_LIST_VEHICLEGROUP.KEY}
+          logOtherInfo={{ groupCode: item.gId }}
           onPress={() => { this.onPressNav(item.gId); }}
           {...navItemProps}
         />,

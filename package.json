@@ -48,7 +48,7 @@
     "@ctrip/bbk-component-car-top": "0.0.17",
     "@ctrip/bbk-component-car-vehicle-describe": "0.0.32",
     "@ctrip/bbk-component-car-vehicle-name": "0.0.36",
-    "@ctrip/bbk-component-filter-list": "0.0.22",
+    "@ctrip/bbk-component-filter-list": "0.0.23",
     "@ctrip/bbk-component-horizontal-nav": "0.0.42",
     "@ctrip/bbk-component-label": "0.0.40",
     "@ctrip/bbk-component-list-no-match": "0.0.18",

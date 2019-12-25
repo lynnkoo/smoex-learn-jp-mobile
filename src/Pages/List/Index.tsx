@@ -2,6 +2,7 @@ import React, { RefObject } from 'react';
 import {
   View, StyleSheet, Animated,
 } from 'react-native';
+import _ from 'lodash';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
@@ -34,15 +35,14 @@ interface HeaderAnim {
 }
 
 interface ListStateType extends IStateType {
-  filterAndSortModalVisible: boolean;
   listThreshold: number,
   headerAnim: HeaderAnim,
 }
 
 const PAGESTAGE = {
-  INIT: '初始加载',
-  SHOW: '有响应数据',
-  FAIL: '无响应数据',
+  INIT: 'INIT',
+  SHOW: 'SHOW',
+  FAIL: 'FAIL',
 };
 
 const styles = StyleSheet.create({
@@ -92,8 +92,6 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-  batchesRequest: any[];
-
   filterModalRef: RefObject<any>;
 
   datePickerRef: any;
@@ -109,16 +107,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   constructor(props) {
     super(props);
     this.state = {
-      filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
       headerAnim: {
         translateY: new Animated.Value(0),
         opacity: new Animated.Value(1),
       },
     };
-    this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
     ListReqAndResData.removeData();
-    this.hasInitFetch = false;
     this.filterModalRef = React.createRef();
     this.headerAnimating = false;
     this.lastTranslateYAnim = 0;
@@ -172,19 +167,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     return curStage;
   }
 
-  // 处理热门筛选项的点击事件
-  handlePopularFilterPress = () => {
-    this.controlFilterModalIsShow();
-  }
-
-  // 控制筛选和排序弹层是否展示
-  controlFilterModalIsShow = () => {
-    const { filterAndSortModalVisible } = this.state;
-    this.setState({
-      filterAndSortModalVisible: !filterAndSortModalVisible,
-    });
-  }
-
   setVehicleListThreshold = ({ nativeEvent }) => {
     const { listThreshold } = this.state;
     const { height } = nativeEvent.layout;
@@ -195,6 +177,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       });
     }
   }
+
+  onPressFilterBarThrottle = (type, isActive) => (_.throttle(
+    () => this.onPressFilterBar(type, isActive), 200))();
 
   onPressFilterBar = (type, isActive) => {
     this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });
@@ -222,6 +207,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
+  // todo 移至到header内单独处理
   handlePressHeader = () => {
     if (this.props.progress !== 1) {
       Toast.show('加载中，请稍候...'); // todo shark key
@@ -273,7 +259,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     const { listThreshold, headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
     const curStage = this.getCurStage();
-    console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
         <Animated.View
@@ -284,7 +269,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             }],
           }}
         >
-          <View onLayout={this.setVehicleListThreshold}>
+          <View
+            style={[styles.wrapper, styles.shadowStyle]}
+            onLayout={this.setVehicleListThreshold}
+          >
             <Animated.View
               style={{
                 opacity,
@@ -297,12 +285,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               />
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
-            <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
+            <ListFilterBar
+              onPressFilterBar={this.onPressFilterBarThrottle}
+              style={styles.filterBarStyle}
+            />
             <VehGroupNav pageId={this.getPageId()} />
           </View>
 
-          {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
-          }
+          {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />}
           {
             curStage === PAGESTAGE.FAIL
             && <ListNoMatch datePickerRef={this.datePickerRef} />
@@ -319,7 +309,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             )
           }
         </Animated.View>
-
         <SearchPanelModal />
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

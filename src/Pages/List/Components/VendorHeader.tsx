@@ -50,7 +50,9 @@ interface VerdorHeaderProps {
 
 const VerdorHeader = (props: VerdorHeaderProps) => {
   const {
-    onPress, vendorLogo, vendorName, title, score, totalScore, scoreDesc, commentDesc, scoreLow, theme,
+    onPress, vendorLogo, vendorName,
+    title, score, totalScore, scoreDesc,
+    commentDesc, scoreLow, theme,
   } = props;
   const scoreDescStyle = [style.scoreDesc, {
     color: scoreLow ? theme.vendorDescLowColor : theme.vendorDescColor,

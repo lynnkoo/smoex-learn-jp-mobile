@@ -8,7 +8,8 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
 import { color } from '@ctrip/bbk-tokens';
-import SectionListWithControl, { SectionListWithControlProps } from '../../../Components/Common/SectionListWithControl';
+import SectionListWithControl,
+{ SectionListWithControlProps } from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 import LoginItem from './LoginItem';
 import { User, CarLog } from '../../../Util/Index';
@@ -80,7 +81,6 @@ const VehicleList = (props: VehicleListProps) => {
     if (showMoreArr[data.section.vehicleIndex]) {
       item = data.item.slice(0, showMax);
     }
-    // console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
     return (
       <Vehicle
         item={item}
@@ -89,14 +89,15 @@ const VehicleList = (props: VehicleListProps) => {
     );
   }, [showMax, showMoreArr]);
 
-  const renderSectionHeader = useCallback(({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
-    <VehicleHeader
-      vehicleHeader={vehicleHeader}
-      vehicleIndex={vehicleIndex}
-      sectionsLen={sectionsLen}
-      setShowFooter={setShowFooter}
-    />
-  ), [sectionsLen]);
+  const renderSectionHeader = useCallback(
+    ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
+      <VehicleHeader
+        vehicleHeader={vehicleHeader}
+        vehicleIndex={vehicleIndex}
+        sectionsLen={sectionsLen}
+        setShowFooter={setShowFooter}
+      />
+    ), [sectionsLen]);
 
   const [showLoginItem, setShowLoginItem] = useState(false);
 
@@ -109,10 +110,6 @@ const VehicleList = (props: VehicleListProps) => {
     isLogin();
   }, []);
 
-  // useEffect(() => {
-  //   console.log('【performance】Vehicle List ', props.index, getGroupNameByIndex(props.index))
-  // })
-
   useEffect(() => {
     setShowMoreArr(getShowMoreArr(sections, showMax));
   }, [sections, showMax]);
@@ -122,7 +119,8 @@ const VehicleList = (props: VehicleListProps) => {
     User.toLogin();
   };
 
-  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
+  const renderSectionFooter = useCallback((
+    { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
     const { vehicleName }: any = vehicleHeader || {};

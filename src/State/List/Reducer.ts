@@ -1,5 +1,6 @@
 import {
-  SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID, FETCH_LIST_BATCH, FETCH_LIST, FETCH_LIST_CALLBACK,
+  SET_STATUS, GET_STATUS, INIT_SET_GROUPID, SET_GROUPID,
+  FETCH_LIST_BATCH, FETCH_LIST, FETCH_LIST_CALLBACK,
   SET_ACTIVE_FILTER_BAR_CODE,
   UPDATE_SELECTED_FILTER,
   DELETE_SELECTED_FILTER,
@@ -43,7 +44,10 @@ export default (state = initalState, action) => {
   switch (action.type) {
     case SET_STATUS:
       return {
-        ...state, isLoading: action.data.isLoading, isFail: action.data.isFail, progress: action.data.progress,
+        ...state,
+        isLoading: action.data.isLoading,
+        isFail: action.data.isFail,
+        progress: action.data.progress,
       };
     case INIT_SET_GROUPID:
       return initActiveGroupId(state, action);
@@ -59,12 +63,17 @@ export default (state = initalState, action) => {
       return {
         ...state,
         datePickerVisible: action.data.visible,
-        datePickerFocusOnRtime: action.data.focurOnRTime !== undefined ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
+        datePickerFocusOnRtime: action.data.focurOnRTime !== undefined
+          ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
       };
     case DELETE_SELECTED_FILTER:
       return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
     case CLEAR_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign({ ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }) };
+      return {
+        ...state,
+        selectedFilters: Object.assign(
+          { ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }),
+      };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
     case GET_STATUS:

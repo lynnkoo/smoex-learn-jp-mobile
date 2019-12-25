@@ -7,7 +7,8 @@ import {
 import { ApiResCode, FrontEndConfig } from '../../Constants/Index';
 import { ListReqAndResData, ListResSelectors } from '../../Global/Cache/Index';
 import {
-  setStatus, initActiveGroupId, fetchApiList, fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter,
+  setStatus, initActiveGroupId, fetchApiList,
+  fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter,
 } from './Actions';
 import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
@@ -62,7 +63,9 @@ export const apiListQueryProductsCallback = createLogic({
     const newBatchesRequest = batchesRequest;
     // 记录当前响应的结果
     const prePageResData = ListResSelectors.getBaseResData();
-    const preHasResult = (prePageResData && prePageResData.productGroups && prePageResData.productGroups.length > 0) || false;
+    const preHasResult = (prePageResData
+      && prePageResData.productGroups
+      && prePageResData.productGroups.length > 0) || false;
     const condition1 = resCode === ApiResCode.ListResCode.C201 && progress !== 1;
     const condition2 = resCode === ApiResCode.ListResCode.C200 && isSuccess;
     const condition3 = resCode === ApiResCode.ListResCode.C200 && !isSuccess && !preHasResult;
@@ -79,7 +82,8 @@ export const apiListQueryProductsCallback = createLogic({
     }
     const curRequest = newBatchesRequest.find(f => f.vendorGroup === param.vendorGroup);
     if (!curRequest) {
-      newBatchesRequest.push({ vendorGroup: param.vendorGroup, resCode, result: isSuccess ? 1 : -1 });
+      newBatchesRequest.push(
+        { vendorGroup: param.vendorGroup, resCode, result: isSuccess ? 1 : -1 });
       dispatch(setBatchRequest(newBatchesRequest.length >= REQUEST_COUNT ? [] : newBatchesRequest));
     }
     // 计算当前响应的总次数
@@ -96,7 +100,9 @@ export const apiListQueryProductsCallback = createLogic({
 
     // 当前页面有数据展示，则不展示loading
     const curPageResData = ListResSelectors.getBaseResData();
-    const hasResult = (curPageResData && curPageResData.productGroups && curPageResData.productGroups.length > 0) || false;
+    const hasResult = (curPageResData
+      && curPageResData.productGroups
+      && curPageResData.productGroups.length > 0) || false;
     const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
     const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1);
     const nextProgress = has200 ? 1 : curProgress;
@@ -146,7 +152,8 @@ export const deleteSelectedFilter = createLogic({
     _.pull(newSelectedFilters, deleteCode);
     _.pull(newSelectedLabels, deleteLabel);
 
-    dispatch(updateSelectedFilter({ bitsFilter: newSelectedFilters, filterLabels: newSelectedLabels }));
+    dispatch(updateSelectedFilter(
+      { bitsFilter: newSelectedFilters, filterLabels: newSelectedLabels }));
     done();
   },
 });

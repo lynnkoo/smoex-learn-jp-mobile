@@ -92,7 +92,7 @@ export default class Debug extends CPage<PropsType, StateType> {
     return contexts.join('\n');
   }
 
-  renderPageContent() {
+  render() {
     return (
       <ViewPort>
         <HeaderView title={this.getPageId()} page={this} />

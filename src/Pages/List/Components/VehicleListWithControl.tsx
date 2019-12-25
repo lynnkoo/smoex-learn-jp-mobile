@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
 
 const getScrollViewHeight = (height, threshold) => height - threshold;
 
-export default class VehicleListWithControl extends PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
+export default class VehicleListWithControl extends
+  PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
     maxIndex: 0,
     minIndex: 0,
@@ -94,13 +95,14 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       isDark,
     } = this.state;
 
-    return isDark ? {
-      ...TripDark,
-      ...themeDark,
-    } : {
-      ...TripLight,
-      ...themeLight,
-    };
+    return isDark
+      ? {
+        ...TripDark,
+        ...themeDark,
+      } : {
+        ...TripLight,
+        ...themeLight,
+      };
   }
 
   getStyle(i) {
@@ -159,8 +161,9 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     return null;
   }
 
-  animate = (index, callback = () => {}) => {
+  animate = (index, callback = () => { }) => {
     const { translateYAnim, initIndex: initIdx } = this.state;
+    const { setActiveGroupId } = this.props;
     const { scrollViewHeight } = this;
     // console.log('【performance】animate ', initIdx, index)
     this.isScrolling = true;
@@ -178,18 +181,27 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     if (this.scrollerRef[index]) {
       // fix no match
       try {
-        this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+        this.scrollerRef[index].scrollToLocation(
+          { sectionIndex: 0, itemIndex: 0, animated: false });
       } catch (e) {
+        /* eslint-disable no-console */
         console.warn('scrollToLocation error');
       }
     }
-    this.props.setActiveGroupId({ activeGroupIndex: index });
+    setActiveGroupId({ activeGroupIndex: index });
     this.animating = true;
   }
 
   getVehicleListProps = (index, newLastNextIndexObj) => {
     const {
-      minIndex, maxIndex, lastNextIndexObj, initialNumToRender, theme, showMax, scrollUpCallback, scrollDownCallback,
+      minIndex,
+      maxIndex,
+      lastNextIndexObj,
+      initialNumToRender,
+      theme,
+      showMax,
+      scrollUpCallback,
+      scrollDownCallback,
     } = this.props;
 
     const $lastNextIndexObj = newLastNextIndexObj || lastNextIndexObj;
@@ -202,8 +214,10 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     const pullIcon = !isTop ? '\ue0b5' : ' ';
     const noticeContent = getSharkValue('listCombine_pullUpToRefersh', nextGroupName);
     const loadingContent = getSharkValue('listCombine_releaseToRefersh', nextGroupName);
-    const pullStartContent = noRefresh || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
-    const pullContinueContent = noRefresh || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
+    const pullStartContent = noRefresh
+      || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
+    const pullContinueContent = noRefresh
+      || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
     // console.log('noMore ', index, next, maxIndex, $lastNextIndexObj)
     const noMore = index >= maxIndex || next > maxIndex;
 
@@ -313,15 +327,16 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
 
   // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(props) {
-    if (props.index !== this.props.index) {
+    const { index, listData, threshold } = this.props;
+    if (props.index !== index) {
       this.tabScroll(props.index);
     }
-    if (!_.isEqual(props.listData, this.props.listData)) {
+    if (!_.isEqual(props.listData, listData)) {
       this.renderAllVehicleListDom(props.listData, props.lastNextIndexObj);
     }
-    if (!_.isEqual(props.threshold, this.props.threshold)) {
-      const { height, threshold } = props;
-      this.scrollViewHeight = getScrollViewHeight(height, threshold);
+    if (!_.isEqual(props.threshold, threshold)) {
+      const { height, threshold: nextThreshold } = props;
+      this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
       this.resetHeightStyle();
     }
   }

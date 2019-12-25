@@ -96,7 +96,7 @@ class CarLog {
         .format('YYYY-MM-DD HH:mm:ss'),
       awakeTime: AppContext.MarketInfo.awakeTime,
       age,
-      defaultAge: age === AgeConfig.DEFAULT_AGE.val,
+      defaultAge: age === AgeConfig.DEFAULT_AGE.getVal(),
       ...AppContext.LanguageInfo,
       ...locationAndDateInfo,
     };

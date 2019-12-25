@@ -37,7 +37,12 @@ const ListTips = (props: IPropsType) => {
 
   if (!promotionFilterText) return null;
   return (
-    <View style={{ paddingVertical: BbkUtils.getPixel(24), paddingHorizontal: BbkUtils.getPixel(32), backgroundColor: color.white }}>
+    <View style={{
+      paddingVertical: BbkUtils.getPixel(24),
+      paddingHorizontal: BbkUtils.getPixel(32),
+      backgroundColor: color.white,
+    }}
+    >
       <BbkTips
         type={TIPS_TYPE.PROMOTE_FLIGHT}
         isPrometFlightChecked={promotionFilterSelected}

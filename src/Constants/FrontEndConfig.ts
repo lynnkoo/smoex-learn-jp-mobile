@@ -5,7 +5,7 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 
 export const AgeConfig = {
   DEFAULT_AGE: {
-    val: getSharkValue('listCombine_defaultAgeRange', 30, 60),
+    getVal: () => { return getSharkValue('listCombine_defaultAgeRange', 30, 60) },
     min: 30,
     max: 60,
   },
@@ -15,7 +15,7 @@ export const AgeConfig = {
 
 export const AllCarsConfig = {
   groupCode: 'all',
-  groupName: getSharkValue('listCombine_allCars'),
+  getGroupName: () => { return getSharkValue('listCombine_allCars') },
 };
 
 export const CountryDefaultConfig = {

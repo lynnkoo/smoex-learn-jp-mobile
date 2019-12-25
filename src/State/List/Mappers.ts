@@ -27,7 +27,7 @@ export const packageListReqParam = (state, data: { vendorGroup: number, requestI
   return {
     requestId: data.requestId,
     vendorGroup: data.vendorGroup,
-    age: curAge === AgeConfig.DEFAULT_AGE.val ? AgeConfig.DEFAULT_AGE.min : Number(curAge),
+    age: curAge === AgeConfig.DEFAULT_AGE.getVal() ? AgeConfig.DEFAULT_AGE.min : Number(curAge),
     adultNumbers: getAdultNumbers(state),
     childrenNumbers: getChildNumbers(state),
     pickupPointInfo: {

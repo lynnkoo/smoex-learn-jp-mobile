@@ -26,7 +26,7 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     name,
     groupName,
     isHot,
-    brandEName,
+    // brandEName,
     passengerNo,
     luggageNo,
     doorNo,
@@ -69,7 +69,8 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     },
     vehicleDesc: {
       imgUrl: Utils.fullImgProtocal(imageList[0]),
-      vehicleImageLabel: brandEName,
+      // 只有国内有牌照，一期无此字段
+      // vehicleImageLabel: brandEName,
       vehicleLabelsHorizontal: [
         {
           text: passengerNo,
@@ -224,7 +225,7 @@ const getVendorHeaderProps = (vendor) => {
     vendorLogo, vendorName, vendorTag = {}, commentInfo = {}, evaluation = {},
   } = vendor;
   const {
-    commentCount, vendorDesc, overallRating, maximumRating,
+    commentCount, level, overallRating, maximumRating,
   } = commentInfo;
   // 评分标签 type 1表示正向 蓝色  2负向 灰色
   const { type } = evaluation;
@@ -232,7 +233,7 @@ const getVendorHeaderProps = (vendor) => {
     vendorLogo,
     vendorName,
     title: vendorTag.title,
-    scoreDesc: vendorDesc,
+    scoreDesc: level,
     commentDesc: `${commentCount} ${Reviews}`,
     score: overallRating,
     totalScore: maximumRating,
@@ -289,11 +290,47 @@ export const getVehicleListData = memoizeOne(
   (newArgs, oldArgs) => _.isEqual(oldArgs, newArgs),
 );
 
+const getEnabledIndex = (index, maxIndex, minIndex, step) => {
+  const vehGroupList = getVehGroupList();
+  let nextIndex = index;
+  do {
+    if (step > 0) {
+      nextIndex = Math.min(nextIndex + step, maxIndex + 1);
+    } else {
+      nextIndex = Math.max(nextIndex + step, minIndex - 1);
+    }
+  } while (
+    nextIndex <= maxIndex
+    && nextIndex >= minIndex
+    && vehGroupList[nextIndex].count === 0
+  );
+
+  return nextIndex;
+};
+
+/**
+ * 获取筛选后每个车型对应的可用上个车型和下个车型
+ */
+export const getLastNextIndexObj = memoizeOne(
+  // eslint-disable-next-line
+  (minIndex, maxIndex, selectedFilters) => {
+    const res = {};
+    for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
+      res[i] = {
+        last: getEnabledIndex(i, maxIndex, minIndex, -1),
+        next: getEnabledIndex(i, maxIndex, minIndex, 1),
+      };
+    }
+    return res;
+  },
+  (newArgs, oldArgs) => _.isEqual(oldArgs, newArgs),
+);
+
 export const getGroupLength = () => {
   const vehGroupList = getVehGroupList();
   return {
     minIndex: 0,
-    maxIndex: vehGroupList.length,
+    maxIndex: vehGroupList.length - 1,
   };
 };
 

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import BbkComponentCarHeader from '@ctrip/bbk-component-car-header';
-import { AppContext } from '../Util/Index';
+import { AppContext, CarLog } from '../Util/Index';
+import { ClickKey } from '../Constants/Index';
 import {
   getPickUpTime,
   getDropOffTime,
@@ -37,7 +38,7 @@ const mapDispatchToProps = dispatch => ({
     if (data && data.code) {
       AppContext.setLanguageCurrency(data.code);
       dispatch(fetchListBatchQuery());
-      // todo log
+      CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_SWITCH_CURRENCY.KEY });
     }
   },
 });

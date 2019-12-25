@@ -13,6 +13,7 @@ import List from './List/Reducer';
 import { getCountryInfo } from './CountryInfo/Actions';
 import { getLocationAndDateInfo } from './LocationAndDate/Actions';
 import { getDriverAge } from './DriverAgeAndNumber/Actions';
+import { getDebugMode } from './Debug/Actions';
 
 const rootReducer = combineReducers({
   debug,
@@ -36,14 +37,20 @@ const getStore = (): Store => {
   throw new Error('Store is not initialised.');
 };
 
+const unmountStore = () => {
+  store = null;
+};
+
 const initialiseAppState = (): void => {
   store.dispatch(getCountryInfo());
   store.dispatch(getLocationAndDateInfo());
   store.dispatch(getDriverAge());
+  store.dispatch(getDebugMode());
 };
 
 export {
   initialiseStore,
   getStore,
+  unmountStore,
   initialiseAppState,
 };

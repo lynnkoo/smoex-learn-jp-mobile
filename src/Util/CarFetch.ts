@@ -46,7 +46,7 @@ class FetchBase implements FetchBaseType {
     const state = getStore().getState();
     const { CountryInfo } = state;
     return {
-      sourceFrom: AppContext.CarEnv.apptype,
+      sourceFrom: AppContext.CarEnv.appType,
       requestId,
       parentRequestId,
       site: AppContext.LanguageInfo.site,
@@ -55,7 +55,7 @@ class FetchBase implements FetchBaseType {
       currencyCode: AppContext.LanguageInfo.currency,
       sourceCountryId: CountryInfo.countryId,
       channelId: AppContext.MarketInfo.channelId,
-      clientVersion: AppContext.CarEnv.BuildTime,
+      clientVersion: AppContext.CarEnv.buildTime,
       clientid: _.get(Device, 'deviceInfo.clientID') || '',
       vid: '',
       mobileInfo: {

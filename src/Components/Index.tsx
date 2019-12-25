@@ -1,8 +1,12 @@
 import CPage from './App/CPage';
 import ErrorBoundary from './Error/ErrorBoundary';
-import WithLogCode, { TextWithLogCode, TouchableOpacityWithLogCode, BbkTouchableWithLogCode } from './App/WithLogCode';
+import AssistiveTouch from './AssistiveTouch/Index';
+import WithLogCode, {
+  TextWithLogCode, TouchableOpacityWithLogCode, BbkTouchableWithLogCode,
+} from './App/WithLogCode';
 
 export {
-  CPage, ErrorBoundary, WithLogCode, TextWithLogCode, TouchableOpacityWithLogCode, BbkTouchableWithLogCode,
+  CPage, ErrorBoundary, WithLogCode, TextWithLogCode,
+  TouchableOpacityWithLogCode, BbkTouchableWithLogCode, AssistiveTouch,
 };
 export default CPage;

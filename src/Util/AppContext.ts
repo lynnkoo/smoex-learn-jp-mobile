@@ -1,8 +1,5 @@
 import { Channel } from '@ctrip/crn';
-import BuildTime from '../BuildTime';
-import CarI18n from './CarI18n';
-import Locale from './Locale';
-import { APP_ID } from '../Constants/Platform';
+import _ from 'lodash';
 
 export interface MarketInfoType {
   channelId: string;
@@ -23,8 +20,8 @@ export interface UserInfoType {
 }
 
 export interface CarEnvType {
-  BuildTime: string;
-  apptype: string;
+  buildTime: string;
+  appType: string;
 }
 
 export interface SharkKeysType {
@@ -65,7 +62,7 @@ const baseContext = {
   },
   QConfig: {},
   Cache: {},
-  CarEnv: { BuildTime, apptype: '' },
+  CarEnv: { buildTime: '', appType: '' },
   SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',
@@ -79,10 +76,16 @@ const baseContext = {
   PageInstance: null,
 };
 
+const initalBaseContextClone = _.cloneDeep(baseContext);
+
 const getAppContext = () => Object.assign({}, baseContext);
 
 let appContext = getAppContext();
 
+
+const setMarketInfo = (market: MarketInfoType) => {
+  appContext.MarketInfo = market;
+};
 
 const setABTesting = (value) => {
   const datas = { ...appContext.ABTesting.datas, ...value };
@@ -110,25 +113,8 @@ const setUrlQuery = (urlQuery) => {
   appContext.UrlQuery = urlQuery;
 };
 
-const initLanguage = async () => {
-  /* eslint-disable dot-notation */
-  if (global['__crn_appId'] === APP_ID.TRIP) {
-    const { locale } = await CarI18n.getCurrentLocale();
-    const { code: currency } = await CarI18n.getCurrentCurrency('callback');
-    const localeInstance = new Locale(locale);
-    let language = localeInstance.getLanguage().toUpperCase();
-    const traditional = ['hk', 'tw'];
-    // 如果是香港台湾等类中文语言，统一传 CN
-    if (traditional.includes(language)) {
-      language = 'CN';
-    }
-    appContext.LanguageInfo = {
-      language,
-      locale: localeInstance.getLocale(),
-      site: language,
-      currency,
-    };
-  }
+const setLanguageInfo = (language: LanguageInfoType) => {
+  appContext.LanguageInfo = language;
 };
 
 const setSharkKeys = (lang, messages) => {
@@ -136,8 +122,8 @@ const setSharkKeys = (lang, messages) => {
   appContext.SharkKeys.messages = messages;
 };
 
-const reset = () => {
-  appContext = getAppContext();
+const resetAppContext = () => {
+  appContext = initalBaseContextClone;
 };
 
 const setPageInstance = (pageInstance) => {
@@ -148,15 +134,16 @@ const setLanguageCurrency = (currency) => {
   appContext.LanguageInfo.currency = currency;
 };
 
+const setCarEnv = (carEnv: CarEnvType) => {
+  appContext.CarEnv = carEnv;
+};
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
   },
   get MarketInfo(): MarketInfoType {
     return appContext.MarketInfo;
-  },
-  setMarketInfo: (value) => {
-    appContext.MarketInfo = value;
   },
   get QConfig(): QConfigType {
     return appContext.QConfig;
@@ -185,15 +172,17 @@ const AppContext = {
   get PageInstance() {
     return appContext.PageInstance;
   },
+  resetAppContext,
+  setMarketInfo,
   setABTesting,
-  initLanguageInfo: initLanguage,
+  setLanguageInfo,
   setUserInfo,
   setUrl,
   setUrlQuery,
   setSharkKeys,
-  reset,
   setPageInstance,
   setLanguageCurrency,
+  setCarEnv,
 };
 
 export default AppContext;

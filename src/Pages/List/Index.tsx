@@ -9,7 +9,9 @@ import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-load
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
-import { PageId } from '../../Constants/Index';
+import { AssistiveTouch } from '../../Components/Index';
+import { PageId, ClickKey } from '../../Constants/Index';
+import { CarLog } from '../../Util/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -21,13 +23,12 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
-import { AppContext } from '../../Util/Index';
 
 const { selector } = BbkUtils;
 
 interface ListStateType extends IStateType {
   filterAndSortModalVisible: boolean;
-  listThreshold: number
+  listThreshold: number,
 }
 
 const PAGESTAGE = {
@@ -75,6 +76,7 @@ interface IListPropsType extends IBasePageProps {
   setActiveFilterBarCode: (data: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
+  isDebugMode?: boolean;
 }
 
 const removeEvents = () => {
@@ -109,23 +111,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   componentDidMount() {
     super.componentDidMount();
-    this.getListProduct();
+    this.props.fetchList();
     this.registerEvents();
   }
 
-  componentDidUpdate() {
-    this.getListProduct();
-  }
-
-  getListProduct = () => {
-    if (!this.hasInitFetch && AppContext.LanguageInfo.currency) {
-      this.props.fetchList();
-      this.hasInitFetch = true;
-    }
-  }
-
   componentWillUnmount() {
-    super.componentWillUnmount();
     removeEvents();
     this.sendEvents();
   }
@@ -145,7 +135,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   pageGoBack = () => {
     this.pop();
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_BACK.KEY });
   }
 
   getCurStage() {
@@ -213,7 +203,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       return;
     }
     this.props.setLocationAndDatePopIsShow({ visible: true });
-    // todo Log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
   render() {
@@ -249,6 +239,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <SearchPanelModal />
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
+        {
+          this.props.isDebugMode
+          && <AssistiveTouch onPress={() => { this.push('Debug'); }} />
+        }
       </ViewPort>
     );
   }

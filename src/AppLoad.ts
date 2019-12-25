@@ -1,8 +1,17 @@
-import { Business } from '@ctrip/crn';
-import { AppContext, Utils, User } from './Util/Index';
+import { Business, Util, IBUSharkUtil } from '@ctrip/crn';
+import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
+import {
+  AppContext, MarketInfoType, Utils, User, CarStorage,
+} from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
-// import { initialiseABTesting } from './Util/ABTesting';
+import { initialiseABTesting } from './Util/ABTesting';
+import { Platform, Language } from './Constants/Index';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
+import StorageKey from './Constants/StorageKey';
+import BuildTime from './BuildTime';
+import CarI18n from './Util/CarI18n';
+import Locale from './Util/Locale';
+import DebugLog from './Util/DebugLog';
 
 const initialisePropsUrl = (props) => {
   const { url, urlQuery } = props;
@@ -10,77 +19,153 @@ const initialisePropsUrl = (props) => {
   AppContext.setUrlQuery(urlQuery);
 };
 
-const initialiseAppContext = async () => {
-  // init languageInfo
-  AppContext.initLanguageInfo();
-
-  // init UserInfo
-  User.isLogin();
-
-  // init apptype
-  AppContext.CarEnv.apptype = Utils.getAppType(AppContext.UrlQuery.apptype);
-
-  const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
-
-  /**
-   * init channelId
-   * level 1: urlQuery
-   * level 2: chennel
-   *  */
-  if (propsUrl.channelid) {
-    AppContext.MarketInfo.channelId = propsUrl.channelid;
-  } else if (propsUrl.from === 'car') {
-    AppContext.MarketInfo.channelId = CHANNEL_ID.CTRIP_MAIN_APP;
-  } else if (propsUrl.s === 'car') {
-    AppContext.MarketInfo.channelId = CHANNEL_ID.CTRIP_MAIN_H5;
-  } else if (Utils.isZucheApp()) {
-    AppContext.MarketInfo.channelId = CHANNEL_ID.ZUCHE;
-  } else if (Utils.getChannelName() === CHANNEL_TYPE_UNION.CTRIP) {
-    AppContext.MarketInfo.channelId = CHANNEL_ID.CTRIP_DEFAULT;
-  } else if (Utils.isTrip()) {
-    AppContext.MarketInfo.channelId = CHANNEL_ID.IBU_DEFAULT;
-  }
-
-  // init childChannelId
-  if (propsUrl.childchannelid) {
-    AppContext.MarketInfo.childChannelId = propsUrl.childchannelid;
-  }
-
-  // init sId
-  const ubt = Utils.getUBT();
-  const wakeResult = await Business.getWakeUpDataSync();
-  if (propsUrl.sid) {
-    AppContext.MarketInfo.sId = propsUrl.sid;
-  } else if (wakeResult && wakeResult.awake_sid) {
-    AppContext.MarketInfo.sId = wakeResult.awake_sid;
-  } else if (ubt.sid) {
-    AppContext.MarketInfo.sId = ubt.sid;
-  }
-
-  // init aId
-  if (propsUrl.allianceid || propsUrl.aid) {
-    AppContext.MarketInfo.aId = propsUrl.allianceid || propsUrl.aid;
-  } else if (wakeResult && wakeResult.awake_allianceid) {
-    AppContext.MarketInfo.aId = wakeResult.awake_allianceid;
-  }
-
-  // init visitortraceId
-  if (propsUrl.visitortraceid) {
-    AppContext.MarketInfo.visitortraceId = propsUrl.visitortraceid;
-  }
-
-  // init awakeTime
-  if (wakeResult && wakeResult.awake_time) {
-    AppContext.MarketInfo.awakeTime = wakeResult.awake_time;
+const initialiseStorage = ({ urlQuery }) => {
+  // debug model
+  if (urlQuery && urlQuery.debug === 'true') {
+    CarStorage.save(StorageKey.DEBUG, 'true');
   }
 };
 
-const appLoad = (props) => {
+const getChannelId = ({ channelid, from, s }) => {
+  /**
+     * init channelId
+     * level 1: urlQuery
+     * level 2: chennel
+     *  */
+  let id = '';
+
+  if (channelid) id = channelid;
+
+  if (!channelid && from === 'car') id = CHANNEL_ID.CTRIP_MAIN_APP;
+
+  if (!channelid && s === 'car') id = CHANNEL_ID.CTRIP_MAIN_H5;
+
+  if (!channelid && Utils.isZucheApp()) id = CHANNEL_ID.ZUCHE;
+
+  if (!channelid && Utils.getChannelName() === CHANNEL_TYPE_UNION.CTRIP) {
+    id = CHANNEL_ID.CTRIP_DEFAULT;
+  }
+
+  if (!channelid && Utils.isTrip()) id = CHANNEL_ID.IBU_DEFAULT;
+
+  return id;
+};
+
+const getAidSidWakeUpData = (props) => {
+  let sidValue = '';
+  let aidValue = '';
+  let awakeTime = '';
+  /* eslint-disable camelcase */
+  const { awake_sid, awake_allianceid, awake_time } = Util.isInChromeDebug
+    ? { awake_sid: '', awake_allianceid: '', awake_time: '' }
+    : Business.getWakeUpDataSync();
+
+  if (props.sid) sidValue = props.sid;
+
+  if (!sidValue && awake_sid) {
+    sidValue = awake_sid;
+  }
+
+  if (!sidValue) {
+    const { sid } = Utils.getUBT();
+    sidValue = sid;
+  }
+
+  if (props.allianceid || props.aid) {
+    aidValue = props.allianceid || props.aid;
+  }
+
+  if (!aidValue && awake_allianceid) {
+    aidValue = awake_allianceid;
+  }
+
+  if (!awake_time) awakeTime = awake_time;
+
+  return {
+    sId: sidValue,
+    aId: aidValue,
+    awakeTime,
+  };
+};
+
+const getMarket = (): MarketInfoType => {
+  const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
+  const { childchannelid, visitortraceid } = propsUrl;
+  const { sId, aId, awakeTime } = getAidSidWakeUpData(propsUrl);
+  return {
+    channelId: getChannelId(propsUrl),
+    childChannelId: childchannelid || '',
+    visitortraceId: visitortraceid || '',
+    sId,
+    aId,
+    awakeTime,
+  };
+};
+
+const initialiseAppContext = async () => {
+  // initialise UserInfo
+  User.isLogin();
+
+  // initialise car environment
+  // buildTime, apptype
+  AppContext.setCarEnv({
+    buildTime: BuildTime,
+    appType: Utils.getAppType(AppContext.UrlQuery.apptype),
+  });
+
+  // initialise market
+  // aid, sid, awake_time, visitortraceId
+  AppContext.setMarketInfo(getMarket());
+};
+
+const appLoad = (props: any) => {
   initialisePropsUrl(props);
   initialiseAppContext();
   initialiseStore();
-  // initialiseABTesting();
+  initialiseStorage(props);
+  initialiseABTesting();
   initialiseAppState();
 };
 
+/* eslint-disable class-methods-use-this */
+const getSharkConfig = () => ({
+  appid: Platform.SHARK_APP_ID.TRIP,
+  keys: { ...BbkTranslationKey },
+});
+
+const loadSharkData = async () => {
+  if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
+    return IBUSharkUtil.fetchSharkData(getSharkConfig())
+      .then(({ lang, messages }) => ({ lang, messages }))
+      .catch(() => ({ lang: '', messages: {} }));
+  }
+  return { lang: '', messages: {} };
+};
+
+const loadLanguageAndSharkAsync = async () => {
+  const label = 'loadLanguageAsync';
+  DebugLog.time(label);
+
+  const task = await Promise.all([
+    CarI18n.getCurrentLocale(),
+    CarI18n.getCurrentCurrency('callback'),
+    loadSharkData(),
+  ]);
+
+  const [currentLocale, currentCurrency, sharkKeys] = task;
+  const localeInstance = new Locale(currentLocale.locale);
+  const locale = localeInstance.getLocale();
+  const language = localeInstance.getLanguage().toUpperCase();
+  const localeLanguage = [Language.HK, Language.TW].includes(language) ? Language.CN : language;
+  DebugLog.timeEnd(label);
+  AppContext.setSharkKeys(sharkKeys.lang, sharkKeys.messages);
+  AppContext.setLanguageInfo({
+    locale,
+    site: language,
+    currency: currentCurrency ? currentCurrency.code : '',
+    language: localeLanguage,
+  });
+};
+
+export { loadLanguageAndSharkAsync };
 export default appLoad;

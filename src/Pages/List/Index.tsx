@@ -84,7 +84,6 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-
   filterModalRef: RefObject<any>;
 
   datePickerRef: any;

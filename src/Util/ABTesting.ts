@@ -94,6 +94,7 @@ const getAbs = () => {
   });
 };
 
+/* eslint-disable no-unused-vars */
 const getAbsSync = () => {
   const expCodes = getAbsExpCodesSync();
   // @ts-ignore
@@ -113,7 +114,7 @@ export const getAbExpVersion = (AbInfo: AbItemType) => (
 export const initialiseABTesting = () => {
   // sync
   if (!Util.isInChromeDebug) {
-    getAbsSync();
+    // getAbsSync();
   }
   // async
   getAbs();

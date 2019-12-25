@@ -76,9 +76,7 @@ const baseContext = {
   PageInstance: null,
 };
 
-const initalBaseContextClone = _.cloneDeep(baseContext);
-
-const getAppContext = () => Object.assign({}, baseContext);
+const getAppContext = () => _.cloneDeep(baseContext);
 
 let appContext = getAppContext();
 
@@ -123,7 +121,7 @@ const setSharkKeys = (lang, messages) => {
 };
 
 const resetAppContext = () => {
-  appContext = initalBaseContextClone;
+  appContext = getAppContext();
 };
 
 const setPageInstance = (pageInstance) => {

@@ -136,7 +136,7 @@ export default class SectionListWithControl
     // TODO-dyy
     // header 联动
     if (triggerEvent === 'onScroll' && this.onScrollBegin) {
-      console.log(triggerEvent, scrollUp, y, this.lastScrollY, load, refresh);
+      // console.log(triggerEvent, scrollUp, y, this.lastScrollY, load, refresh);
       if (scrollUp > 10 && !load && scrollUpCallback) {
         scrollUpCallback(event);
       } else if (scrollUp < 0 && !refresh && scrollDownCallback) {

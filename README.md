@@ -26,7 +26,7 @@ npm run ios:trip
 ### Locally Commands
 * `npm run lint` - eslint check (standards by airbnb and skyscanner)
 * `npm run lint:fix` - automatic fix eslint errors
-* `npm run test` - run jest unit test    
+* `npm run test` - run jest unit test
 * `npm run test:fix` - run jest unit test and update local snapshot cache
 
 ## Coding Standard
@@ -42,12 +42,45 @@ npm run ios:trip
 ```
 
 * `src` - all lowercase
-* `src/*` - *`folder`* - camel rules and capitalization of the initial letter 
-* `src/*` - *`file`* - camel rules and capitalization of the initial letter 
+* `src/*` - *`folder`* - camel rules and capitalization of the initial letter
+* `src/*` - *`file`* - camel rules and capitalization of the initial letter
 * `*.test.*` - the test file should be at the same level as the master file
 
+## How to add log
+* `click log`
+```javascript
+// - first way
+/**
+ * 'pageId' and 'enName' are required。
+ * 'otherInfo' represents other information that you consider important
+ */
+CarLog.logCode({pageId, enName, ...otherInfo});
+
+// - second way
+<TextWithLogCode
+  pageId={this.getPageId()}
+  enName="test textLogCode"
+  logOtherInfo={{ code: 1 }}
+  onPress={() => { console.log('test withLogCode'); }}
+>{'test'}</TextWithLogCode>
+
+<TouchableOpacityWithLogCode
+  pageId={this.getPageId()}
+  enName="test TouchableOpacityLogCode"
+  onPress={() => { console.log('test TouchableOpacityLogCode'); }}
+>
+  <Text>测试TouchableOpacityWithLogCode组件</Text>
+</TouchableOpacityWithLogCode>
+
+```
+
+* `trace log`
+
+
+* `metric log`
+
 ## Fork by Skycanner Hercules
-- [hercules](http://git.dev.sh.ctripcorp.com/carosd/hercules)    
+- [hercules](http://git.dev.sh.ctripcorp.com/carosd/hercules)
 
 ## Design Review
-- [Design Review And Q&A](http://conf.ctripcorp.com/display/CAR/App-Three-In-One+Design+Review)    
+- [Design Review And Q&A](http://conf.ctripcorp.com/display/CAR/App-Three-In-One+Design+Review)

@@ -17,6 +17,6 @@ export const FROM_URL = {
 };
 
 export const LANDING_PAGE = {
-  list: PageId.Index.EN,
+  list: PageId.List.EN,
   DEFAULT: PageId.Debug.EN,
 };

@@ -4,9 +4,13 @@ import { AppContext } from '../Util/Index';
 import PageIdIsd from './PageId/PageId.CTRIP_ISD';
 import PageIdOsd from './PageId/PageId.CTRIP_OSD';
 import PageIdTrip from './PageId/PageId.TRIP';
-import AgeConfig from './AgeConfig';
+import FrontEndConfig, { AgeConfig } from './FrontEndConfig';
 import ClickKey from './ClickKey';
 import LogKey from './LogKey';
+import FilterBarType from './FilterBarType';
+import Language from './Language';
+import * as ApiResCode from './ApiResCode';
+import StorageKey from './StorageKey';
 
 // /* eslint-disable global-require */
 // const getPageId = () => {
@@ -34,7 +38,7 @@ import LogKey from './LogKey';
 
 /* eslint-disable global-require */
 const getPageId = () => {
-  switch (AppContext.CarEnv.apptype) {
+  switch (AppContext.CarEnv.appType) {
     case Platform.APP_TYPE.ISD_C_APP: return PageIdIsd;
     case Platform.APP_TYPE.OSD_C_APP: return PageIdOsd;
     case Platform.APP_TYPE.OSD_T_APP:
@@ -46,10 +50,15 @@ const getPageId = () => {
 const PageId = getPageId();
 
 export {
+  Language,
   Platform,
   TranslationKeys,
   PageId,
   AgeConfig,
   ClickKey,
   LogKey,
+  ApiResCode,
+  FrontEndConfig,
+  FilterBarType,
+  StorageKey,
 };

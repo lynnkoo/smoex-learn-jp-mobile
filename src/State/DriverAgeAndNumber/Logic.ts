@@ -9,16 +9,16 @@ export const setCommonAge = createLogic({
   type: GET_AGE,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
-    let { age } = AppContext.UrlQuery;
+    const { age } = AppContext.UrlQuery;
     if (age) {
       let curAge = age;
-      age = Number(age);
-      if (age < AgeConfig.MIN_AGE) {
-        curAge = AgeConfig.MIN_AGE;
-      } else if (age > AgeConfig.MAX_AGE) {
-        curAge = AgeConfig.MAX_AGE;
-      } else if (age >= AgeConfig.DEFAULT_AGE.min && age <= AgeConfig.DEFAULT_AGE.max) {
-        curAge = AgeConfig.DEFAULT_AGE.val;
+      const urlAge = Number(age);
+      if (urlAge < AgeConfig.MIN_AGE) {
+        curAge = AgeConfig.MIN_AGE.toString();
+      } else if (urlAge > AgeConfig.MAX_AGE) {
+        curAge = AgeConfig.MAX_AGE.toString();
+      } else if (urlAge >= AgeConfig.DEFAULT_AGE.min && urlAge <= AgeConfig.DEFAULT_AGE.max) {
+        curAge = AgeConfig.DEFAULT_AGE.getVal();
       }
       await dispatch(setAge(curAge));
     }

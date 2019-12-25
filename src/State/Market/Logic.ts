@@ -1,12 +1,13 @@
 import { createLogic } from 'redux-logic';
-
+import _ from 'lodash';
 import { loadMarketCompleted, loadMarketFailed } from './Actions';
-import { LOAD, LOADING_TYPE, FROM_URL } from './Types';
+import { LOAD, LOADING_TYPE } from './Types';
 import {
   getDefaultPageName, getPageName, getParams, checkParams,
 } from './Helpers';
 import { setDateInfo, setLocationInfo } from '../LocationAndDate/Actions';
-import { AppContext } from '../../Util/Index';
+import { setAge } from '../DriverAgeAndNumber/Actions';
+import { AppContext, Utils } from '../../Util/Index';
 
 // http://conf.ctripcorp.com/pages/viewpage.action?pageId=192826013
 
@@ -19,7 +20,7 @@ export const load = createLogic({
     const defaultPageName = getDefaultPageName();
     try {
       const {
-        data, landingto, fromurl, st,
+        data, landingto, st,
       } = AppContext.UrlQuery;
       const pageName = getPageName(landingto);
       let isLoadSuccess = false;
@@ -28,11 +29,15 @@ export const load = createLogic({
         // todo
       }
 
-      if (st === LOADING_TYPE.CLIENT && fromurl === FROM_URL.COMM) {
+      if (st === LOADING_TYPE.CLIENT) {
         const params = getParams(data);
         if (checkParams(params)) {
-          dispatch(setDateInfo({ ...params.rentalDate }));
+          dispatch(setDateInfo({
+            pickup: Utils.dateTimeFormat(_.get(params, 'rentalDate.pickUp.dateTime')),
+            dropoff: Utils.dateTimeFormat(_.get(params, 'rentalDate.dropOff.dateTime')),
+          }));
           dispatch(setLocationInfo({ ...params.rentalLocation }));
+          dispatch(setAge({ age: params.age }));
           dispatch(loadMarketCompleted({ landingto: pageName }));
           isLoadSuccess = true;
         }

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { I18n } from '@ctrip/crn';
 import Utils from './Utils';
 

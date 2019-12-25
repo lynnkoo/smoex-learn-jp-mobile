@@ -1,4 +1,4 @@
-import { ABTesting } from '@ctrip/crn';
+import { ABTesting, Util } from '@ctrip/crn';
 import AppContext from './AppContext';
 
 export interface AbItemType {
@@ -21,33 +21,40 @@ export interface AbResultType {
 }
 
 export const AbTestingKey = {
-  ListSort: {
-    key: '190711_var_olist',
+  // ListSort: {
+  //   key: '190711_var_olist',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: true,
+  // },
+  // PredictCache: {
+  //   key: '190718_var_osdap',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  // Booking: {
+  //   key: '190423_var_write',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  // IndexSearchBar: {
+  //   key: '190708_var_chome',
+  //   defaultValue: 'B',
+  //   isActive: true,
+  //   noVersionVal: true,
+  //   isSync: false,
+  // },
+  List: {
+    key: '191210_DSJT_list',
     defaultValue: 'B',
     isActive: true,
     noVersionVal: true,
     isSync: true,
-  },
-  PredictCache: {
-    key: '190718_var_osdap',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
-  },
-  Booking: {
-    key: '190423_var_write',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
-  },
-  IndexSearchBar: {
-    key: '190708_var_chome',
-    defaultValue: 'B',
-    isActive: true,
-    noVersionVal: true,
-    isSync: false,
   },
 };
 
@@ -76,14 +83,21 @@ const getAbsExpCodesSync = getIsSyncAbs(true);
 
 
 const getAbs = () => {
-  const expCodes = getAbsExpCodes();
+  let expCodes = getAbsExpCodes();
+  if (Util.isInChromeDebug) {
+    expCodes = expCodes.concat(getAbsExpCodesSync());
+  }
+
+  // @ts-ignore
   ABTesting.getMultiABTestingInfo(expCodes, (result) => {
     AppContext.setABTesting(result);
   });
 };
 
+/* eslint-disable no-unused-vars */
 const getAbsSync = () => {
   const expCodes = getAbsExpCodesSync();
+  // @ts-ignore
   const result = ABTesting.getMultiABTestingInfoSync(expCodes);
   AppContext.setABTesting(result);
 };
@@ -99,7 +113,9 @@ export const getAbExpVersion = (AbInfo: AbItemType) => (
 
 export const initialiseABTesting = () => {
   // sync
-  getAbsSync();
+  if (!Util.isInChromeDebug) {
+    // getAbsSync();
+  }
   // async
   getAbs();
 };

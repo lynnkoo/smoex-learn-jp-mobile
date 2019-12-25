@@ -1,4 +1,5 @@
 import { Channel, Application, Log } from '@ctrip/crn';
+import _ from 'lodash';
 import moment from 'moment';
 import Utils from './Utils';
 import AppContext from './AppContext';
@@ -6,9 +7,10 @@ import { getStore } from '../State/Store';
 import { AgeConfig, ClickKey, LogKey } from '../Constants/Index';
 
 export interface LogCodeType {
-  pageId: string,
+  pageId?: string,
   enName: string,
-  name?: string
+  name?: string,
+  [key: string]: any,
 }
 
 export interface LogTraceType {
@@ -19,8 +21,19 @@ export interface LogTraceType {
 export interface LogMetricType {
   key: string,
   value: number,
-  info: Object
+  info: {
+    pageId: string
+  }
 }
+
+const getPageId = (newData) => {
+  const res = { ...newData };
+  const getPageIdFn = _.get(AppContext, 'PageInstance.getPageId');
+  if (!res.pageId && typeof getPageIdFn === 'function') {
+    res.pageId = getPageIdFn();
+  }
+  return res;
+};
 
 class CarLog {
   // Get the return time and location information
@@ -47,7 +60,7 @@ class CarLog {
       dropOffLocationType: rentalLocation.dropOff.area.type,
       dropOffLocationName: rentalLocation.dropOff.area.name,
       dropOffDateTime: dropOffTime,
-      isOneWay: rentalLocation.isOneWay,
+      isDifferentLocation: rentalLocation.pickUp.area.id !== rentalLocation.dropOff.area.id,
       isSendCar: '2',
       isPickupCar: '2',
       residency: `${countryId}` || '66',
@@ -60,9 +73,9 @@ class CarLog {
     const locationAndDateInfo = CarLog.getLocationAndDateInfo();
     const curDate = new Date();
     const state = getStore().getState();
-    const { age } = state.DriverAge;
+    const { age } = state.DriverAgeAndNumber;
     return {
-      sourceFrom: AppContext.CarEnv.apptype,
+      sourceFrom: AppContext.CarEnv.appType,
       businessType: Utils.getBusinessType(),
       distibutionChannelId: Utils.isQunarApp()
         ? AppContext.MarketInfo.childChannelId : AppContext.MarketInfo.channelId,
@@ -73,7 +86,7 @@ class CarLog {
       visitortraceId: AppContext.MarketInfo.visitortraceId,
       sourceId: Channel.sourceId || '',
       abVersion: '', // todo
-      partialVersion: AppContext.CarEnv.BuildTime,
+      partialVersion: AppContext.CarEnv.buildTime,
       crnVersion: Application.version || '',
       uId: AppContext.UserInfo.UserID || '',
       telephone: Channel.telephone || '',
@@ -83,14 +96,14 @@ class CarLog {
         .format('YYYY-MM-DD HH:mm:ss'),
       awakeTime: AppContext.MarketInfo.awakeTime,
       age,
-      defaultAge: age === AgeConfig.DEFAULT_AGE.val,
+      defaultAge: age === AgeConfig.DEFAULT_AGE.getVal(),
       ...AppContext.LanguageInfo,
       ...locationAndDateInfo,
     };
   }
 
   static LogCode = (data: LogCodeType) => {
-    const newData = data;
+    const newData = getPageId(data);
     if (!data.name && ClickKey[data.enName]) newData.name = ClickKey[data.enName].NAME;
     Log.logCode(LogKey.CLICK_KEY, { ...CarLog.logBasicInfo(), ...newData });
   }

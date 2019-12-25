@@ -1,12 +1,9 @@
-// import { lazyRequire } from '@ctrip/crn';
+import { lazyRequire } from '@ctrip/crn';
 
-import Demo from '../Pages/Demo/Page1';
-import Debug from '../Containers/DebugerContainer';
-import Market from '../Containers/MarketContainer';
-
-// const Demo = lazyRequire('../Pages/Demo/Page1');
-// const Debug = lazyRequire('../Containers/DebugerContainer');
-// const Market = lazyRequire('../Containers/MarketContainer');
+const Demo = lazyRequire('../Pages/Demo/Page1');
+const Debug = lazyRequire('../Containers/DebugerContainer');
+const Market = lazyRequire('../Containers/MarketContainer');
+const List = lazyRequire('../Containers/ListPageContainer');
 
 export interface PageRouteType {
   component: any,
@@ -15,6 +12,10 @@ export interface PageRouteType {
 }
 
 const Pages: Array<PageRouteType> = [
+  {
+    component: List,
+    name: 'List',
+  },
   {
     component: Demo,
     name: 'Demo',

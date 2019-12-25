@@ -1,10 +1,13 @@
-import { Env, Storage } from '@ctrip/crn';
+import { Env, Log } from '@ctrip/crn';
+import { Platform, Dimensions, StatusBar } from 'react-native';
+import _ from 'lodash';
 import {
   ENV_TYPE,
   DOMAIN_URL,
   APP_TYPE,
   APP_ID,
   BUSINESS_TYPE,
+  RENTAL_GAP,
 } from '../Constants/Platform';
 import AppContext from './AppContext';
 
@@ -50,15 +53,42 @@ class Utils {
   }
 
   static getBusinessType(): String {
-    switch (AppContext.CarEnv.apptype) {
+    if (Utils.isTrip()) {
+      return BUSINESS_TYPE.IBU;
+    } if (Utils.isCtripOsd()) {
+      return BUSINESS_TYPE.OSD;
+    } if (Utils.isCtripIsd()) {
+      return BUSINESS_TYPE.ISD;
+    }
+
+    return BUSINESS_TYPE.UNKNOW;
+  }
+
+  static isTrip(): boolean {
+    return global['__crn_appId'] === APP_ID.TRIP;
+  }
+
+  static isCtripOsd(): boolean {
+    switch (AppContext.CarEnv.appType) {
       case APP_TYPE.OSD_C_APP:
-        return BUSINESS_TYPE.OSD;
-      case APP_TYPE.ISD_C_APP:
-        return BUSINESS_TYPE.ISD;
-      case APP_TYPE.OSD_T_APP:
-        return BUSINESS_TYPE.IBU;
+      case APP_TYPE.OSD_C_H5:
+      case APP_TYPE.OSD_Q_APP:
+      case APP_TYPE.OSD_ZUCHE_APP:
+        return true;
       default:
-        return BUSINESS_TYPE.UNKNOW;
+        return false;
+    }
+  }
+
+  static isCtripIsd(): boolean {
+    switch (AppContext.CarEnv.appType) {
+      case APP_TYPE.ISD_C_APP:
+      case APP_TYPE.ISD_C_H5:
+      case APP_TYPE.ISD_Q_APP:
+      case APP_TYPE.ISD_ZUCHE_APP:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -67,17 +97,22 @@ class Utils {
   }
 
   static isQunarApp(): boolean {
-    return AppContext.CarEnv.apptype === APP_TYPE.OSD_Q_APP;
+    return AppContext.CarEnv.appType === APP_TYPE.OSD_Q_APP;
   }
 
   // get ubt info
-  static async getUBT(): Promise<{sid?: string}> {
-    const ubt = await Storage.loadSync({
-      key: 'CTRIP_UBT_M',
-      domain: 'fx.ubt',
-    });
+  static getUBT(): any {
+    let ubt = {};
+    const crnPV = Log.createPV({});
+    /* eslint-disable */
+    // @ts-ignore
+    if (crnPV && crnPV._pv && crnPV._pv.data) {
+      /* eslint-disable */
+      // @ts-ignore
+      ubt = crnPV._pv.data;
+    }
 
-    return ubt ? JSON.parse(ubt) : {};
+    return ubt;
   }
 
   static promisable(asyncFunc: Function): any {
@@ -123,6 +158,29 @@ class Utils {
       return {};
     }
   }
+
+  static fullImgProtocal = (imgUrl) => {
+    if (_.startsWith(imgUrl, '//')) {
+      return `https:${imgUrl}`;
+    }
+
+    return imgUrl;
+  }
+
+  static getRentalGap = () => {
+    if (Utils.isTrip()) {
+      return RENTAL_GAP.IBU;
+    } if (Utils.isCtripOsd()) {
+      return RENTAL_GAP.OSD;
+    } if (Utils.isCtripIsd()) {
+      return RENTAL_GAP.ISD;
+    }
+    return RENTAL_GAP.UNKNOW;
+  }
+
+  static isAndroid = Platform.OS === 'android'
+
+  static heightWithStatusBar = Dimensions.get('window').height + (StatusBar.currentHeight || 0)
 }
 
 export default Utils;

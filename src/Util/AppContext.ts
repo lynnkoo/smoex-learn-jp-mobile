@@ -1,8 +1,5 @@
 import { Channel } from '@ctrip/crn';
-import BuildTime from '../BuildTime';
-import CarI18n from './CarI18n';
-import Locale from './Locale';
-import { APP_ID } from '../Constants/Platform';
+import _ from 'lodash';
 
 export interface MarketInfoType {
   channelId: string;
@@ -18,11 +15,13 @@ export interface QConfigType { }
 export interface CacheType { }
 
 export interface UserInfoType {
+  UserID?: string;
+  Auth?: string
 }
 
 export interface CarEnvType {
-  BuildTime: string;
-  apptype: string;
+  buildTime: string;
+  appType: string;
 }
 
 export interface SharkKeysType {
@@ -63,7 +62,7 @@ const baseContext = {
   },
   QConfig: {},
   Cache: {},
-  CarEnv: { BuildTime, apptype: '' },
+  CarEnv: { buildTime: '', appType: '' },
   SharkKeys: { lang: {}, messages: {} },
   LanguageInfo: {
     language: '',
@@ -74,12 +73,17 @@ const baseContext = {
   UserInfo: {},
   UrlQuery: {},
   Url: '',
+  PageInstance: null,
 };
 
-const getAppContext = () => Object.assign({}, baseContext);
+const getAppContext = () => _.cloneDeep(baseContext);
 
 let appContext = getAppContext();
 
+
+const setMarketInfo = (market: MarketInfoType) => {
+  appContext.MarketInfo = market;
+};
 
 const setABTesting = (value) => {
   const datas = { ...appContext.ABTesting.datas, ...value };
@@ -107,25 +111,8 @@ const setUrlQuery = (urlQuery) => {
   appContext.UrlQuery = urlQuery;
 };
 
-const initLanguage = async () => {
-  /* eslint-disable dot-notation */
-  if (global['__crn_appId'] === APP_ID.TRIP) {
-    const { locale } = await CarI18n.getCurrentLocale();
-    const { code: currency } = await CarI18n.getCurrentCurrency('callback');
-    const localeInstance = new Locale(locale);
-    let language = localeInstance.getLanguage().toUpperCase();
-    const traditional = ['hk', 'tw'];
-    // 如果是香港台湾等类中文语言，统一传 CN
-    if (traditional.includes(language)) {
-      language = 'CN';
-    }
-    this.LanguageInfo = {
-      language,
-      locale: localeInstance.getLocale(),
-      site: language,
-      currency,
-    };
-  }
+const setLanguageInfo = (language: LanguageInfoType) => {
+  appContext.LanguageInfo = language;
 };
 
 const setSharkKeys = (lang, messages) => {
@@ -133,8 +120,20 @@ const setSharkKeys = (lang, messages) => {
   appContext.SharkKeys.messages = messages;
 };
 
-const reset = () => {
+const resetAppContext = () => {
   appContext = getAppContext();
+};
+
+const setPageInstance = (pageInstance) => {
+  appContext.PageInstance = pageInstance;
+};
+
+const setLanguageCurrency = (currency) => {
+  appContext.LanguageInfo.currency = currency;
+};
+
+const setCarEnv = (carEnv: CarEnvType) => {
+  appContext.CarEnv = carEnv;
 };
 
 const AppContext = {
@@ -143,9 +142,6 @@ const AppContext = {
   },
   get MarketInfo(): MarketInfoType {
     return appContext.MarketInfo;
-  },
-  setMarketInfo: (value) => {
-    appContext.MarketInfo = value;
   },
   get QConfig(): QConfigType {
     return appContext.QConfig;
@@ -171,13 +167,20 @@ const AppContext = {
   get UrlQuery(): UrlQueryType {
     return appContext.UrlQuery;
   },
+  get PageInstance() {
+    return appContext.PageInstance;
+  },
+  resetAppContext,
+  setMarketInfo,
   setABTesting,
-  initLanguageInfo: initLanguage,
+  setLanguageInfo,
   setUserInfo,
   setUrl,
   setUrlQuery,
   setSharkKeys,
-  reset,
+  setPageInstance,
+  setLanguageCurrency,
+  setCarEnv,
 };
 
 export default AppContext;

@@ -22,7 +22,7 @@ module.exports = {
   rules: {
     "import/no-extraneous-dependencies": [0],
     "valid-jsdoc": ["error"],
-    "max-len": ["warn", {
+    "max-len": ["error", {
       "code": 100,
       "ignoreRegExpLiterals": true,
       "ignoreUrls": true
@@ -49,7 +49,10 @@ module.exports = {
     }],
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "import/extensions": [0],
+    "react/destructuring-assignment": 1,
+    "no-nested-ternary": [0]
   },
   settings: {
     "import/resolver": {

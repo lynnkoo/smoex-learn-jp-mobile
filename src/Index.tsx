@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
+import { Text } from 'react-native';
 import { Provider } from 'react-redux';
-import { App } from '@ctrip/crn';
+import { IntlProvider } from 'react-intl';
+import { App, LoadingView } from '@ctrip/crn';
+import BBkThemingProvider from '@ctrip/bbk-theming';
+import BbkChannel from '@ctrip/bbk-utils';
 import pages from './Routers/Index';
 import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
-import appLoad from './AppLoad';
+import appLoad, { loadLanguageAndSharkAsync } from './AppLoad';
+import { APP_ID } from './Constants/Platform';
+import { AppContext } from './Util/Index';
+import AppUnLoad from './AppUnLoad';
 
 const navigationBarConfig = {
   hide: true,
@@ -18,19 +25,51 @@ class Car extends App {
   }
 }
 
-export default class RnCarApp extends Component {
-  constructor(props) {
+interface StateType {
+  isPreloadFinished: boolean,
+}
+export default class RnCarApp extends Component<any, StateType> {
+  constructor(props: any) {
     super(props);
-    appLoad(props);
+    this.state = {
+      isPreloadFinished: false,
+    };
+    this.preLoad(props);
   }
 
+  componentWillUnmount() {
+    AppUnLoad();
+  }
+
+  preLoad = async (props) => {
+    /* eslint-disable dot-notation */
+    if (global['__crn_appId'] === APP_ID.TRIP) {
+      await loadLanguageAndSharkAsync();
+    }
+    appLoad(props);
+    this.setState({ isPreloadFinished: true });
+  };
+
   render() {
-    return (
-      <ErrorBoundary>
-        <Provider store={getStore()}>
-          <Car {...this.props} />
-        </Provider>
-      </ErrorBoundary>
-    );
+    const { isPreloadFinished } = this.state;
+    return !isPreloadFinished
+      ? (
+        <LoadingView />
+      )
+      : (
+        <ErrorBoundary>
+          <Provider store={getStore()}>
+            <BBkThemingProvider channel={BbkChannel.getChannel()}>
+              <IntlProvider
+                locale={AppContext.SharkKeys.lang}
+                messages={AppContext.SharkKeys.messages}
+                textComponent={Text}
+              >
+                <Car {...this.props} />
+              </IntlProvider>
+            </BBkThemingProvider>
+          </Provider>
+        </ErrorBoundary>
+      );
   }
 }

@@ -10,7 +10,7 @@ import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId, ClickKey } from '../../Constants/Index';
+import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog } from '../../Util/Index';
 
 // 组件
@@ -88,7 +88,7 @@ interface IListPropsType extends IBasePageProps {
 }
 
 const removeEvents = () => {
-  Event.removeEventListener('changeRentalLocation');
+  Event.removeEventListener(EventName.changeRentalLocation);
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
@@ -142,7 +142,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   registerEvents() {
-    Event.addEventListener('changeRentalLocation', (data) => {
+    Event.addEventListener(EventName.changeRentalLocation, (data) => {
       this.props.setLocationInfo({
         ...data,
         fromEvent: 'changeRentalLocation',
@@ -151,7 +151,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent('changeRentalDate', this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
   }
 
   pageGoBack = () => {

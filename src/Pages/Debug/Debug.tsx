@@ -12,7 +12,6 @@ import {
 } from '@ctrip/crn';
 import { AppContext, CarLog } from '../../Util/Index';
 import CPage, { IStateType } from '../../Components/App/CPage';
-import { PageId } from '../../Constants/Index';
 import { TextWithLogCode, TouchableOpacityWithLogCode } from '../../Components/Index';
 
 const styles = StyleSheet.create({
@@ -73,7 +72,7 @@ export default class Debug extends CPage<PropsType, StateType> {
 
   /* eslint-disable class-methods-use-this */
   getPageId() {
-    return PageId.Index.ID;
+    return 'Debug';
   }
 
   componentDidMount() {

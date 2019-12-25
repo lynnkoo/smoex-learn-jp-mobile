@@ -14,14 +14,14 @@ import { ClickKey } from '../../../Constants/Index';
 const { htmlDecode, selector } = BbkUtils;
 
 interface SelectedFilterItemProps {
-  id: string;
-  text: string;
-  clearFilter: (id: string) => void;
+  code: string;
+  name: string;
+  clearFilter: (code: string) => void;
 }
 
 interface SelectedFilterItemsProps {
   filters: SelectedFilterItemProps[];
-  clearFilter: (id: string) => void;
+  clearFilter: (code: string) => void;
 }
 
 const styles = StyleSheet.create({
@@ -49,15 +49,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const SelectedFilterItem = ({ id, text, clearFilter }: SelectedFilterItemProps) => {
+const SelectedFilterItem = ({ code, name, clearFilter }: SelectedFilterItemProps) => {
   const onPress = () => {
-    clearFilter(id);
-    CarLog.LogCode({ enName: ClickKey.C_LIST_CLEAR_BOTTOM_FILTER.KEY, text });
+    clearFilter(code);
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CLEAR_BOTTOM_FILTER.KEY, name });
   };
   return (
     <BbkTouchable onPress={onPress}>
       <BbkCarRightIcon
-        text={text}
+        text={name}
         style={styles.filterItem}
         textStyle={styles.filterItemText}
         iconContent={htmlDecode(icon.cross)}
@@ -77,7 +77,7 @@ const SelectedFilterItems = ({ filters = [], clearFilter }: SelectedFilterItemsP
     {
         filters.map(filter => (
           <SelectedFilterItem
-            key={filter.id}
+            key={filter.code}
             {...filter}
             clearFilter={clearFilter}
           />

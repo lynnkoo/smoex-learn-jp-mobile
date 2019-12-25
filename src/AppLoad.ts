@@ -1,12 +1,13 @@
-import { Business, Util } from '@ctrip/crn';
+import { Business, Util, IBUSharkUtil } from '@ctrip/crn';
+import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
 import {
   AppContext, MarketInfoType, Utils, User, CarStorage,
 } from './Util/Index';
 import { initialiseStore, initialiseAppState } from './State/Store';
 import { initialiseABTesting } from './Util/ABTesting';
+import { Platform, Language } from './Constants/Index';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 import StorageKey from './Constants/StorageKey';
-import { Language } from './Constants/Index';
 import BuildTime from './BuildTime';
 import CarI18n from './Util/CarI18n';
 import Locale from './Util/Locale';
@@ -126,28 +127,45 @@ const appLoad = (props: any) => {
   initialiseAppState();
 };
 
-const loadLanguageAsync = async () => {
+/* eslint-disable class-methods-use-this */
+const getSharkConfig = () => ({
+  appid: Platform.SHARK_APP_ID.TRIP,
+  keys: { ...BbkTranslationKey },
+});
+
+const loadSharkData = async () => {
+  if (IBUSharkUtil && IBUSharkUtil.fetchSharkData) {
+    return IBUSharkUtil.fetchSharkData(getSharkConfig())
+      .then(({ lang, messages }) => ({ lang, messages }))
+      .catch(() => ({ lang: '', messages: {} }));
+  }
+  return { lang: '', messages: {} };
+};
+
+const loadLanguageAndSharkAsync = async () => {
   const label = 'loadLanguageAsync';
   DebugLog.time(label);
 
   const task = await Promise.all([
     CarI18n.getCurrentLocale(),
     CarI18n.getCurrentCurrency('callback'),
+    loadSharkData(),
   ]);
-  const [currentLocale, currentCurrency] = task;
+
+  const [currentLocale, currentCurrency, sharkKeys] = task;
   const localeInstance = new Locale(currentLocale.locale);
   const locale = localeInstance.getLocale();
   const language = localeInstance.getLanguage().toUpperCase();
   const localeLanguage = [Language.HK, Language.TW].includes(language) ? Language.CN : language;
   DebugLog.timeEnd(label);
-
-  return {
+  AppContext.setSharkKeys(sharkKeys.lang, sharkKeys.messages);
+  AppContext.setLanguageInfo({
     locale,
     site: language,
     currency: currentCurrency ? currentCurrency.code : '',
     language: localeLanguage,
-  };
+  });
 };
 
-export { loadLanguageAsync };
+export { loadLanguageAndSharkAsync };
 export default appLoad;

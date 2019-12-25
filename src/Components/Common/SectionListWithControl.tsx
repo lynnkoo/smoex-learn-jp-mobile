@@ -9,6 +9,9 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { isIos, lazySelector } = BbkUtils;
 
+// TODO-dyy
+// header 联动
+
 // @ts-ignore
 interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
@@ -60,7 +63,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SectionListWithControl extends Component<SectionListWithControlProps, SectionListWithControlState> {
+export default class SectionListWithControl
+  extends Component<SectionListWithControlProps, SectionListWithControlState> {
   refreshControl = null;
 
   loadControl = null;
@@ -71,7 +75,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
 
   scroller = null;
 
-  scrollerMoveLength = 0;
+  lastScrollY = 0;
 
   static defaultProps = {
     throttle: 50,
@@ -106,10 +110,12 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     // console.log(triggerEvent, y, height, contentHeight, threshold)
 
     if (isIos) {
-      if (y + height > contentHeight + threshold) {
+      // 不满一屏的情况
+      const scrollToTop = y < this.lastScrollY;
+      if (!scrollToTop && y + height > contentHeight + threshold) {
         load = true;
       }
-      if (y < -threshold) {
+      if (scrollToTop && y < -threshold) {
         refresh = true;
       }
     } else {
@@ -125,6 +131,8 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       }
       showAndroidRefresh = nextShowAndroidRefresh;
     }
+
+    this.lastScrollY = y;
 
     return {
       load,
@@ -163,19 +171,17 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     const { throttle } = this.props;
 
     if (refresh && this.refreshControlWrap) {
-      this.scrollerMoveLength = throttle;
       this.refreshControlWrap.setNativeProps({
         style: {
-          paddingTop: this.scrollerMoveLength,
+          paddingTop: throttle,
         },
       });
     }
 
     if (load && this.loadControlWrap) {
-      this.scrollerMoveLength = throttle;
       this.loadControlWrap.setNativeProps({
         style: {
-          paddingBottom: this.scrollerMoveLength,
+          paddingBottom: throttle,
         },
       });
     }
@@ -186,11 +192,10 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       return;
     }
 
-    this.scrollerMoveLength = 0;
     if (this.refreshControlWrap) {
       this.refreshControlWrap.setNativeProps({
         style: {
-          paddingTop: this.scrollerMoveLength,
+          paddingTop: 0,
         },
       });
     }
@@ -198,7 +203,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     if (this.loadControlWrap) {
       this.loadControlWrap.setNativeProps({
         style: {
-          paddingBottom: this.scrollerMoveLength,
+          paddingBottom: 0,
         },
       });
     }
@@ -267,7 +272,6 @@ export default class SectionListWithControl extends Component<SectionListWithCon
       refreshing,
       onLoading,
       refreshResult,
-      showAndroidRefresh,
     } = this.state;
     const {
       throttle,
@@ -300,7 +304,7 @@ export default class SectionListWithControl extends Component<SectionListWithCon
     const refreshControl = (
       // ts-ignore
       <RefreshControl
-        style={isIos ? styles.controlWrap : (!showAndroidRefresh && styles.androidRefreshWrap)}
+        style={isIos ? styles.controlWrap : styles.androidRefreshWrap}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // @ts-ignore

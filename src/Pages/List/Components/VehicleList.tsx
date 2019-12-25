@@ -16,17 +16,7 @@ import { ClickKey } from '../../../Constants/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 import TipList from '../../../Containers/ListTipListContainer';
 
-const { selector, getPixel } = BbkUtils;
-
-interface section {
-  vehicleHeader: any;
-  vehicleIndex: number;
-  data: [];
-}
-
-interface sectionProps {
-  section: section;
-}
+const { selector, getPixel, isIos } = BbkUtils;
 
 const styles = StyleSheet.create({
   noMatchWrap: {
@@ -51,14 +41,34 @@ const NoMatch = () => useMemo(
   [],
 );
 
+const cacheDom = {
+  NoMatch: <NoMatch />,
+  TipList: <TipList />,
+  SelectedFilterItems: <SelectedFilterItems />,
+};
+
+interface section {
+  vehicleHeader: any;
+  vehicleIndex: number;
+  data: [];
+}
+
+interface sectionProps {
+  section: section;
+}
+
+const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
+// android 少于 2 条数据时不展示打通，无法触发 scroll
+const getShowFooter = sections => (isIos ? sections.length <= 0 : false);
 const VehicleList = (props: any) => {
   const {
     sections,
     showMax,
     ...passThroughProps
   } = props;
-  const [showMoreArr, setShowMoreArr] = useState(() => sections.map(({ data }) => data[0].length > showMax));
-  const [showFooter, setShowFooter] = useState(false);
+  const [showMoreArr, setShowMoreArr] = useState(getShowMoreArr(sections, showMax));
+  // android 少于 2 条数据时不展示打通，无法触发 scroll
+  const [showFooter, setShowFooter] = useState(getShowFooter(sections));
   const sectionsLen = sections.length;
 
   const renderItem = useCallback((data) => {
@@ -138,9 +148,9 @@ const VehicleList = (props: any) => {
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
-      ListHeaderExtraComponent={<TipList />}
-      ListFooterExtraComponent={<SelectedFilterItems />}
-      ListEmptyComponent={<NoMatch />}
+      ListHeaderExtraComponent={cacheDom.TipList}
+      ListFooterExtraComponent={cacheDom.SelectedFilterItems}
+      ListEmptyComponent={cacheDom.NoMatch}
       threshold={50}
       {...passThroughProps}
     />

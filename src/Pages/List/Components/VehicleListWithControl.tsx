@@ -10,6 +10,7 @@ import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
+import { listLoading } from '../Texts';
 import VehicleList from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 import { Utils } from '../../../Util/Index';
@@ -20,6 +21,7 @@ interface VehicleListWithControlProps {
   index: number;
   progress?: number;
   listData?: any;
+  lastNextIndexObj?: any;
   initialNumToRender?: number;
   theme?: any;
   height?: number;
@@ -58,6 +60,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     height: Utils.heightWithStatusBar,
     threshold: 0,
     showMax: 2,
+    lastNextIndexObj: {},
   };
 
   cacheList = [];
@@ -97,29 +100,6 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     };
   }
 
-  onRefreshSection = (callback) => {
-    if (this.isScrolling) {
-      return Toast.show('正在加载');
-    }
-
-    // console.log('---------onRefreshSection');
-    const { index } = this.state;
-    const { minIndex } = this.props;
-
-    if (index <= minIndex) {
-      return null;
-    }
-
-    this.isScrolling = true;
-    const newIndex = Math.max(index - 1, minIndex);
-    this.setState({
-      index: newIndex,
-    });
-
-    this.animate(newIndex, callback);
-    return null;
-  }
-
   getStyle(i) {
     const { initIndex } = this.state;
     const {
@@ -134,6 +114,50 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       height: scrollViewHeight,
       backgroundColor: theme.scrollBackgroundColor,
     }];
+  }
+
+  onRefreshSection = (callback) => {
+    if (this.isScrolling) {
+      return Toast.show(listLoading);
+    }
+
+    // console.log('---------onRefreshSection');
+    const { index } = this.state;
+    const { minIndex, lastNextIndexObj } = this.props;
+
+    const newIndex = lastNextIndexObj[index].last;
+    if (index < minIndex || newIndex < minIndex) {
+      return null;
+    }
+
+    this.isScrolling = true;
+    this.setState({
+      index: newIndex,
+    });
+
+    this.animate(newIndex, callback);
+    return null;
+  }
+
+  onLoadMore = (callback) => {
+    const { index } = this.state;
+    const { maxIndex, lastNextIndexObj } = this.props;
+    if (this.isScrolling) {
+      return Toast.show(listLoading);
+    }
+
+    // console.log('---------onLoadMore');
+    const newIndex = lastNextIndexObj[index].next;
+    if (index > maxIndex || newIndex > maxIndex) {
+      return null;
+    }
+
+    this.isScrolling = true;
+    this.setState({
+      index: newIndex,
+    });
+    this.animate(newIndex, callback);
+    return null;
   }
 
   animate = (index, callback = () => {}) => {
@@ -153,52 +177,66 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       callback();
     });
     if (this.scrollerRef[index]) {
-      this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+      // fix no match
+      try {
+        this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
+      } catch (e) {
+        console.warn('scrollToLocation error');
+      }
     }
     this.props.setActiveGroupId({ activeGroupIndex: index });
     this.animating = true;
   }
 
-  onLoadMore = (callback) => {
-    const { index } = this.state;
-    const { maxIndex } = this.props;
-    if (this.isScrolling) {
-      return Toast.show('正在加载');
-    }
+  getVehicleListProps = (index, newLastNextIndexObj) => {
+    const {
+      minIndex, maxIndex, lastNextIndexObj,
+    } = this.props;
 
-    // console.log('---------onLoadMore');
-    if (index >= maxIndex) {
-      return null;
-    }
+    const $lastNextIndexObj = newLastNextIndexObj || lastNextIndexObj;
+    const { last, next } = $lastNextIndexObj[index];
+    const isTop = index <= minIndex || last < minIndex;
+    const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
+    const noMoreContent = getSharkValue('listCombine_toTheBottom');
+    const lastGroupName = getGroupNameByIndex(last);
+    const nextGroupName = getGroupNameByIndex(next);
+    const pullIcon = !isTop ? '\ue0b5' : ' ';
+    const noticeContent = getSharkValue('listCombine_pullUpToRefersh', nextGroupName);
+    const loadingContent = getSharkValue('listCombine_releaseToRefersh', nextGroupName);
+    const pullStartContent = noRefresh || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
+    const pullContinueContent = noRefresh || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
+    // console.log('noMore ', index, next, maxIndex, $lastNextIndexObj)
+    const noMore = index >= maxIndex || next > maxIndex;
 
-    this.isScrolling = true;
-    const newIndex = Math.min(index + 1, maxIndex);
-    this.setState({
-      index: newIndex,
-    });
-    this.animate(newIndex, callback);
-    return null;
+    return {
+      pullIcon,
+      pullStartContent,
+      pullContinueContent,
+      refreshingIcon: pullIcon,
+      refreshingContent: pullContinueContent,
+      noMore,
+      noticeContent,
+      loadingContent,
+      noMoreContent,
+    };
   }
 
-  renderVehicleListDom = (index, placeHolder, listData) => {
+  /**
+   * listData, newLastNextIndexObj is for render data use new props
+   * cause VehicleList will only recieve the first load of props
+   * @param {number} index              渲染车型组 index
+   * @param {boolean} placeHolder       是否占位，懒渲染
+   * @param {any} listData              最新的 listData props
+   * @param {any} newLastNextIndexObj   用于筛选后的可用车型组索引
+   * @returns {any}                     渲染的 VehicleList dom
+   */
+  renderVehicleListDom = (index, placeHolder, listData, newLastNextIndexObj) => {
     const {
       minIndex, maxIndex, initialNumToRender, theme, showMax,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
     }
-
-    const isTop = index === minIndex;
-    const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
-    const noMoreContent = getSharkValue('listCombine_toTheBottom');
-    const lastGroupName = getGroupNameByIndex(index - 1);
-    const nextGroupName = getGroupNameByIndex(index + 1);
-    const pullIcon = !isTop ? '\ue0b5' : ' ';
-    const noticeContent = getSharkValue('listCombine_pullUpToRefersh', nextGroupName);
-    const loadingContent = getSharkValue('listCombine_releaseToRefersh', nextGroupName);
-    const pullStartContent = noRefresh || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
-    const pullContinueContent = noRefresh || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
-    const noMore = index >= maxIndex;
 
     const cache = this.cacheList[index];
     if (!cache) {
@@ -218,22 +256,11 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
           index={index}
           sections={listData[index] || []}
           showMax={showMax}
-
           onRefresh={this.onRefreshSection}
-          pullIcon={pullIcon}
-          pullStartContent={pullStartContent}
-          pullContinueContent={pullContinueContent}
-          refreshingIcon={pullIcon}
-          refreshingContent={pullContinueContent}
-
           onLoadMore={this.onLoadMore}
-          noMore={noMore}
-          noticeContent={noticeContent}
-          loadingContent={loadingContent}
-          noMoreContent={noMoreContent}
-
           initialNumToRender={initialNumToRender}
           endFillColor={theme.scrollBackgroundColor || color.grayBg}
+          {...this.getVehicleListProps(index, newLastNextIndexObj)}
         />
       );
     }
@@ -269,11 +296,11 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       this.tabScroll(props.index);
     }
     if (!_.isEqual(props.listData, this.props.listData)) {
-      this.renderAllVehicleListDom(props.listData);
+      this.renderAllVehicleListDom(props.listData, props.lastNextIndexObj);
     }
   }
 
-  renderAllVehicleListDom(newListData = null) {
+  renderAllVehicleListDom(newListData?: any, lastNextIndexObj?: any) {
     const dom = [];
     const { index } = this.state;
     const {
@@ -289,7 +316,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     // console.log('【performance】renderAllVehicleListDom ')
     for (let i = minIndex; i <= maxIndex - minIndex + 1; i += 1) {
       const placeHolder = Math.abs(i - index) > 0;
-      dom[i] = this.renderVehicleListDom(i, placeHolder, $listData);
+      dom[i] = this.renderVehicleListDom(i, placeHolder, $listData, lastNextIndexObj);
     }
 
     return dom;

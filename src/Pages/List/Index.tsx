@@ -32,9 +32,9 @@ interface ListStateType extends IStateType {
 }
 
 const PAGESTAGE = {
-  INIT: '初始加载',
-  SHOW: '有响应数据',
-  FAIL: '无响应数据',
+  INIT: 'INIT',
+  SHOW: 'SHOW',
+  FAIL: 'FAIL',
 };
 
 const styles = StyleSheet.create({

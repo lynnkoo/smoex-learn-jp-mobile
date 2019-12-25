@@ -13,6 +13,10 @@ export interface PageRouteType {
 
 const Pages: Array<PageRouteType> = [
   {
+    component: List,
+    name: 'List',
+  },
+  {
     component: Demo,
     name: 'Demo',
   },
@@ -23,11 +27,6 @@ const Pages: Array<PageRouteType> = [
   {
     component: Debug,
     name: 'Debug',
-  },
-  {
-    component: List,
-    name: 'List',
-    isInitialPage: true,
   },
 ];
 

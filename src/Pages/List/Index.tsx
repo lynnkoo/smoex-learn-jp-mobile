@@ -104,8 +104,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     this.filterModalRef = React.createRef();
   }
 
+  /* eslint-disable class-methods-use-this */
   getPageId() {
-    super.getPageId();
     return PageId.List.ID;
   }
 

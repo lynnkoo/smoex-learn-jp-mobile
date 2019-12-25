@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 
 import List from '../Pages/List/Index';
 import {
-  initActiveGroupId, getStatus, fetchListBatchQuery, setDatePickerIsShow, setLocationAndDatePopIsShow, setActiveFilterBarCode,
+  initActiveGroupId, getStatus, fetchListBatchQuery,
+  setDatePickerIsShow, setLocationAndDatePopIsShow, setActiveFilterBarCode,
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
-
 import {
   getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getProgress,
 } from '../State/List/Selectors';

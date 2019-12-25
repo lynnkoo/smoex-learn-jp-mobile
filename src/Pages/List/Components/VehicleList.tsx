@@ -76,7 +76,6 @@ const VehicleList = (props: any) => {
     if (showMoreArr[data.section.vehicleIndex]) {
       item = data.item.slice(0, showMax);
     }
-    // console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
     return (
       <Vehicle
         item={item}
@@ -85,14 +84,15 @@ const VehicleList = (props: any) => {
     );
   }, [showMax, showMoreArr]);
 
-  const renderSectionHeader = useCallback(({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
-    <VehicleHeader
-      vehicleHeader={vehicleHeader}
-      vehicleIndex={vehicleIndex}
-      sectionsLen={sectionsLen}
-      setShowFooter={setShowFooter}
-    />
-  ), [sectionsLen]);
+  const renderSectionHeader = useCallback(
+    ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
+      <VehicleHeader
+        vehicleHeader={vehicleHeader}
+        vehicleIndex={vehicleIndex}
+        sectionsLen={sectionsLen}
+        setShowFooter={setShowFooter}
+      />
+    ), [sectionsLen]);
 
   const [showLoginItem, setShowLoginItem] = useState(false);
 
@@ -105,16 +105,13 @@ const VehicleList = (props: any) => {
     isLogin();
   }, []);
 
-  // useEffect(() => {
-  //   console.log('【performance】Vehicle List ', props.index, getGroupNameByIndex(props.index))
-  // })
-
   const onLogin = () => {
     CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
     User.toLogin();
   };
 
-  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
+  const renderSectionFooter = useCallback((
+    { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
     const { vehicleName }: any = vehicleHeader || {};

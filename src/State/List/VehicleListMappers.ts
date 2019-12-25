@@ -135,7 +135,9 @@ const getPriceDescProps = (priceInfo, privilegesPromotions = {}) => {
   return res;
 };
 
-const getVendorLabel = (colorType?: string, noBg: boolean = true, iconType?: string) => ({ text, iconContent }: {text:string, iconContent?: string}) => ({
+const getVendorLabel = (
+  colorType?: string, noBg: boolean = true, iconType?: string,
+) => ({ text, iconContent }: { text: string, iconContent?: string }) => ({
   labelStyle: [
     style.labelFlexLeft,
     style.verndorLabel,
@@ -260,7 +262,9 @@ const getVendorItemData = (vendor, vendorIndex) => {
   };
 };
 
-const getVendorListData = (vendorPriceList, vehicleIndex) => _.map(vendorPriceList, (vendor, vendorIndex) => {
+const getVendorListData = (
+  vendorPriceList, vehicleIndex,
+) => _.map(vendorPriceList, (vendor, vendorIndex) => {
   const vendorItemData = getVendorItemData(vendor, `${vehicleIndex}-${vendorIndex}`);
   return vendorItemData;
 });

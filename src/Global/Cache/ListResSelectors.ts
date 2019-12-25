@@ -5,7 +5,8 @@ import { getStore } from '../../State/Store';
 // 对列表页响应数据的一系列选择操作方法
 import ListReqAndResData from './ListReqAndResData';
 
-export const getBaseResData = () => ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {};
+export const getBaseResData = () => (
+  ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {});
 
 // 获取服务端返回的基础的车型组报价数据
 export const getBaseProductGroups = () => getBaseResData().productGroups || [];
@@ -22,7 +23,12 @@ export const getAllProductGroupsAndCount = () => {
     groupCode: FrontEndConfig.AllCarsConfig.groupCode,
     groupName: FrontEndConfig.AllCarsConfig.getGroupName(),
   };
-  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), getHashCode(), allCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
+  const filterResult = getProductGroupsAndCount(
+    getBaseProductGroups(),
+    getHashCode(),
+    allCarsConfig,
+    getAllFilterMenuItems(),
+    state.List.selectedFilters);
   return filterResult;
 };
 
@@ -34,7 +40,8 @@ export const getRequestInfo = () => getBaseResData().requestInfo || {};
 export const getVehicleList = () => getBaseResData().vehicleList || [];
 
 // 获取所有车型详情列表和报价列表
-export const getVehAndProductList = () => ({ vehicleList: getVehicleList(), productGroups: getAllProductGroups() });
+export const getVehAndProductList = () => (
+  { vehicleList: getVehicleList(), productGroups: getAllProductGroups() });
 
 // 获取车型组列表数据
 export const getVehGroupList = () => {
@@ -83,7 +90,8 @@ export const getSortList = () => {
 export const getRecommendInfo = () => getBaseResData().recommendInfo || {};
 
 // 是否为异地取还
-export const isDiffLocation = () => getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName;
+export const isDiffLocation = () => (
+  getRequestInfo().pickupLocationName !== getRequestInfo().returnLocationName);
 
 // 遍历筛选code
 const mapCode = (filterMenu, result) => {

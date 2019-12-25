@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import TipList from '../Pages/List/Components/TipList';
 import { getSelectedFilters } from '../State/List/Selectors';
-import { getPromotionFilterText, getPromotionFilterCode, getPromotionFilterIsSelect } from '../State/List/Mappers';
+import {
+  getPromotionFilterText, getPromotionFilterCode, getPromotionFilterIsSelect,
+} from '../State/List/Mappers';
 import { updateSelectedFilter } from '../State/List/Actions';
 
 const mapStateToProps = state => ({

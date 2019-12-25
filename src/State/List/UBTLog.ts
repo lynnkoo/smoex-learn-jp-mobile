@@ -56,7 +56,8 @@ export const LogListFinalTrace = (param, res) => {
               } else {
                 pNormalcount += 1;
               }
-              pMaskvehiclecount += pItem.reference && pItem.reference.decoratorVendorType === 2 ? 1 : 0;
+              pMaskvehiclecount += pItem.reference
+                && pItem.reference.decoratorVendorType === 2 ? 1 : 0;
               pZhimaCount += (pItem.extMap && pItem.extMap.isSupportZhima === 'true') ? 1 : 0;
             });
           }

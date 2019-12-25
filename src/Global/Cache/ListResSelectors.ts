@@ -18,7 +18,11 @@ export const getAllFilterMenuItems = () => getBaseResData().filterMenuItems || [
 // 获取筛选后的所有车型组下的报价数据(包含全部车型)
 export const getAllProductGroupsAndCount = () => {
   const state = getStore().getState();
-  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), getHashCode(), FrontEndConfig.AllCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
+  const allCarsConfig = {
+    groupCode: FrontEndConfig.AllCarsConfig.groupCode,
+    groupName: FrontEndConfig.AllCarsConfig.getGroupName(),
+  };
+  const filterResult = getProductGroupsAndCount(getBaseProductGroups(), getHashCode(), allCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
   return filterResult;
 };
 

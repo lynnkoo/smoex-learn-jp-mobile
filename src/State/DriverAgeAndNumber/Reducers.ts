@@ -2,7 +2,7 @@ import { SET_AGE, GET_AGE } from './Types';
 import { AgeActionType } from './Actions';
 import { AgeConfig } from '../../Constants/Index';
 
-const getInitalState = () => ({ age: AgeConfig.DEFAULT_AGE.val, adultNumbers: 2, childNumbers: 2 });
+const getInitalState = () => ({ age: AgeConfig.DEFAULT_AGE.getVal(), adultNumbers: 2, childNumbers: 0 });
 
 const initalState = getInitalState();
 

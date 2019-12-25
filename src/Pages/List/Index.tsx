@@ -28,7 +28,6 @@ import { ListReqAndResData } from '../../Global/Cache/Index';
 const { selector } = BbkUtils;
 
 interface ListStateType extends IStateType {
-  filterAndSortModalVisible: boolean;
   listThreshold: number,
 }
 
@@ -85,23 +84,17 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-  batchesRequest: any[];
 
   filterModalRef: RefObject<any>;
 
   datePickerRef: any;
 
-  hasInitFetch: boolean;
-
   constructor(props) {
     super(props);
     this.state = {
-      filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
     };
-    this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
     ListReqAndResData.removeData();
-    this.hasInitFetch = false;
     this.filterModalRef = React.createRef();
   }
 
@@ -152,19 +145,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     return curStage;
   }
 
-  // 处理热门筛选项的点击事件
-  handlePopularFilterPress = () => {
-    this.controlFilterModalIsShow();
-  }
-
-  // 控制筛选和排序弹层是否展示
-  controlFilterModalIsShow = () => {
-    const { filterAndSortModalVisible } = this.state;
-    this.setState({
-      filterAndSortModalVisible: !filterAndSortModalVisible,
-    });
-  }
-
   setVehicleListThreshold = ({ nativeEvent }) => {
     const { height } = nativeEvent.layout;
     this.setState({
@@ -200,6 +180,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
+  // todo 移至到header内单独处理
   handlePressHeader = () => {
     if (this.props.progress !== 1) {
       Toast.show('加载中，请稍候...'); // todo shark key

@@ -19,8 +19,7 @@ import { listShowMore } from '../Texts';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
-const { selector } = BbkUtils;
-
+const { selector, isIos } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
@@ -61,7 +60,10 @@ export const Vehicle = memo(withTheme(
             <BbkLabel
               text={recommendDesc}
               hasBorder
-              labelStyle={[style.labelFlexLeft, style.labelStyle, { backgroundColor: setOpacity(theme.blueBase, 0.08) }]}
+              labelStyle={[
+                style.labelFlexLeft, style.labelStyle,
+                { backgroundColor: setOpacity(theme.blueBase, 0.08) },
+              ]}
             />,
           )
         }
@@ -94,13 +96,21 @@ export const VehicleHeader = memo(withTheme(
 
     const onLayout = useCallback(() => {
       if (vehicleIndex === sectionsLen - 1) {
-        setShowFooter(true);
+        // android 少于 2 条数据时不展示打通，无法触发 scroll
+        setShowFooter(isIos ? true : sectionsLen > 1);
       }
     }, [vehicleIndex, sectionsLen, setShowFooter]);
 
     return (
       <View style={{ backgroundColor: theme.backgroundColor }} onLayout={onLayout}>
-        <BbkVehicleName name={vehicleName} groupName={groupName} isSimilar={isSimilar} isHotLabel={isHotLabel} />
+        <BbkVehicleName
+          name={vehicleName}
+          groupName={groupName}
+          isSimilar={isSimilar}
+          isHotLabel={isHotLabel}
+          // 一期没有弹层，不展示icon
+          showSimilarIcon={false}
+        />
       </View>
     );
   },

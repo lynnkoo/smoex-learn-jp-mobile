@@ -1,7 +1,7 @@
 import { createLogic } from 'redux-logic';
 import _ from 'lodash';
 import { loadMarketCompleted, loadMarketFailed } from './Actions';
-import { LOAD, LOADING_TYPE, FROM_URL } from './Types';
+import { LOAD, LOADING_TYPE } from './Types';
 import {
   getDefaultPageName, getPageName, getParams, checkParams,
 } from './Helpers';
@@ -20,7 +20,7 @@ export const load = createLogic({
     const defaultPageName = getDefaultPageName();
     try {
       const {
-        data, landingto, fromurl, st,
+        data, landingto, st,
       } = AppContext.UrlQuery;
       const pageName = getPageName(landingto);
       let isLoadSuccess = false;
@@ -29,7 +29,7 @@ export const load = createLogic({
         // todo
       }
 
-      if (st === LOADING_TYPE.CLIENT && fromurl === FROM_URL.COMM) {
+      if (st === LOADING_TYPE.CLIENT) {
         const params = getParams(data);
         if (checkParams(params)) {
           dispatch(setDateInfo({

@@ -5,7 +5,7 @@ import {
 import { getSharkValue } from '@ctrip/bbk-shark';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import BbkText from '@ctrip/bbk-component-text';
-import { font, color } from '@ctrip/bbk-tokens';
+import { font, color, space } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { width } = Dimensions.get('window');
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     paddingBottom: getPixel(2 * 12),
     overflow: 'hidden',
     backgroundColor: color.grayBg,
+    marginTop: -space.spaceL,
   },
   signPic: {
     width: width - getPixel(2 * 32),
@@ -72,7 +73,7 @@ const LoginItem = ({ onLogin }: LoginItemProps) => (
   <View style={styles.signStr}>
     <Image
       source={{ uri: 'http://pic.c-ctrip.com/car/osd/trip/login/loginBg.png' }}
-      resizeMode="contain"
+      resizeMode="cover"
       style={styles.signPic}
     />
     <View style={[styles.signIn]}>

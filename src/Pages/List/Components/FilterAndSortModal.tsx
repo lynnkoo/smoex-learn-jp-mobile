@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, forwardRef, useImperativeHandle, RefObject, useEffect,
+  memo, useState, useRef, forwardRef, useImperativeHandle, RefObject, useEffect,
 } from 'react';
 import {
   View,
@@ -68,7 +68,7 @@ const initFilterData = (filterType, tempFilterData) => {
   return filterData;
 };
 
-const RenderInner: React.FC<IFilterInner> = ({
+const RenderInner: React.FC<IFilterInner> = memo(({
   type, filterData, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
 }: IFilterInner) => (
   <View>
@@ -111,7 +111,7 @@ const RenderInner: React.FC<IFilterInner> = ({
       />
     ) : null}
   </View>
-);
+), (prevProps, nextProps) => nextProps.type === '');
 
 const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   filterData,
@@ -151,7 +151,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   const onHide = () => {
     setActiveFilterBarCode('');
     setModalVisible(false);
-    setFilterDataState([]);
+    // setFilterDataState([]);
   };
 
   const updateTempFilter = (label, handleType, typeName, isPriceLabel) => {
@@ -253,16 +253,12 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     hide: onHide,
   }));
 
-  if (filterDataState && filterDataState.length === 0) {
-    return null;
-  }
-
   return (
     <BbkComponentCarFilterModal
       // @ts-ignore
       ref={privateFilterModalRef}
       modalVisible={modalVisible}
-      isShowFooter={isShowFooter}
+      isShowFooter={isShowFooter && filterDataState && filterDataState.length > 0}
       ModelsNumber={allVehicleCount}
       PricesNumber={allVendorPriceCount}
       onHide={onHide}

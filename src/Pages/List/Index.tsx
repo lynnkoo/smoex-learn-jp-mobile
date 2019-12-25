@@ -2,6 +2,7 @@ import React, { RefObject } from 'react';
 import {
   View, StyleSheet,
 } from 'react-native';
+import _ from 'lodash';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
@@ -171,6 +172,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
+  onPressFilterBarThrottle = (type, isActive) => (_.throttle(() => this.onPressFilterBar(type, isActive), 200))();
+
   onPressFilterBar = (type, isActive) => {
     this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });
     if (!isActive) {
@@ -219,7 +222,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             style={styles.headerStyle}
           />
           {/** todo FilterBar 展开动画 */}
-          <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
+          <ListFilterBar onPressFilterBar={this.onPressFilterBarThrottle} style={styles.filterBarStyle} />
           <VehGroupNav pageId={this.getPageId()} />
         </View>
         {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />

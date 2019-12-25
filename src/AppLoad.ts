@@ -1,4 +1,4 @@
-import { Business, Util, IBUSharkUtil } from '@ctrip/crn';
+import { IBUSharkUtil } from '@ctrip/crn';
 import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
 import {
   AppContext, MarketInfoType, Utils, User, CarStorage,
@@ -56,9 +56,13 @@ const getAidSidWakeUpData = (props) => {
   let aidValue = '';
   let awakeTime = '';
   /* eslint-disable camelcase */
-  const { awake_sid, awake_allianceid, awake_time } = Util.isInChromeDebug
-    ? { awake_sid: '', awake_allianceid: '', awake_time: '' }
-    : Business.getWakeUpDataSync();
+  // const { awake_sid, awake_allianceid, awake_time } = Util.isInChromeDebug
+  //   ? { awake_sid: '', awake_allianceid: '', awake_time: '' }
+  //   : Business.getWakeUpDataSync();
+  // todo
+  const awake_sid = '';
+  const awake_allianceid = '';
+  const awake_time = '';
 
   if (props.sid) sidValue = props.sid;
 

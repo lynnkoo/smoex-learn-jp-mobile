@@ -20,8 +20,8 @@ export const getAllProductGroupsAndCount = () => {
   const state = getStore().getState();
   const allCarsConfig = {
     groupCode: FrontEndConfig.AllCarsConfig.groupCode,
-    groupName: FrontEndConfig.AllCarsConfig.getGroupName()
-  }
+    groupName: FrontEndConfig.AllCarsConfig.getGroupName(),
+  };
   const filterResult = getProductGroupsAndCount(getBaseProductGroups(), getHashCode(), allCarsConfig, getAllFilterMenuItems(), state.List.selectedFilters);
   return filterResult;
 };

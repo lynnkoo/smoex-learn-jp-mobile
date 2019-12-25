@@ -1,12 +1,12 @@
 import React, { RefObject } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, Animated,
 } from 'react-native';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
@@ -25,10 +25,17 @@ import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
 const { selector } = BbkUtils;
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
+
+interface HeaderAnim {
+  translateY: any,
+  opacity: any,
+}
 
 interface ListStateType extends IStateType {
   filterAndSortModalVisible: boolean;
   listThreshold: number,
+  headerAnim: HeaderAnim,
 }
 
 const PAGESTAGE = {
@@ -92,16 +99,29 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   hasInitFetch: boolean;
 
+  headerAnimating: boolean;
+
+  lastTranslateYAnim: number;
+
+  listThresholdLayout: number;
+
   constructor(props) {
     super(props);
     this.state = {
       filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
+      headerAnim: {
+        translateY: new Animated.Value(0),
+        opacity: new Animated.Value(1),
+      },
     };
     this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
     ListReqAndResData.removeData();
     this.hasInitFetch = false;
     this.filterModalRef = React.createRef();
+    this.headerAnimating = false;
+    this.lastTranslateYAnim = 0;
+    this.listThresholdLayout = 0;
   }
 
   /* eslint-disable class-methods-use-this */
@@ -165,10 +185,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   setVehicleListThreshold = ({ nativeEvent }) => {
+    const { listThreshold } = this.state;
     const { height } = nativeEvent.layout;
-    this.setState({
-      listThreshold: height,
-    });
+    if (listThreshold !== height) {
+      this.listThresholdLayout = height;
+      this.setState({
+        listThreshold: height,
+      });
+    }
   }
 
   onPressFilterBar = (type, isActive) => {
@@ -206,36 +230,96 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
+  scrollUpCallback = () => {
+    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+  }
+
+  scrollDownCallback = () => {
+    // this.scrollHeaderAnimation(0);
+  }
+
+  scrollHeaderAnimation = (value) => {
+    const { headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
+    if (this.lastTranslateYAnim === value || this.headerAnimating) {
+      return;
+    }
+    this.lastTranslateYAnim = value;
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(translateY,
+          {
+            toValue: value,
+            duration: 500,
+            useNativeDriver: true,
+          },
+        ),
+        Animated.timing(opacity, {
+          toValue: value < 0 ? 0 : 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      this.headerAnimating = false;
+      this.setState({
+        listThreshold: this.listThresholdLayout + value,
+      });
+    });
+  }
+
   render() {
-    const { listThreshold } = this.state;
+    const { listThreshold, headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
     const curStage = this.getCurStage();
     console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
-        <View style={[styles.wrapper, styles.shadowStyle]} onLayout={this.setVehicleListThreshold}>
-          <ListHeader
-            handleBackPress={this.pageGoBack}
-            showSearchSelectorWrap={this.handlePressHeader}
-            style={styles.headerStyle}
-          />
-          {/** todo FilterBar 展开动画 */}
-          <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
-          <VehGroupNav pageId={this.getPageId()} />
-        </View>
-        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
-        }
-        {
-          curStage === PAGESTAGE.FAIL
-          && <ListNoMatch datePickerRef={this.datePickerRef} />
-        }
-        {/** 供应商报价 */}
-        {curStage === PAGESTAGE.SHOW
-          && (
-            <VehicleListWithControl
-              threshold={listThreshold}
-            />
-          )
-        }
+        <Animated.View
+          style={{
+            flex: 1,
+            transform: [{
+              translateY,
+            }],
+          }}
+        >
+          <View onLayout={this.setVehicleListThreshold}>
+            <Animated.View
+              style={{
+                opacity,
+              }}
+            >
+              <ListHeader
+                // handleBackPress={this.pageGoBack}
+                handleBackPress={() => this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT)}
+                showSearchSelectorWrap={this.handlePressHeader}
+                style={styles.headerStyle}
+              />
+            </Animated.View>
+            {/** todo FilterBar 展开动画 */}
+            <ListFilterBar onPressFilterBar={this.onPressFilterBar} style={styles.filterBarStyle} />
+            <VehGroupNav pageId={this.getPageId()} />
+          </View>
+
+          {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
+          }
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch datePickerRef={this.datePickerRef} />
+          }
+
+          {/** 供应商报价 */}
+          {curStage === PAGESTAGE.SHOW
+            && (
+              <VehicleListWithControl
+                threshold={listThreshold}
+                scrollUpCallback={this.scrollUpCallback}
+                scrollDownCallback={this.scrollDownCallback}
+              />
+            )
+          }
+        </Animated.View>
+
         <SearchPanelModal />
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

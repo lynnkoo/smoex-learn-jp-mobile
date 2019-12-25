@@ -8,7 +8,7 @@ import BbkVehicleName from '@ctrip/bbk-component-car-vehicle-name';
 import BbkCarVehicleDesc from '@ctrip/bbk-component-car-vehicle-describe';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
-import { setOpacity } from '@ctrip/bbk-tokens';
+import { setOpacity, icon } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import { withTheme } from '@ctrip/bbk-theming';
@@ -19,7 +19,7 @@ import { listShowMore } from '../Texts';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
-const { selector, isIos } = BbkUtils;
+const { selector, isIos, htmlDecode } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
@@ -147,7 +147,8 @@ export const VehicleFooter = memo(withTheme(
             borderBottomColor: theme.grayBorder,
           }]}
           textStyle={moreTextStyle}
-          iconContent={'\uf2c7'}
+          // TODO-dyy util 升级
+          iconContent={htmlDecode(icon.circleArrowDown + ';')}
           iconStyle={moreTextStyle}
         />
       </BbkTouchable>,

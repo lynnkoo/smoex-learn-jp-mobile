@@ -25,6 +25,7 @@ import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
 const { selector } = BbkUtils;
+// eslint-disable-next-line
 const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 
 interface HeaderAnim {
@@ -290,8 +291,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               }}
             >
               <ListHeader
-                // handleBackPress={this.pageGoBack}
-                handleBackPress={() => this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT)}
+                handleBackPress={this.pageGoBack}
                 showSearchSelectorWrap={this.handlePressHeader}
                 style={styles.headerStyle}
               />

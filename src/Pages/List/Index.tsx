@@ -1,17 +1,17 @@
 import React, { RefObject } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, Animated,
 } from 'react-native';
 import _ from 'lodash';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId, ClickKey } from '../../Constants/Index';
+import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog } from '../../Util/Index';
 
 // 组件
@@ -26,9 +26,17 @@ import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
 const { selector } = BbkUtils;
+// eslint-disable-next-line
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
+
+interface HeaderAnim {
+  translateY: any,
+  opacity: any,
+}
 
 interface ListStateType extends IStateType {
   listThreshold: number,
+  headerAnim: HeaderAnim,
 }
 
 const PAGESTAGE = {
@@ -80,7 +88,7 @@ interface IListPropsType extends IBasePageProps {
 }
 
 const removeEvents = () => {
-  Event.removeEventListener('changeRentalLocation');
+  Event.removeEventListener(EventName.changeRentalLocation);
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
@@ -88,13 +96,28 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   datePickerRef: any;
 
+  hasInitFetch: boolean;
+
+  headerAnimating: boolean;
+
+  lastTranslateYAnim: number;
+
+  listThresholdLayout: number;
+
   constructor(props) {
     super(props);
     this.state = {
       listThreshold: 0,
+      headerAnim: {
+        translateY: new Animated.Value(0),
+        opacity: new Animated.Value(1),
+      },
     };
     ListReqAndResData.removeData();
     this.filterModalRef = React.createRef();
+    this.headerAnimating = false;
+    this.lastTranslateYAnim = 0;
+    this.listThresholdLayout = 0;
   }
 
   /* eslint-disable class-methods-use-this */
@@ -114,7 +137,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   registerEvents() {
-    Event.addEventListener('changeRentalLocation', (data) => {
+    Event.addEventListener(EventName.changeRentalLocation, (data) => {
       this.props.setLocationInfo({
         ...data,
         fromEvent: 'changeRentalLocation',
@@ -123,7 +146,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent('changeRentalDate', this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
   }
 
   pageGoBack = () => {
@@ -145,10 +168,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   setVehicleListThreshold = ({ nativeEvent }) => {
+    const { listThreshold } = this.state;
     const { height } = nativeEvent.layout;
-    this.setState({
-      listThreshold: height,
-    });
+    if (listThreshold !== height) {
+      this.listThresholdLayout = height;
+      this.setState({
+        listThreshold: height,
+      });
+    }
   }
 
   onPressFilterBarThrottle = (type, isActive) => (_.throttle(
@@ -190,37 +217,98 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
+  scrollUpCallback = () => {
+    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+  }
+
+  scrollDownCallback = () => {
+    // this.scrollHeaderAnimation(0);
+  }
+
+  scrollHeaderAnimation = (value) => {
+    const { headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
+    if (this.lastTranslateYAnim === value || this.headerAnimating) {
+      return;
+    }
+    this.lastTranslateYAnim = value;
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(translateY,
+          {
+            toValue: value,
+            duration: 500,
+            useNativeDriver: true,
+          },
+        ),
+        Animated.timing(opacity, {
+          toValue: value < 0 ? 0 : 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      this.headerAnimating = false;
+      this.setState({
+        listThreshold: this.listThresholdLayout + value,
+      });
+    });
+  }
+
   render() {
-    const { listThreshold } = this.state;
+    const { listThreshold, headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
     const curStage = this.getCurStage();
     return (
       <ViewPort style={styles.page}>
-        <View style={[styles.wrapper, styles.shadowStyle]} onLayout={this.setVehicleListThreshold}>
-          <ListHeader
-            handleBackPress={this.pageGoBack}
-            showSearchSelectorWrap={this.handlePressHeader}
-            style={styles.headerStyle}
-          />
-          {/** todo FilterBar 展开动画 */}
-          <ListFilterBar
-            onPressFilterBar={this.onPressFilterBarThrottle}
-            style={styles.filterBarStyle}
-          />
-          <VehGroupNav pageId={this.getPageId()} />
-        </View>
-        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />}
-        {
-          curStage === PAGESTAGE.FAIL
-          && <ListNoMatch datePickerRef={this.datePickerRef} />
-        }
-        {/** 供应商报价 */}
-        {curStage === PAGESTAGE.SHOW
-          && (
-            <VehicleListWithControl
-              threshold={listThreshold}
+        <Animated.View
+          style={{
+            flex: 1,
+            transform: [{
+              translateY,
+            }],
+          }}
+        >
+          <View
+            style={[styles.wrapper, styles.shadowStyle]}
+            onLayout={this.setVehicleListThreshold}
+          >
+            <Animated.View
+              style={{
+                opacity,
+              }}
+            >
+              <ListHeader
+                handleBackPress={this.pageGoBack}
+                showSearchSelectorWrap={this.handlePressHeader}
+                style={styles.headerStyle}
+              />
+            </Animated.View>
+            {/** todo FilterBar 展开动画 */}
+            <ListFilterBar
+              onPressFilterBar={this.onPressFilterBarThrottle}
+              style={styles.filterBarStyle}
             />
-          )
-        }
+            <VehGroupNav pageId={this.getPageId()} />
+          </View>
+
+          {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />}
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch datePickerRef={this.datePickerRef} />
+          }
+
+          {/** 供应商报价 */}
+          {curStage === PAGESTAGE.SHOW
+            && (
+              <VehicleListWithControl
+                threshold={listThreshold}
+                scrollUpCallback={this.scrollUpCallback}
+                scrollDownCallback={this.scrollDownCallback}
+              />
+            )
+          }
+        </Animated.View>
         <SearchPanelModal />
         <FilterAndSortModal filterModalRef={this.filterModalRef} />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

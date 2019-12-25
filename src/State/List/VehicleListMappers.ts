@@ -161,8 +161,8 @@ const getSoldOutLabel = text => text && getVendorLabel()({
 interface labelList {
   distance: {};
   provider?: {};
-  normal?: {};
-  feature?: {};
+  negative?: {};
+  positive?: {};
   promotion?: {};
 }
 
@@ -176,17 +176,25 @@ const getVendorLabelItems = (vendor) => {
   // 1：正向，2：负向，3：营销
   const tagType = {
     1: {
-      typeKey: 'feature',
-      args: [],
+      typeKey: 'positive',
+      args: [tokenType.ColorType.BlueGray],
     },
     2: {
-      typeKey: 'normal',
-      args: [tokenType.ColorType.BlueGray],
+      typeKey: 'negative',
+      args: [tokenType.ColorType.Red],
     },
     3: {
       typeKey: 'promotion',
       args: [null, false, 'primary'],
     },
+  };
+
+  const iconType = {
+    1: htmlDecode(icon.circleTickThin),
+    2: htmlDecode(icon.circleWithSigh),
+    // TODO-dyy: token update
+    3: htmlDecode(icon.discount),
+    // 3: htmlDecode(icon.flight),
   };
 
   const labels: labelList = {
@@ -207,13 +215,13 @@ const getVendorLabelItems = (vendor) => {
   }
 
   allTags.forEach((tag) => {
-    const { type, title = 'Free Cancellation', icon: iconContent = '\uf2bf' } = tag;
+    const { type, title = 'Free Cancellation', icon: iconContent } = tag;
     const params = tagType[type] || {};
     const getVendorLabelFn = getVendorLabel(...params.args);
     labels[params.typeKey] = labels[params.typeKey] || [];
     labels[params.typeKey].push(getVendorLabelFn({
       text: title,
-      iconContent,
+      iconContent: iconContent || iconType[type] || iconType[1],
     }));
   });
 

@@ -148,7 +148,7 @@ export const VehicleFooter = memo(withTheme(
           }]}
           textStyle={moreTextStyle}
           // TODO-dyy util 升级
-          iconContent={htmlDecode(icon.circleArrowDown + ';')}
+          iconContent={htmlDecode(`${icon.circleArrowDown};`)}
           iconStyle={moreTextStyle}
         />
       </BbkTouchable>,

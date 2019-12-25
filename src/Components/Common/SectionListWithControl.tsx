@@ -225,11 +225,11 @@ export default class SectionListWithControl
     };
 
     if (load) {
-      const { showFooter } = this.props;
+      const { showFooter, onLoadMore } = this.props;
       if (!showFooter) {
         return;
       }
-      this.props.onLoadMore(() => {
+      onLoadMore(() => {
         this.setState({
           onLoading: false,
         });
@@ -239,7 +239,8 @@ export default class SectionListWithControl
     }
 
     if (refresh) {
-      this.props.onRefresh(() => {
+      const { onRefresh } = this.props;
+      onRefresh(() => {
         this.setState({
           refreshing: false,
         });
@@ -261,8 +262,9 @@ export default class SectionListWithControl
   }
 
   refFn = (ref) => {
-    if (this.props.refFn) {
-      this.props.refFn(ref);
+    const { refFn: propsRefFn } = this.props;
+    if (propsRefFn) {
+      propsRefFn(ref);
     }
     this.scroller = ref;
   }
@@ -308,7 +310,7 @@ export default class SectionListWithControl
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // @ts-ignore
-        ref={ref => {this.refreshControl = ref}} // eslint-disable-line
+        ref={ref => { this.refreshControl = ref }} // eslint-disable-line
         // @ts-ignore
         isRefreshing={refreshing}
         refreshResult={refreshResult}
@@ -333,7 +335,7 @@ export default class SectionListWithControl
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // eslint-disable-next-line
-        ref={ref => {this.loadControl = ref}}
+        ref={ref => { this.loadControl = ref }}
         isLoading={onLoading}
         noMore={noMore}
         noMoreContent={noMoreContent}

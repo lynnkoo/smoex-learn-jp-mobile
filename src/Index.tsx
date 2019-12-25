@@ -51,7 +51,8 @@ export default class RnCarApp extends Component<any, StateType> {
   };
 
   render() {
-    return !this.state.isPreloadFinished
+    const { isPreloadFinished } = this.state;
+    return !isPreloadFinished
       ? (
         <LoadingView />
       )
@@ -59,7 +60,11 @@ export default class RnCarApp extends Component<any, StateType> {
         <ErrorBoundary>
           <Provider store={getStore()}>
             <BBkThemingProvider channel={BbkChannel.getChannel()}>
-              <IntlProvider locale={AppContext.SharkKeys.lang} messages={AppContext.SharkKeys.messages} textComponent={Text}>
+              <IntlProvider
+                locale={AppContext.SharkKeys.lang}
+                messages={AppContext.SharkKeys.messages}
+                textComponent={Text}
+              >
                 <Car {...this.props} />
               </IntlProvider>
             </BBkThemingProvider>

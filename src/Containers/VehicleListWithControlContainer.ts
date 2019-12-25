@@ -3,7 +3,9 @@ import _ from 'lodash';
 import VehicleListWithControl from '../Pages/List/Components/VehicleListWithControl';
 import { getActiveGroupIndex, getProgress, getSelectedFilters } from '../State/List/Selectors';
 import { setActiveGroupId } from '../State/List/Actions';
-import { getVehicleListData, getGroupLength, getLastNextIndexObj } from '../State/List/VehicleListMappers';
+import {
+  getVehicleListData, getGroupLength, getLastNextIndexObj,
+} from '../State/List/VehicleListMappers';
 
 
 const mapStateToProps = (state) => {

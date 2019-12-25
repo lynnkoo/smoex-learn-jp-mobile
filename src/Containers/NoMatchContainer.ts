@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 
 import NoMatch from '../Pages/List/Components/NoMatch';
-import { fetchListBatchQuery, setDatePickerIsShow, setLocationAndDatePopIsShow } from '../State/List/Actions';
+import {
+  fetchListBatchQuery, setDatePickerIsShow, setLocationAndDatePopIsShow,
+} from '../State/List/Actions';
 import { getRecommendInfo } from '../Global/Cache/ListResSelectors';
 
 

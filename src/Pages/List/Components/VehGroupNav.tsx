@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
 
 export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, VehGroupNavStateType> {
   onPressNav = (gId: string) => {
-    const { activeGroupId } = this.props;
+    const { activeGroupId, setActiveGroupId } = this.props;
     if (gId !== activeGroupId) {
-      this.props.setActiveGroupId({ activeGroupId: gId });
+      setActiveGroupId({ activeGroupId: gId });
     }
   }
 

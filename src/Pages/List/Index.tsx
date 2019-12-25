@@ -32,9 +32,9 @@ interface ListStateType extends IStateType {
 }
 
 const PAGESTAGE = {
-  INIT: '初始加载',
-  SHOW: '有响应数据',
-  FAIL: '无响应数据',
+  INIT: 'INIT',
+  SHOW: 'SHOW',
+  FAIL: 'FAIL',
 };
 
 const styles = StyleSheet.create({
@@ -84,7 +84,6 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-
   filterModalRef: RefObject<any>;
 
   datePickerRef: any;
@@ -152,7 +151,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
-  onPressFilterBarThrottle = (type, isActive) => (_.throttle(() => this.onPressFilterBar(type, isActive), 200))();
+  onPressFilterBarThrottle = (type, isActive) => (_.throttle(
+    () => this.onPressFilterBar(type, isActive), 200))();
 
   onPressFilterBar = (type, isActive) => {
     this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });
@@ -193,7 +193,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   render() {
     const { listThreshold } = this.state;
     const curStage = this.getCurStage();
-    console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
         <View style={[styles.wrapper, styles.shadowStyle]} onLayout={this.setVehicleListThreshold}>
@@ -203,11 +202,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             style={styles.headerStyle}
           />
           {/** todo FilterBar 展开动画 */}
-          <ListFilterBar onPressFilterBar={this.onPressFilterBarThrottle} style={styles.filterBarStyle} />
+          <ListFilterBar
+            onPressFilterBar={this.onPressFilterBarThrottle}
+            style={styles.filterBarStyle}
+          />
           <VehGroupNav pageId={this.getPageId()} />
         </View>
-        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
-        }
+        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />}
         {
           curStage === PAGESTAGE.FAIL
           && <ListNoMatch datePickerRef={this.datePickerRef} />

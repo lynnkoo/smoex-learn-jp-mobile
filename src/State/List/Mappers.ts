@@ -87,4 +87,5 @@ export const getPromotionFilterCode = () => {
   return code;
 };
 
-export const getPromotionFilterIsSelect = state => getSelectedFilters(state).bitsFilter.includes(getPromotionFilterCode());
+export const getPromotionFilterIsSelect = state => (
+  getSelectedFilters(state).bitsFilter.includes(getPromotionFilterCode()));

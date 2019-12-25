@@ -111,7 +111,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
       />
     ) : null}
   </View>
-));
+), (prevProps, nextProps) => nextProps.type === '');
 
 const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   filterData,
@@ -258,7 +258,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       // @ts-ignore
       ref={privateFilterModalRef}
       modalVisible={modalVisible}
-      isShowFooter={isShowFooter}
+      isShowFooter={isShowFooter && filterDataState && filterDataState.length > 0}
       ModelsNumber={allVehicleCount}
       PricesNumber={allVendorPriceCount}
       onHide={onHide}

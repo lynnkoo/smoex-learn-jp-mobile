@@ -185,9 +185,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
-  onPressFilterBarThrottle = (type, isActive) => {
-    return (_.throttle(() => this.onPressFilterBar(type, isActive), 200))();
-  };
+  onPressFilterBarThrottle = (type, isActive) => (_.throttle(() => this.onPressFilterBar(type, isActive), 200))();
 
   onPressFilterBar = (type, isActive) => {
     this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });

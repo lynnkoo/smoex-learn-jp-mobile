@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
-  rentalDate: any;
+  indexCallbckData: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
   progress: number;
@@ -146,7 +146,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
   }
 
   pageGoBack = () => {

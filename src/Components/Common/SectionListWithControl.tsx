@@ -133,13 +133,11 @@ export default class SectionListWithControl
       showAndroidRefresh = nextShowAndroidRefresh;
     }
 
-    // TODO-dyy
-    // header 联动
     if (triggerEvent === 'onScroll' && this.onScrollBegin) {
       // console.log(triggerEvent, scrollUp, y, this.lastScrollY, load, refresh);
-      if (scrollUp > 10 && !load && scrollUpCallback) {
+      if (scrollUp > 10 && scrollUpCallback) {
         scrollUpCallback(event);
-      } else if (scrollUp < 0 && !refresh && scrollDownCallback) {
+      } else if (scrollUp < 0 && scrollDownCallback) {
         // console.log('scrollDownCallback', triggerEvent, y, this.lastScrollY, scrollUp, !refresh)
         scrollDownCallback(event);
       }

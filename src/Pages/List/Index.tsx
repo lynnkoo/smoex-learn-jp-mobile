@@ -218,11 +218,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   scrollUpCallback = () => {
-    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
   }
 
   scrollDownCallback = () => {
-    // this.scrollHeaderAnimation(0);
+    this.scrollHeaderAnimation(0);
   }
 
   scrollHeaderAnimation = (value) => {

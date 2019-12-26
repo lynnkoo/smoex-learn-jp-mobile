@@ -179,14 +179,7 @@ export default class VehicleListWithControl extends
       callback();
     });
     if (this.scrollerRef[index]) {
-      // fix no match
-      try {
-        this.scrollerRef[index].scrollToLocation(
-          { sectionIndex: 0, itemIndex: 0, animated: false });
-      } catch (e) {
-        /* eslint-disable no-console */
-        console.warn('scrollToLocation error');
-      }
+      this.scrollToTop(index);
     }
     setActiveGroupId({ activeGroupIndex: index });
     this.animating = true;
@@ -313,6 +306,20 @@ export default class VehicleListWithControl extends
     });
   }
 
+  scrollToTop(index) {
+    // fix no match
+    try {
+      this.scrollerRef[index].scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
+        animated: false,
+      });
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.warn('scrollToLocation error', index);
+    }
+  }
+
   // 滑动头部隐藏时需要更新 VehicleList 高度及定位
   resetHeightStyle() {
     this.cacheList.forEach((dom, index) => {
@@ -333,12 +340,19 @@ export default class VehicleListWithControl extends
     }
     if (!_.isEqual(props.listData, listData)) {
       this.renderAllVehicleListDom(props.listData, props.lastNextIndexObj);
+      this.resetScrollTop();
     }
     if (!_.isEqual(props.threshold, threshold)) {
       const { height, threshold: nextThreshold } = props;
       this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
       this.resetHeightStyle();
     }
+  }
+
+  resetScrollTop() {
+    _.forEach(this.scrollerRef, (ref, index) => {
+      this.scrollToTop(index);
+    });
   }
 
   renderAllVehicleListDom(newListData?: any, lastNextIndexObj?: any) {

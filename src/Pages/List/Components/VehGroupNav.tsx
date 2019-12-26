@@ -85,7 +85,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
   render() {
     const vehGroupNav = this.renderVehGroup();
     const { activeGroupId, progress } = this.props;
-    if ((progress === 1 && vehGroupNav.length === 0)) return null;
+    if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
       <View>
         {

@@ -17,36 +17,48 @@ export default {
     KEY: 'C_LIST_CHANGEINFO_POP_CLOSE', NAME: '点击_列表页_关闭修改取还车信息弹层',
   },
   C_LIST_CHANGEINFO_POP_PICKUP_LOCATION: {
-    KEY: 'C_LIST_CHANGEINFO_POP_PICKUP_LOCATION', NAME: '点击_列表页_修改取车地点信息',
+    KEY: 'C_LIST_CHANGEINFO_POP_PICKUP_LOCATION', NAME: '点击_列表页_修改取还车信息弹层_修改取车地点信息',
   },
   C_LIST_CHANGEINFO_POP_DROPOFF_LOCATION: {
-    KEY: 'C_LIST_CHANGEINFO_POP_DROPOFF_LOCATION', NAME: '点击_列表页_修改还车地点信息',
+    KEY: 'C_LIST_CHANGEINFO_POP_DROPOFF_LOCATION', NAME: '点击_列表页_修改取还车信息弹层_修改还车地点信息',
   },
   C_LIST_CHANGEINFO_POP_SWITCH_DROPOFF: {
-    KEY: 'C_LIST_CHANGEINFO_POP_SWITCH_DROPOFF', NAME: '点击_列表页_异地还车按钮',
+    KEY: 'C_LIST_CHANGEINFO_POP_SWITCH_DROPOFF', NAME: '点击_列表页_修改取还车信息弹层_异地还车按钮',
   },
   C_LIST_CHANGEINFO_POP_PICKUP_DATE: {
-    KEY: 'C_LIST_CHANGEINFO_POP_PICKUP_DATE', NAME: '点击_列表页_修改取车时间',
+    KEY: 'C_LIST_CHANGEINFO_POP_PICKUP_DATE', NAME: '点击_列表页_修改取还车信息弹层_修改取车时间',
   },
   C_LIST_CHANGEINFO_POP_DROPOFF_DATE: {
-    KEY: 'C_LIST_CHANGEINFO_POP_DROPOFF_DATE', NAME: '点击_列表页_修改还车时间',
+    KEY: 'C_LIST_CHANGEINFO_POP_DROPOFF_DATE', NAME: '点击_列表页_修改取还车信息弹层_修改还车时间',
   },
   C_LIST_CHANGEINFO_POP_CHANGEDATE_CONFIRM: {
-    KEY: 'C_LIST_CHANGEINFO_POP_CHANGEDATE_CONFIRM', NAME: '点击_列表页_修改时间_确认',
+    KEY: 'C_LIST_CHANGEINFO_POP_CHANGEDATE_CONFIRM', NAME: '点击_列表页_修改取还车信息弹层_修改时间_确认',
   },
   C_LIST_CHANGEINFO_POP_CHANGEDATE_CANCEL: {
-    KEY: 'C_LIST_CHANGEINFO_POP_CHANGEDATE_CANCEL', NAME: '点击_列表页_修改时间_取消',
+    KEY: 'C_LIST_CHANGEINFO_POP_CHANGEDATE_CANCEL', NAME: '点击_列表页_修改取还车信息弹层_修改时间_取消',
   },
   C_LIST_CHANGEINFO_POP_AGE: {
-    KEY: 'C_LIST_CHANGEINFO_POP_AGE', NAME: '点击_列表页_修改年龄',
+    KEY: 'C_LIST_CHANGEINFO_POP_AGE', NAME: '点击_列表页_修改取还车信息弹层_修改年龄',
   },
   C_LIST_CHANGEINFO_POP_AGE_CONFIRM: {
-    KEY: 'C_LIST_CHANGEINFO_POP_AGE_CONFIRM', NAME: '点击_列表页_修改年龄_确认',
+    KEY: 'C_LIST_CHANGEINFO_POP_AGE_CONFIRM', NAME: '点击_列表页_修改取还车信息弹层_修改年龄_确认',
   },
   C_LIST_CHANGEINFO_POP_AGE_CANCEL: {
-    KEY: 'C_LIST_CHANGEINFO_POP_AGE_CANCEL', NAME: '点击_列表页_修改年龄_取消',
+    KEY: 'C_LIST_CHANGEINFO_POP_AGE_CANCEL', NAME: '点击_列表页_修改取还车信息弹层_修改年龄_取消',
   },
   C_LIST_CHANGEINFO_POP_SEARCH: {
-    KEY: 'C_LIST_CHANGEINFO_POP_SEARCH', NAME: '点击_列表页_重新搜索',
+    KEY: 'C_LIST_CHANGEINFO_POP_SEARCH', NAME: '点击_列表页_修改取还车信息弹层_重新搜索',
+  },
+  C_LIST_CHANGEDATE_CONFIRM: {
+    KEY: 'C_LIST_CHANGEDATE_CONFIRM', NAME: '点击_列表页_修改时间_确认',
+  },
+  C_LIST_CHANGEDATE_CANCEL: {
+    KEY: 'C_LIST_CHANGEDATE_CANCEL', NAME: '点击_列表页_修改时间_取消',
+  },
+  C_LIST_PROMOTION_FILTER: {
+    KEY: 'C_LIST_PROMOTION_FILTER', NAME: '点击_列表页_优惠产品筛选',
+  },
+  C_LIST_RECOMMEND_BUTTON: {
+    KEY: 'C_LIST_RECOMMEND_BUTTON', NAME: '点击_列表页_搜索无结果推荐按钮',
   },
 };

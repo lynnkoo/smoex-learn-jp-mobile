@@ -87,16 +87,20 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
     const { activeGroupId, progress } = this.props;
     if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
-      <View style={[styles.container]}>
-        <BbkHorizontalNav
-          style={[styles.mainWrap, styles.topBorder]}
-          indicatorWidth={BbkUtils.getPixel(80)}
-          indicatorHeight={BbkUtils.getPixel(6)}
-          selectedId={activeGroupId}
-        >
-          {vehGroupNav}
-        </BbkHorizontalNav>
-
+      <View>
+        {
+          progress > 0
+          && (
+          <BbkHorizontalNav
+            style={[styles.mainWrap, styles.topBorder, styles.container]}
+            indicatorWidth={BbkUtils.getPixel(80)}
+            indicatorHeight={BbkUtils.getPixel(6)}
+            selectedId={activeGroupId}
+          >
+            {vehGroupNav}
+          </BbkHorizontalNav>
+          )
+        }
         <ListProgress />
       </View>
     );

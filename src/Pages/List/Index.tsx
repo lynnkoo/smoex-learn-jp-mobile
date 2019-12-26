@@ -12,6 +12,7 @@ import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog } from '../../Util/Index';
+import { listLoading } from './Texts';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   shadowStyle: {
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     shadowColor: color.modalShadow,
     shadowOpacity: 1,
@@ -192,7 +193,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   // todo 移至到header内单独处理
   handlePressHeader = () => {
     if (this.props.progress !== 1) {
-      Toast.show('加载中，请稍候...'); // todo shark key
+      Toast.show(listLoading);
       return;
     }
     this.filterModalRef.current.hide();

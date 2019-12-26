@@ -8,7 +8,8 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
 import { color } from '@ctrip/bbk-tokens';
-import SectionListWithControl from '../../../Components/Common/SectionListWithControl';
+import SectionListWithControl,
+{ SectionListWithControlProps } from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 import LoginItem from './LoginItem';
 import { User, CarLog } from '../../../Util/Index';
@@ -57,18 +58,22 @@ interface sectionProps {
   section: section;
 }
 
+export interface VehicleListProps extends SectionListWithControlProps {
+  showMax?: number;
+}
+
 const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
 // android 少于 2 条数据时不展示打通，无法触发 scroll
 const getShowFooter = sections => (isIos ? sections.length <= 0 : false);
-const VehicleList = (props: any) => {
+const VehicleList = (props: VehicleListProps) => {
   const {
     sections,
     showMax,
     ...passThroughProps
   } = props;
-  const [showMoreArr, setShowMoreArr] = useState(getShowMoreArr(sections, showMax));
+  const [showMoreArr, setShowMoreArr] = useState(() => getShowMoreArr(sections, showMax));
   // android 少于 2 条数据时不展示打通，无法触发 scroll
-  const [showFooter, setShowFooter] = useState(getShowFooter(sections));
+  const [showFooter, setShowFooter] = useState(() => getShowFooter(sections));
   const sectionsLen = sections.length;
 
   const renderItem = useCallback((data) => {
@@ -76,7 +81,6 @@ const VehicleList = (props: any) => {
     if (showMoreArr[data.section.vehicleIndex]) {
       item = data.item.slice(0, showMax);
     }
-    // console.log('【performance】renderItem ', data.section.vehicleHeader.vehicleName, showMoreArr[data.section.vehicleIndex], item.length);
     return (
       <Vehicle
         item={item}
@@ -85,14 +89,15 @@ const VehicleList = (props: any) => {
     );
   }, [showMax, showMoreArr]);
 
-  const renderSectionHeader = useCallback(({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
-    <VehicleHeader
-      vehicleHeader={vehicleHeader}
-      vehicleIndex={vehicleIndex}
-      sectionsLen={sectionsLen}
-      setShowFooter={setShowFooter}
-    />
-  ), [sectionsLen]);
+  const renderSectionHeader = useCallback(
+    ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
+      <VehicleHeader
+        vehicleHeader={vehicleHeader}
+        vehicleIndex={vehicleIndex}
+        sectionsLen={sectionsLen}
+        setShowFooter={setShowFooter}
+      />
+    ), [sectionsLen]);
 
   const [showLoginItem, setShowLoginItem] = useState(false);
 
@@ -105,16 +110,17 @@ const VehicleList = (props: any) => {
     isLogin();
   }, []);
 
-  // useEffect(() => {
-  //   console.log('【performance】Vehicle List ', props.index, getGroupNameByIndex(props.index))
-  // })
+  useEffect(() => {
+    setShowMoreArr(getShowMoreArr(sections, showMax));
+  }, [sections, showMax]);
 
   const onLogin = () => {
     CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
     User.toLogin();
   };
 
-  const renderSectionFooter = useCallback(({ section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
+  const renderSectionFooter = useCallback((
+    { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
     const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
     const { vehicleName }: any = vehicleHeader || {};

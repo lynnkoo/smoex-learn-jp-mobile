@@ -22,7 +22,7 @@ module.exports = {
   rules: {
     "import/no-extraneous-dependencies": [0],
     "valid-jsdoc": ["error"],
-    "max-len": ["warn", {
+    "max-len": ["error", {
       "code": 100,
       "ignoreRegExpLiterals": true,
       "ignoreUrls": true

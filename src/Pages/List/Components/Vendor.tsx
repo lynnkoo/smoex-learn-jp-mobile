@@ -15,7 +15,7 @@ import VerdorHeader from './VendorHeader';
 
 const getLabelWrapStyle = memoizeOne(
   (type) => {
-    const rowTypes = ['normal', 'feature'];
+    const rowTypes = ['negative', 'positive'];
     return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
   },
 );
@@ -37,6 +37,7 @@ export default withTheme(
         book: reference,
       };
       // 跳转Trip详情页地址
+      /* eslint-disable max-len */
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
@@ -51,9 +52,9 @@ export default withTheme(
 
     const getLabelProps = (labelProps, type) => {
       const themeMap = {
-        feature: {
-          labelColor: theme.blueBg,
-        },
+        // positive: {
+        //   labelColor: theme.blueBg,
+        // },
         promotion: {
           labelColor: theme.orangePrice,
           labelBgColor: setOpacity(theme.orangePrice, 0.1),
@@ -75,8 +76,14 @@ export default withTheme(
     // })
 
     return (
-
-      <View style={[style.vendor, index !== 0 && { borderTopWidth: border.borderSizeSm, borderTopColor: setOpacity(theme.black, 0.1) }]}>
+      <View style={[
+        style.vendor,
+        index !== 0 && {
+          borderTopWidth: border.borderSizeSm,
+          borderTopColor: setOpacity(theme.black, 0.1),
+        },
+      ]}
+      >
         <VerdorHeader
           onPress={onVerdorHeaderPress}
           {...vendorHeaderProps}

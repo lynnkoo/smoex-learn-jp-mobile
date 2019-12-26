@@ -18,7 +18,7 @@ export const setCommonAge = createLogic({
       } else if (urlAge > AgeConfig.MAX_AGE) {
         curAge = AgeConfig.MAX_AGE.toString();
       } else if (urlAge >= AgeConfig.DEFAULT_AGE.min && urlAge <= AgeConfig.DEFAULT_AGE.max) {
-        curAge = AgeConfig.DEFAULT_AGE.val;
+        curAge = AgeConfig.DEFAULT_AGE.getVal();
       }
       await dispatch(setAge(curAge));
     }

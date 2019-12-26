@@ -11,11 +11,11 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 import { color } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import { listLoading } from '../Texts';
-import VehicleList from './VehicleList';
+import VehicleList, { VehicleListProps } from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 import { Utils } from '../../../Util/Index';
 
-interface VehicleListWithControlProps {
+interface VehicleListWithControlProps extends VehicleListProps {
   maxIndex?: number;
   minIndex?: number;
   index: number;
@@ -26,7 +26,6 @@ interface VehicleListWithControlProps {
   theme?: any;
   height?: number;
   threshold?: number;
-  showMax?: number;
   locationDatePopVisible: boolean;
   setActiveGroupId: (args: any) => void;
 }
@@ -44,12 +43,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   wrap: {
-    flex: 1,
     overflow: 'hidden',
   },
 });
 
-export default class VehicleListWithControl extends PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
+const getScrollViewHeight = (height, threshold) => height - threshold;
+
+export default class VehicleListWithControl extends
+  PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
     maxIndex: 0,
     minIndex: 0,
@@ -75,15 +76,18 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
 
   animating = false;
 
+  scrollViewHeight = 0;
+
   constructor(props) {
     super(props);
-    const { index } = props;
+    const { index, height, threshold } = props;
     this.state = {
       initIndex: index,
       index,
       isDark: false,
       translateYAnim: new Animated.Value(0),
     };
+    this.scrollViewHeight = getScrollViewHeight(height, threshold);
   }
 
   getTheme() {
@@ -91,24 +95,23 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       isDark,
     } = this.state;
 
-    return isDark ? {
-      ...TripDark,
-      ...themeDark,
-    } : {
-      ...TripLight,
-      ...themeLight,
-    };
+    return isDark
+      ? {
+        ...TripDark,
+        ...themeDark,
+      } : {
+        ...TripLight,
+        ...themeLight,
+      };
   }
 
   getStyle(i) {
     const { initIndex } = this.state;
-    const {
-      threshold, height,
-    } = this.props;
     const theme = this.getTheme();
-    const scrollViewHeight = height - threshold;
+    const { scrollViewHeight } = this;
     const offset = i - initIndex;
     // console.log('【performance】getStyle ', i, initIndex)
+    // console.log('----------getStyle', i, scrollViewHeight, offset)
     return [styles.absoluteWrap, {
       top: scrollViewHeight * offset,
       height: scrollViewHeight,
@@ -130,7 +133,6 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       return null;
     }
 
-    this.isScrolling = true;
     this.setState({
       index: newIndex,
     });
@@ -152,7 +154,6 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       return null;
     }
 
-    this.isScrolling = true;
     this.setState({
       index: newIndex,
     });
@@ -160,11 +161,12 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     return null;
   }
 
-  animate = (index, callback = () => {}) => {
+  animate = (index, callback = () => { }) => {
     const { translateYAnim, initIndex: initIdx } = this.state;
-    const { height, threshold } = this.props;
-    const scrollViewHeight = height - threshold;
+    const { setActiveGroupId } = this.props;
+    const { scrollViewHeight } = this;
     // console.log('【performance】animate ', initIdx, index)
+    this.isScrolling = true;
     Animated.timing(
       translateYAnim,
       {
@@ -177,20 +179,22 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       callback();
     });
     if (this.scrollerRef[index]) {
-      // fix no match
-      try {
-        this.scrollerRef[index].scrollToLocation({ sectionIndex: 0, itemIndex: 0, animated: false });
-      } catch (e) {
-        console.warn('scrollToLocation error');
-      }
+      this.scrollToTop(index);
     }
-    this.props.setActiveGroupId({ activeGroupIndex: index });
+    setActiveGroupId({ activeGroupIndex: index });
     this.animating = true;
   }
 
   getVehicleListProps = (index, newLastNextIndexObj) => {
     const {
-      minIndex, maxIndex, lastNextIndexObj,
+      minIndex,
+      maxIndex,
+      lastNextIndexObj,
+      initialNumToRender,
+      theme,
+      showMax,
+      scrollUpCallback,
+      scrollDownCallback,
     } = this.props;
 
     const $lastNextIndexObj = newLastNextIndexObj || lastNextIndexObj;
@@ -203,17 +207,41 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     const pullIcon = !isTop ? '\ue0b5' : ' ';
     const noticeContent = getSharkValue('listCombine_pullUpToRefersh', nextGroupName);
     const loadingContent = getSharkValue('listCombine_releaseToRefersh', nextGroupName);
-    const pullStartContent = noRefresh || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
-    const pullContinueContent = noRefresh || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
+    const pullStartContent = noRefresh
+      || getSharkValue('listCombine_pulDownToRefersh', lastGroupName);
+    const pullContinueContent = noRefresh
+      || getSharkValue('listCombine_releaseToRefersh', lastGroupName);
     // console.log('noMore ', index, next, maxIndex, $lastNextIndexObj)
     const noMore = index >= maxIndex || next > maxIndex;
 
     return {
+      index,
+      key: index,
+      stickySectionHeadersEnabled: true,
+      showMax,
+      initialNumToRender,
+      endFillColor: theme.scrollBackgroundColor || color.grayBg,
+      /**
+       * scroll handler props
+       */
+      onRefresh: this.onRefreshSection,
+      onLoadMore: this.onLoadMore,
+      refFn: (ref) => {
+        this.scrollerRef[index] = ref;
+      },
+      scrollUpCallback,
+      scrollDownCallback,
+      /**
+       * refresh control props
+       */
       pullIcon,
       pullStartContent,
       pullContinueContent,
       refreshingIcon: pullIcon,
       refreshingContent: pullContinueContent,
+      /**
+       * load control props
+       */
       noMore,
       noticeContent,
       loadingContent,
@@ -232,7 +260,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
    */
   renderVehicleListDom = (index, placeHolder, listData, newLastNextIndexObj) => {
     const {
-      minIndex, maxIndex, initialNumToRender, theme, showMax,
+      minIndex, maxIndex,
     } = this.props;
     if (index < minIndex || index > maxIndex) {
       return null;
@@ -247,19 +275,8 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       // console.log('【performance】cache ', index, placeHolder)
       this.cacheList[index] = (
         <VehicleList
-          stickySectionHeadersEnabled
-          refFn={(ref) => {
-            this.scrollerRef[index] = ref;
-          }}
           style={style}
-          key={index}
-          index={index}
           sections={listData[index] || []}
-          showMax={showMax}
-          onRefresh={this.onRefreshSection}
-          onLoadMore={this.onLoadMore}
-          initialNumToRender={initialNumToRender}
-          endFillColor={theme.scrollBackgroundColor || color.grayBg}
           {...this.getVehicleListProps(index, newLastNextIndexObj)}
         />
       );
@@ -274,8 +291,7 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       return;
     }
     const { translateYAnim, initIndex } = this.state;
-    const { height, threshold } = this.props;
-    const scrollViewHeight = height - threshold;
+    const { scrollViewHeight } = this;
     // console.log('【performance】tabScroll ', initIndex, nextIndex)
     Animated.timing(
       translateYAnim,
@@ -290,14 +306,53 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
     });
   }
 
+  scrollToTop(index) {
+    // fix no match
+    try {
+      this.scrollerRef[index].scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
+        animated: false,
+      });
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.warn('scrollToLocation error', index);
+    }
+  }
+
+  // 滑动头部隐藏时需要更新 VehicleList 高度及定位
+  resetHeightStyle() {
+    this.cacheList.forEach((dom, index) => {
+      // TODO-dyy 滑动不对，打通影响
+      // const test: any = this.getStyle(index)[1];
+      // console.log('----------resetHeightStyle', index, test.top, test.height)
+      this.scrollerRef[index].setNativeProps({
+        style: this.getStyle(index),
+      });
+    });
+  }
+
   // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(props) {
-    if (props.index !== this.props.index) {
+    const { index, listData, threshold } = this.props;
+    if (props.index !== index) {
       this.tabScroll(props.index);
     }
-    if (!_.isEqual(props.listData, this.props.listData)) {
+    if (!_.isEqual(props.listData, listData)) {
       this.renderAllVehicleListDom(props.listData, props.lastNextIndexObj);
+      this.resetScrollTop();
     }
+    if (!_.isEqual(props.threshold, threshold)) {
+      const { height, threshold: nextThreshold } = props;
+      this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
+      this.resetHeightStyle();
+    }
+  }
+
+  resetScrollTop() {
+    _.forEach(this.scrollerRef, (ref, index) => {
+      this.scrollToTop(index);
+    });
   }
 
   renderAllVehicleListDom(newListData?: any, lastNextIndexObj?: any) {
@@ -327,14 +382,18 @@ export default class VehicleListWithControl extends PureComponent<VehicleListWit
       translateYAnim,
     } = this.state;
     const {
-      threshold, height, maxIndex, minIndex,
+      maxIndex, minIndex, height, threshold,
     } = this.props;
     const theme = this.getTheme();
-    const scrollViewHeight = height - threshold;
+    const scrollViewHeight = getScrollViewHeight(height, threshold);
 
     return (
       <BbkThemeProvider theme={theme} channel={null}>
-        <View style={styles.wrap}>
+        <View style={[styles.wrap, {
+          // 手动设置隐藏头时的高度
+          height: scrollViewHeight,
+        }]}
+        >
           <Animated.View style={[styles.absoluteWrap, {
             top: 0,
             height: (maxIndex - minIndex + 1) * scrollViewHeight,

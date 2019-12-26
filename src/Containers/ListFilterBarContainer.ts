@@ -24,7 +24,9 @@ const getFilterBarData = (state) => {
       text: m.name,
       isActive: getActiveFilterBarCode(state) === m.code,
       code: m.code,
-      hasFilter: codeItem && codeItem.codeList && codeItem.codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
+      hasFilter: codeItem
+        && codeItem.codeList
+        && codeItem.codeList.some(c => getSelectedFilters(state).bitsFilter.includes(c)),
     };
     filterItemList.push(item);
   });

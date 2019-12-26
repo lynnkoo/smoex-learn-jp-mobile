@@ -40,7 +40,8 @@ export interface IFilterAndSort extends IFilterInner {
 
 const initFilterData = (filterType, tempFilterData) => {
   let filterData = [];
-  const type = filterType && filterType.indexOf('Vendor_0') > -1 ? FilterBarType.Supplier : filterType;
+  const type = filterType
+    && filterType.indexOf('Vendor_0') > -1 ? FilterBarType.Supplier : filterType;
   switch (type) {
     case FilterBarType.Sort:
       filterData = tempFilterData;
@@ -70,6 +71,9 @@ const initFilterData = (filterType, tempFilterData) => {
   return filterData;
 };
 
+const isEqualInner = (prevProps, nextProps) => nextProps.type === ''
+                     || nextProps.type === undefined;
+                     
 const RenderInner: React.FC<IFilterInner> = memo(({
   type, filterData, currency, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
 }: IFilterInner) => (
@@ -85,7 +89,8 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     />
     )}
 
-    {(type === FilterBarType.Supplier || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
+    {(type === FilterBarType.Supplier
+    || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
     <BbkComponentFilterList
       filterGroups={initFilterData(type, filterData)}
       changeTempFilterData={(label, handleType) => {
@@ -120,7 +125,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     />
     )}
   </View>
-), (prevProps, nextProps) => nextProps.type === '' || nextProps.type === undefined);
+), isEqualInner);
 
 const setNavigatorDragBack = (navigation, enable) => {
   const { presentedIndex, sceneConfigStack } = navigation.navigator.state;
@@ -157,14 +162,17 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
   useEffect(() => {
     const initFilterCode = allFilters.map(item => ({
       type: item.type,
-      selectedLabelList: selectedFilters.filterLabels.filter(label => item.codeList.includes(label.code)) || [],
+      selectedLabelList:
+        selectedFilters.filterLabels.filter(label => item.codeList.includes(label.code)) || [],
     }));
 
     setTempFilterLabel(initFilterCode);
   }, [selectedFilters.filterLabels, allFilters]);
 
   useEffect(() => {
-    setTempPrice(selectedFilters.priceFilter && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
+    setTempPrice(
+      selectedFilters.priceFilter
+        && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
   }, [selectedFilters.priceFilter]);
 
   const onHide = useCallback(() => {
@@ -215,7 +223,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
     tempFilterLabel.forEach((temp) => {
       savedFilter = savedFilter.concat(temp.selectedLabelList);
     });
-    const savedBitsFilter = savedFilter.filter(filter => filter && filter.code && filter.code.indexOf('Price') === -1);
+    const savedBitsFilter = savedFilter.filter(
+      filter => filter && filter.code && filter.code.indexOf('Price') === -1);
     bitsFilter = savedBitsFilter.map(filter => filter && filter.code);
     updateSelectedFilter({
       bitsFilter,

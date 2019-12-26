@@ -24,11 +24,13 @@ export const getPickUpLocationLng = state => state.LocationAndDate.rentalLocatio
 
 export const getDropOffCityId = state => state.LocationAndDate.rentalLocation.dropOff.cid;
 
-export const getDropOffLocationType = state => state.LocationAndDate.rentalLocation.dropOff.area.type;
+export const getDropOffLocationType = state => (
+  state.LocationAndDate.rentalLocation.dropOff.area.type);
 
 export const getDropOffLocationCode = state => state.LocationAndDate.rentalLocation.dropOff.area.id;
 
-export const getDropOffLocationName = state => state.LocationAndDate.rentalLocation.dropOff.area.name;
+export const getDropOffLocationName = state => (
+  state.LocationAndDate.rentalLocation.dropOff.area.name);
 
 export const getDropOffLocationLat = state => state.LocationAndDate.rentalLocation.dropOff.area.lat;
 
@@ -54,4 +56,5 @@ export const getFormatLocationAndDate = state => ({
   rentalLocation: getRentalLocation(state),
 });
 
-export const isDifferentLocation = state => getPickUpLocationCode(state) !== getDropOffLocationCode(state);
+export const isDifferentLocation = state => (
+  getPickUpLocationCode(state) !== getDropOffLocationCode(state));

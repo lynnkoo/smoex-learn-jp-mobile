@@ -1,6 +1,6 @@
 import React, { Component, ReactElement } from 'react';
 import {
-  SectionList, SectionListProps, StyleSheet, View,
+  SectionList, SectionListProps, StyleSheet, View, ScrollResponderEvent,
 } from 'react-native';
 import _ from 'lodash';
 import { RefreshControl, LoadControl } from '@ctrip/crn';
@@ -9,11 +9,8 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { isIos, lazySelector } = BbkUtils;
 
-// TODO-dyy
-// header 联动
-
 // @ts-ignore
-interface SectionListWithControlProps extends SectionListProps<any> {
+export interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
   showFooter?: boolean;
   threshold?: number;
@@ -26,15 +23,17 @@ interface SectionListWithControlProps extends SectionListProps<any> {
   noMore?: boolean;
   noMoreContent?: string;
   noticeContent?: string;
-  onRefresh?: (any) => void;
-  onLoadMore?: (any) => void;
+  onRefresh?: (cb: Function) => void;
+  onLoadMore?: (cb: Function) => void;
   index?: number;
-  refFn?: (any) => void;
+  refFn?: (cb: Function) => void;
   pullIcon?: string;
   loadingContent?: string;
   ListHeaderExtraComponent?: ReactElement;
   ListFooterExtraComponent?: ReactElement;
   ListEmptyComponent?: ReactElement;
+  scrollUpCallback?: (e: ScrollResponderEvent) => void;
+  scrollDownCallback?: (e: ScrollResponderEvent) => void;
 }
 
 interface SectionListWithControlState {
@@ -77,6 +76,8 @@ export default class SectionListWithControl
 
   lastScrollY = 0;
 
+  onScrollBegin = false;
+
   static defaultProps = {
     throttle: 50,
   };
@@ -99,23 +100,23 @@ export default class SectionListWithControl
 
   // eslint-disable-next-line
   triggerScroll = (event, triggerEvent = 'onScroll') => {
-    const { threshold } = this.props;
+    const { threshold, scrollUpCallback, scrollDownCallback } = this.props;
     let { showAndroidLoad, showAndroidRefresh } = this.state;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
     const contentHeight = event.nativeEvent.contentSize.height;
     let load = false;
     let refresh = false;
+    const scrollUp = y - this.lastScrollY;
 
-    // console.log(triggerEvent, y, height, contentHeight, threshold)
+    // console.log(triggerEvent, y, this.lastScrollY, scrollUp)
 
     if (isIos) {
       // 不满一屏的情况
-      const scrollToTop = y < this.lastScrollY;
-      if (!scrollToTop && y + height > contentHeight + threshold) {
+      if (scrollUp > 0 && y + height > contentHeight + threshold) {
         load = true;
       }
-      if (scrollToTop && y < -threshold) {
+      if (scrollUp < 0 && y < -threshold) {
         refresh = true;
       }
     } else {
@@ -130,6 +131,19 @@ export default class SectionListWithControl
         refresh = true;
       }
       showAndroidRefresh = nextShowAndroidRefresh;
+    }
+
+    // TODO-dyy
+    // header 联动
+    if (triggerEvent === 'onScroll' && this.onScrollBegin) {
+      // console.log(triggerEvent, scrollUp, y, this.lastScrollY, load, refresh);
+      if (scrollUp > 10 && !load && scrollUpCallback) {
+        scrollUpCallback(event);
+      } else if (scrollUp < 0 && !refresh && scrollDownCallback) {
+        // console.log('scrollDownCallback', triggerEvent, y, this.lastScrollY, scrollUp, !refresh)
+        scrollDownCallback(event);
+      }
+      this.onScrollBegin = false;
     }
 
     this.lastScrollY = y;
@@ -160,6 +174,8 @@ export default class SectionListWithControl
   }
 
   onScrollBeginDrag = (event) => {
+    this.onScrollBegin = true;
+
     if (isIos) {
       return;
     }
@@ -225,11 +241,11 @@ export default class SectionListWithControl
     };
 
     if (load) {
-      const { showFooter } = this.props;
+      const { showFooter, onLoadMore } = this.props;
       if (!showFooter) {
         return;
       }
-      this.props.onLoadMore(() => {
+      onLoadMore(() => {
         this.setState({
           onLoading: false,
         });
@@ -239,7 +255,8 @@ export default class SectionListWithControl
     }
 
     if (refresh) {
-      this.props.onRefresh(() => {
+      const { onRefresh } = this.props;
+      onRefresh(() => {
         this.setState({
           refreshing: false,
         });
@@ -261,8 +278,9 @@ export default class SectionListWithControl
   }
 
   refFn = (ref) => {
-    if (this.props.refFn) {
-      this.props.refFn(ref);
+    const { refFn: propsRefFn } = this.props;
+    if (propsRefFn) {
+      propsRefFn(ref);
     }
     this.scroller = ref;
   }
@@ -308,7 +326,7 @@ export default class SectionListWithControl
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // @ts-ignore
-        ref={ref => {this.refreshControl = ref}} // eslint-disable-line
+        ref={ref => { this.refreshControl = ref }} // eslint-disable-line
         // @ts-ignore
         isRefreshing={refreshing}
         refreshResult={refreshResult}
@@ -333,7 +351,7 @@ export default class SectionListWithControl
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // eslint-disable-next-line
-        ref={ref => {this.loadControl = ref}}
+        ref={ref => { this.loadControl = ref }}
         isLoading={onLoading}
         noMore={noMore}
         noMoreContent={noMoreContent}

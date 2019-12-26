@@ -11,6 +11,7 @@ import FilterBarType from './FilterBarType';
 import Language from './Language';
 import * as ApiResCode from './ApiResCode';
 import StorageKey from './StorageKey';
+import EventName from './EventName';
 
 // /* eslint-disable global-require */
 // const getPageId = () => {
@@ -61,4 +62,5 @@ export {
   FrontEndConfig,
   FilterBarType,
   StorageKey,
+  EventName,
 };

@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, Animated,
 } from 'react-native';
 import {
   ViewPort, IBasePageProps, Event, Toast,
@@ -10,7 +10,7 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId, ClickKey } from '../../Constants/Index';
+import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog } from '../../Util/Index';
 
 // 组件
@@ -24,15 +24,20 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
+interface HeaderAnim {
+  translateY: any,
+  opacity: any,
+}
+
 interface ListStateType extends IStateType {
-  filterAndSortModalVisible: boolean;
   listThreshold: number,
+  headerAnim: HeaderAnim,
 }
 
 const PAGESTAGE = {
-  INIT: '初始加载',
-  SHOW: '有响应数据',
-  FAIL: '无响应数据',
+  INIT: 'INIT',
+  SHOW: 'SHOW',
+  FAIL: 'FAIL',
 };
 
 const styles = StyleSheet.create({
@@ -77,28 +82,36 @@ interface IListPropsType extends IBasePageProps {
 }
 
 const removeEvents = () => {
-  Event.removeEventListener('changeRentalLocation');
+  Event.removeEventListener(EventName.changeRentalLocation);
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-  batchesRequest: any[];
-
   filterModalRef: RefObject<any>;
 
   datePickerRef: any;
 
   hasInitFetch: boolean;
 
+  headerAnimating: boolean;
+
+  lastTranslateYAnim: number;
+
+  listThresholdLayout: number;
+
   constructor(props) {
     super(props);
     this.state = {
-      filterAndSortModalVisible: false, // 筛选和排序弹层是否展示
       listThreshold: 0,
+      headerAnim: {
+        translateY: new Animated.Value(0),
+        opacity: new Animated.Value(1),
+      },
     };
-    this.batchesRequest = []; // 记录当前页面响应回来的请求次数, resCode: 201/200, result: 1成功，-1失败
     ListReqAndResData.removeData();
-    this.hasInitFetch = false;
     this.filterModalRef = React.createRef();
+    this.headerAnimating = false;
+    this.lastTranslateYAnim = 0;
+    this.listThresholdLayout = 0;
   }
 
   /* eslint-disable class-methods-use-this */
@@ -118,7 +131,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   registerEvents() {
-    Event.addEventListener('changeRentalLocation', (data) => {
+    Event.addEventListener(EventName.changeRentalLocation, (data) => {
       this.props.setLocationInfo({
         ...data,
         fromEvent: 'changeRentalLocation',
@@ -127,7 +140,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent('changeRentalDate', this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
   }
 
   pageGoBack = () => {
@@ -148,24 +161,15 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     return curStage;
   }
 
-  // 处理热门筛选项的点击事件
-  handlePopularFilterPress = () => {
-    this.controlFilterModalIsShow();
-  }
-
-  // 控制筛选和排序弹层是否展示
-  controlFilterModalIsShow = () => {
-    const { filterAndSortModalVisible } = this.state;
-    this.setState({
-      filterAndSortModalVisible: !filterAndSortModalVisible,
-    });
-  }
-
   setVehicleListThreshold = ({ nativeEvent }) => {
+    const { listThreshold } = this.state;
     const { height } = nativeEvent.layout;
-    this.setState({
-      listThreshold: height,
-    });
+    if (listThreshold !== height) {
+      this.listThresholdLayout = height;
+      this.setState({
+        listThreshold: height,
+      });
+    }
   }
 
   handleDatePickerRef = (ref) => {
@@ -185,6 +189,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
+  // todo 移至到header内单独处理
   handlePressHeader = () => {
     if (this.props.progress !== 1) {
       Toast.show('加载中，请稍候...'); // todo shark key
@@ -195,40 +200,102 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
+  scrollUpCallback = () => {
+    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+  }
+
+  scrollDownCallback = () => {
+    // this.scrollHeaderAnimation(0);
+  }
+
+  scrollHeaderAnimation = (value) => {
+    const { headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
+    if (this.lastTranslateYAnim === value || this.headerAnimating) {
+      return;
+    }
+    this.lastTranslateYAnim = value;
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(translateY,
+          {
+            toValue: value,
+            duration: 500,
+            useNativeDriver: true,
+          },
+        ),
+        Animated.timing(opacity, {
+          toValue: value < 0 ? 0 : 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      this.headerAnimating = false;
+      this.setState({
+        listThreshold: this.listThresholdLayout + value,
+      });
+    });
+  }
+
   render() {
-    const { listThreshold } = this.state;
+    const { listThreshold, headerAnim } = this.state;
+    const { translateY, opacity } = headerAnim;
     const curStage = this.getCurStage();
-    console.log('render++++curStage', curStage);
     return (
       <ViewPort style={styles.page}>
-        <View style={[styles.wrapper, styles.shadowStyle]} onLayout={this.setVehicleListThreshold}>
-          <ListHeader
-            handleBackPress={this.pageGoBack}
-            showSearchSelectorWrap={this.handlePressHeader}
-            style={styles.headerStyle}
-          />
-          {/** todo FilterBar 展开动画 */}
-          <ListFilterBar filterModalRef={this.filterModalRef} style={styles.filterBarStyle} />
-          <VehGroupNav pageId={this.getPageId()} />
-        </View>
-        {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />
-        }
-        {
-          curStage === PAGESTAGE.FAIL
-          && <ListNoMatch datePickerRef={this.datePickerRef} />
-        }
-        {/** 供应商报价 */}
-        {curStage === PAGESTAGE.SHOW
-          && (
-            <VehicleListWithControl
-              threshold={listThreshold}
+        <Animated.View
+          style={{
+            flex: 1,
+            transform: [{
+              translateY,
+            }],
+          }}
+        >
+          <View
+            style={[styles.wrapper, styles.shadowStyle]}
+            onLayout={this.setVehicleListThreshold}
+          >
+            <Animated.View
+              style={{
+                opacity,
+              }}
+            >
+              <ListHeader
+                handleBackPress={this.pageGoBack}
+                showSearchSelectorWrap={this.handlePressHeader}
+                style={styles.headerStyle}
+              />
+            </Animated.View>
+            {/** todo FilterBar 展开动画 */}
+            <ListFilterBar
+              filterModalRef={this.filterModalRef}
+              style={styles.filterBarStyle}
             />
-          )
-        }
-        <SearchPanelModal filterModalRef={this.filterModalRef} />
+            <VehGroupNav pageId={this.getPageId()} />
+          </View>
+
+          {curStage === PAGESTAGE.INIT && <BbkSkeletonLoading visible pageName={PageType.List} />}
+          {
+            curStage === PAGESTAGE.FAIL
+            && <ListNoMatch datePickerRef={this.datePickerRef} />
+          }
+
+          {/** 供应商报价 */}
+          {curStage === PAGESTAGE.SHOW
+            && (
+              <VehicleListWithControl
+                threshold={listThreshold}
+                scrollUpCallback={this.scrollUpCallback}
+                scrollDownCallback={this.scrollDownCallback}
+              />
+            )
+          }
+        </Animated.View>
+        <SearchPanelModal />
         <FilterAndSortModal
           filterModalRef={this.filterModalRef}
-           // @ts-ignore
+         // @ts-ignore
           navigation={this.props.navigation}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

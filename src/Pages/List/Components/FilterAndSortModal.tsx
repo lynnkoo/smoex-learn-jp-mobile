@@ -73,7 +73,7 @@ const initFilterData = (filterType, tempFilterData) => {
 
 const isEqualInner = (prevProps, nextProps) => nextProps.type === ''
                      || nextProps.type === undefined;
-                     
+
 const RenderInner: React.FC<IFilterInner> = memo(({
   type, filterData, currency, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
 }: IFilterInner) => (
@@ -152,12 +152,14 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
   const [modalVisible, setModalVisible] = useState(false);
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
   const [tempPrice, setTempPrice] = useState({});
-  const [filterDataState, setFilterDataState] = useState([]);
+  // eslint-disable-next-line prefer-const
+  let [filterDataState, setFilterDataState] = useState([]);
   const [toggleClearFilter, setToggleClearFilter] = useState(false);
 
-  useEffect(() => {
-    setFilterDataState(filterData);
-  }, [filterData]);
+  filterDataState = filterData;
+  // useEffect(() => {
+  //   setFilterDataState(filterData);
+  // }, [filterData]);
 
   useEffect(() => {
     const initFilterCode = allFilters.map(item => ({
@@ -213,12 +215,15 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
       temp.max = price;
     }
 
+    if (!temp.min) temp.min = 0;
+    if (!temp.max) temp.max = 0;
     setTempPrice(temp);
   }, [tempPrice]);
 
   const onSaveFilter = useCallback(() => {
     let savedFilter = [];
     let bitsFilter = [];
+    let price = tempPrice;
 
     tempFilterLabel.forEach((temp) => {
       savedFilter = savedFilter.concat(temp.selectedLabelList);
@@ -226,10 +231,15 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
     const savedBitsFilter = savedFilter.filter(
       filter => filter && filter.code && filter.code.indexOf('Price') === -1);
     bitsFilter = savedBitsFilter.map(filter => filter && filter.code);
+
+    // @ts-ignore;
+    if (price && price.min === 0 && price.max === 0) {
+      price = {};
+    }
     updateSelectedFilter({
       bitsFilter,
       filterLabels: savedFilter,
-      priceFilter: JSON.stringify(tempPrice) === '{}' ? [] : [tempPrice],
+      priceFilter: JSON.stringify(price) === '{}' ? [] : [price],
     });
     onHide();
   }, [onHide, tempFilterLabel, tempPrice, updateSelectedFilter]);

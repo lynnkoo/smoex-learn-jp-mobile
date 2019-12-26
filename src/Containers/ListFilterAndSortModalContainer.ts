@@ -33,7 +33,7 @@ const getPriceRange = memoizeOne(
       const maxPrice = parseInt(maxPriceDesc.slice(maxPriceDesc.indexOf('-') + 1), 10);
       priceRange = {
         minRange: minPrice,
-        maxRange: maxPrice,
+        maxRange: maxPrice + 50,
       };
     } catch (e) {
       /* eslint-disable no-console */
@@ -97,8 +97,8 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               },
               isPriceGroup && priceIsSelected
                 ? {
-                  minPrice: selectedFilters.priceList[0].min,
-                  maxPrice: selectedFilters.priceList[0].max,
+                  minPrice: selectedFilters.priceList[0].min || getPriceRange(filterItems).minRange,
+                  maxPrice: selectedFilters.priceList[0].max || getPriceRange(filterItems).maxRange,
                 }
                 : {},
             ),
@@ -138,6 +138,7 @@ const getDisplaySelectedFiltersByType = (state, filterBarType) => {
 };
 
 const getFilterData = (state) => {
+  console.log(state.List.selectedFilters)
   const filterBarType = getActiveFilterBarCode(state);
   const displaySelectedFilters = getDisplaySelectedFiltersByType(state, filterBarType) || {
     codeList: [],

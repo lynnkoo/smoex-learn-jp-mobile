@@ -2,12 +2,11 @@ import React, { RefObject } from 'react';
 import {
   View, StyleSheet, Animated,
 } from 'react-native';
-import _ from 'lodash';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
+import { BbkUtils } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
@@ -24,10 +23,6 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
-
-const { selector } = BbkUtils;
-// eslint-disable-next-line
-const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 
 interface HeaderAnim {
   translateY: any,
@@ -81,7 +76,6 @@ interface IListPropsType extends IBasePageProps {
   progress: number;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
-  setActiveFilterBarCode: (data: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
@@ -178,18 +172,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
-  onPressFilterBarThrottle = (type, isActive) => (_.throttle(
-    () => this.onPressFilterBar(type, isActive), 200))();
-
-  onPressFilterBar = (type, isActive) => {
-    this.props.setActiveFilterBarCode({ activeFilterBarCode: selector(!isActive, type, '') });
-    if (!isActive) {
-      this.filterModalRef.current.show();
-    } else {
-      this.filterModalRef.current.hide();
-    }
-  }
-
   handleDatePickerRef = (ref) => {
     this.datePickerRef = ref;
   }
@@ -213,6 +195,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       Toast.show('加载中，请稍候...'); // todo shark key
       return;
     }
+    this.filterModalRef.current.hide();
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
@@ -286,7 +269,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
             <ListFilterBar
-              onPressFilterBar={this.onPressFilterBarThrottle}
+              filterModalRef={this.filterModalRef}
               style={styles.filterBarStyle}
             />
             <VehGroupNav pageId={this.getPageId()} />
@@ -310,7 +293,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           }
         </Animated.View>
         <SearchPanelModal />
-        <FilterAndSortModal filterModalRef={this.filterModalRef} />
+        <FilterAndSortModal
+          filterModalRef={this.filterModalRef}
+         // @ts-ignore
+          navigation={this.props.navigation}
+        />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
         {
           this.props.isDebugMode

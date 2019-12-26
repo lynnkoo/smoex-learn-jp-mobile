@@ -1,5 +1,5 @@
 import React, {
-  memo, useState, useRef, forwardRef, useImperativeHandle, RefObject, useEffect,
+  memo, useState, useRef, forwardRef, useImperativeHandle, RefObject, useEffect, useCallback,
 } from 'react';
 import {
   View,
@@ -16,6 +16,7 @@ const { SelectMenuType } = BbkSelectMenu;
 interface IFilterInner {
   type: string;
   filterData: Array<Object>;
+  currency: string;
   onHide?: () => void;
   updateSelectedFilter?: (data: any) => void;
   updateTempFilter?: (data: any, handleType: string, type: string, isPriceLabel: boolean) => void;
@@ -32,6 +33,7 @@ export interface IFilterAndSort extends IFilterInner {
   selectedFilters: IFilterType;
   allFilters: any;
   isShowFooter: boolean;
+  navigation: any;
   filterModalRef: RefObject<any>;
   setActiveFilterBarCode: (data: any) => void;
 }
@@ -69,51 +71,66 @@ const initFilterData = (filterType, tempFilterData) => {
 };
 
 const RenderInner: React.FC<IFilterInner> = memo(({
-  type, filterData, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
+  type, filterData, currency, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
 }: IFilterInner) => (
   <View>
-    {type === FilterBarType.Sort ? (
-      <BbkComponentSelectMenu
-        filterData={initFilterData(type, filterData)}
-        type={SelectMenuType.Single}
-        onToggle={(label) => {
-          updateSelectedFilter({ sortFilter: label.code });
-          onHide();
-        }}
-      />
-    ) : type === FilterBarType.Supplier || (type && type.indexOf('Vendor_') > -1) ? ( // 供应商筛选项code为Vendor_
-      <BbkComponentFilterList
-        filterGroups={initFilterData(type, filterData)}
-        changeTempFilterData={(label, handleType) => {
-          updateTempFilter(label, handleType, type, false);
-        }}
-      />
-    ) : type === FilterBarType.Seats ? (
-      <BbkComponentSelectMenu
-        filterData={initFilterData(type, filterData)}
-        type={SelectMenuType.Multiple}
-        onToggle={(label, handleType) => {
-          updateTempFilter(label, handleType, type, false);
-        }}
-      />
-    ) : type === FilterBarType.Filters ? (
-      <BbkComponentFilterList
-        filterGroups={initFilterData(type, filterData)}
-        changeTempFilterData={(label, handleType, isPriceLabel) => {
-          updateTempFilter(label, handleType, type, isPriceLabel);
-        }}
-        updateStartPrice={(startPrice) => {
-          updateTempPrice(startPrice, 'start');
-        }}
-        updateEndPrice={(endPrice) => {
-          updateTempPrice(endPrice, 'end');
-        }}
-      />
-    ) : null}
-  </View>
-), (prevProps, nextProps) => nextProps.type === '');
+    {type === FilterBarType.Sort && (
+    <BbkComponentSelectMenu
+      filterData={initFilterData(type, filterData)}
+      type={SelectMenuType.Single}
+      onToggle={(label) => {
+        updateSelectedFilter({ sortFilter: label.code });
+        onHide();
+      }}
+    />
+    )}
 
-const FilterAndSortModal: React.FC<IFilterAndSort> = ({
+    {(type === FilterBarType.Supplier || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
+    <BbkComponentFilterList
+      filterGroups={initFilterData(type, filterData)}
+      changeTempFilterData={(label, handleType) => {
+        updateTempFilter(label, handleType, type, false);
+      }}
+    />
+    )}
+
+    {type === FilterBarType.Seats && (
+    <BbkComponentSelectMenu
+      filterData={initFilterData(type, filterData)}
+      type={SelectMenuType.Multiple}
+      onToggle={(label, handleType) => {
+        updateTempFilter(label, handleType, type, false);
+      }}
+    />
+    )}
+
+    {type === FilterBarType.Filters && (
+    <BbkComponentFilterList
+      filterGroups={initFilterData(type, filterData)}
+      currency={currency}
+      changeTempFilterData={(label, handleType, isPriceLabel) => {
+        updateTempFilter(label, handleType, type, isPriceLabel);
+      }}
+      updateStartPrice={(startPrice) => {
+        updateTempPrice(startPrice, 'start');
+      }}
+      updateEndPrice={(endPrice) => {
+        updateTempPrice(endPrice, 'end');
+      }}
+    />
+    )}
+  </View>
+), (prevProps, nextProps) => nextProps.type === '' || nextProps.type === undefined);
+
+const setNavigatorDragBack = (navigation, enable) => {
+  const { presentedIndex, sceneConfigStack } = navigation.navigator.state;
+  const sceneConfig = sceneConfigStack[presentedIndex];
+  if (sceneConfig) {
+    sceneConfig.gestures = enable;
+  }
+};
+
+const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
   filterData,
   selectedFilters,
   allFilters = [],
@@ -121,6 +138,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   allVendorPriceCount,
   isShowFooter,
   type,
+  currency,
+  navigation,
   filterModalRef,
   updateSelectedFilter,
   setActiveFilterBarCode,
@@ -129,7 +148,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
   const [tempPrice, setTempPrice] = useState({});
   const [filterDataState, setFilterDataState] = useState([]);
-  const [toggleClearPrice, setToggleClearPrice] = useState(false);
+  const [toggleClearFilter, setToggleClearFilter] = useState(false);
 
   useEffect(() => {
     setFilterDataState(filterData);
@@ -148,13 +167,14 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     setTempPrice(selectedFilters.priceFilter && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
   }, [selectedFilters.priceFilter]);
 
-  const onHide = () => {
+  const onHide = useCallback(() => {
     setActiveFilterBarCode('');
     setModalVisible(false);
-    // setFilterDataState([]);
-  };
+    setFilterDataState([]);
+    setNavigatorDragBack(navigation, true);
+  }, [navigation, setActiveFilterBarCode]);
 
-  const updateTempFilter = (label, handleType, typeName, isPriceLabel) => {
+  const updateTempFilter = useCallback((label, handleType, typeName, isPriceLabel) => {
     const temp = tempFilterLabel.map((item) => {
       if (item.type === typeName) {
         if (handleType === 'add') {
@@ -174,9 +194,9 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     });
 
     setTempFilterLabel(temp);
-  };
+  }, [tempFilterLabel]);
 
-  const updateTempPrice = (price, priceType) => {
+  const updateTempPrice = useCallback((price, priceType) => {
     const temp: any = tempPrice;
 
     if (priceType === 'start') {
@@ -186,9 +206,9 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     }
 
     setTempPrice(temp);
-  };
+  }, [tempPrice]);
 
-  const onSaveFilter = () => {
+  const onSaveFilter = useCallback(() => {
     let savedFilter = [];
     let bitsFilter = [];
 
@@ -203,9 +223,9 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       priceFilter: JSON.stringify(tempPrice) === '{}' ? [] : [tempPrice],
     });
     onHide();
-  };
+  }, [onHide, tempFilterLabel, tempPrice, updateSelectedFilter]);
 
-  const onClearFilter = () => {
+  const onClearFilter = useCallback(() => {
     const tempCode = tempFilterLabel.map((item) => {
       const newItem = item;
       if (newItem.type === type) {
@@ -225,8 +245,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
           if (newGroup.code === 'Price') {
             newGroup.minPrice = newGroup.minRange;
             newGroup.maxPrice = newGroup.maxRange;
-            newGroup.toggleClearPrice = !toggleClearPrice;
-            setToggleClearPrice(!toggleClearPrice);
           }
           if (newGroup && newGroup.filterItems.length > 0) {
             newGroup.filterItems.forEach((item) => {
@@ -234,6 +252,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
               newItem.isSelected = false;
             });
           }
+          newGroup.toggleClearFilter = !toggleClearFilter;
+          setToggleClearFilter(!toggleClearFilter);
         });
       }
 
@@ -243,22 +263,25 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     setTempPrice({});
     setFilterDataState(tempFilterDataState);
     setTempFilterLabel(tempCode);
-  };
+  }, [filterDataState, tempFilterLabel, toggleClearFilter, type]);
 
   const privateFilterModalRef = useRef();
   useImperativeHandle(filterModalRef, () => ({
     show: () => {
       setModalVisible(true);
+      setNavigatorDragBack(navigation, false);
     },
     hide: onHide,
   }));
+
+  if (modalVisible && filterDataState && filterDataState.length === 0) return null;
 
   return (
     <BbkComponentCarFilterModal
       // @ts-ignore
       ref={privateFilterModalRef}
       modalVisible={modalVisible}
-      isShowFooter={isShowFooter && filterDataState && filterDataState.length > 0}
+      isShowFooter={isShowFooter}
       ModelsNumber={allVehicleCount}
       PricesNumber={allVendorPriceCount}
       onHide={onHide}
@@ -268,6 +291,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       <RenderInner
         type={type}
         filterData={filterDataState}
+        currency={currency}
         updateSelectedFilter={updateSelectedFilter}
         updateTempFilter={updateTempFilter}
         updateTempPrice={updateTempPrice}
@@ -275,6 +299,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       />
     </BbkComponentCarFilterModal>
   );
-};
+});
 
-export default forwardRef(FilterAndSortModal);
+export default FilterAndSortModal;

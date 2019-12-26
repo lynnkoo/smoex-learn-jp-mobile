@@ -3,6 +3,7 @@ import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
 import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
+import { setActiveFilterBarCode } from '../State/List/Actions';
 
 const getFilterBarData = (state) => {
   const filterItemList = [];
@@ -48,6 +49,8 @@ const mapStateToProps = state => ({
 });
 
 /* eslint-disable no-unused-vars */
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BbkFilterBar);

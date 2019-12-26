@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: BbkUtils.getPixel(10),
-    backgroundColor: color.linearGradientOrangeLight,
+    backgroundColor: color.orangeIcon,
   },
 });
 
@@ -68,6 +68,7 @@ const ListProgress = (props: IPropsType) => {
   }, [animatedOpacity, animatedProgress, isFinished, progress]);
 
   if (isFinished) return null;
+  if (progress === 0) return null;
 
   const tip1 = getSharkValue('listCombine_fetchResult', vehCount);
   const tip2 = getSharkValue('listCombine_fetchResult2', priceCount);
@@ -75,7 +76,7 @@ const ListProgress = (props: IPropsType) => {
   return (
     <Animated.View style={[styles.mainWrap, { opacity: animatedOpacity }]}>
       <View style={styles.progressWrap}>
-        <BbkText style={[font.subTitle2Style, { color: color.fontSecondary }]}>
+        <BbkText style={[font.subTitle2Style, { color: color.blueGrayBase }]}>
           {combineTip}
         </BbkText>
       </View>

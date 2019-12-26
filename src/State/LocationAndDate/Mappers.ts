@@ -44,7 +44,7 @@ const formatLocationFromEvent = (location) => {
     latitude,
     longtitude,
     locationType,
-    cityId
+    cityId,
   } = location;
   return {
     cid: cityId,

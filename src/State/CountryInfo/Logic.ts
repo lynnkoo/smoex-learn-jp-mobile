@@ -19,7 +19,6 @@ export const getCountryInfo = createLogic({
       const res = await CarFetch.queryAppCountryId(param).catch(() => {
         dispatch(setCountryInfo(countryInfo));
         done();
-        // todo log
       });
       const countryId = res && res.isSuccessful && res.countryId;
 

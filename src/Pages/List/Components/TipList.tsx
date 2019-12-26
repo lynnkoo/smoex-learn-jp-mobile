@@ -4,6 +4,8 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 import BbkTips, { TIPS_TYPE } from '@ctrip/bbk-component-tips';
 import { FilterType } from '@ctrip/bbk-logic';
 import { color } from '@ctrip/bbk-tokens';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 interface IPropsType {
   promotionFilterText: string;
@@ -31,7 +33,7 @@ const ListTips = (props: IPropsType) => {
       bitsFilter: newBitsFilter,
     });
 
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_PROMOTION_FILTER.KEY });
   };
 
 

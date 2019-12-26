@@ -138,7 +138,6 @@ const getDisplaySelectedFiltersByType = (state, filterBarType) => {
 };
 
 const getFilterData = (state) => {
-  console.log(state.List.selectedFilters)
   const filterBarType = getActiveFilterBarCode(state);
   const displaySelectedFilters = getDisplaySelectedFiltersByType(state, filterBarType) || {
     codeList: [],

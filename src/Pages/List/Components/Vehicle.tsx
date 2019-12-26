@@ -19,7 +19,7 @@ import { listShowMore } from '../Texts';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
-const { selector, htmlDecode } = BbkUtils;
+const { selector } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
@@ -153,7 +153,7 @@ export const VehicleFooter = memo(withTheme(
           }]}
           textStyle={moreTextStyle}
           // TODO-dyy util 升级
-          iconContent={htmlDecode(`${icon.circleArrowDown};`)}
+          iconContent={icon.circleArrowDown}
           iconStyle={moreTextStyle}
         />
       </BbkTouchable>,

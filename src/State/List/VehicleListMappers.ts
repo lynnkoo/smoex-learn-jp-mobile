@@ -14,7 +14,7 @@ import {
   getVehAndProductList, getVehGroupList,
 } from '../../Global/Cache/ListResSelectors';
 
-const { getPixel, htmlDecode } = BbkUtils;
+const { getPixel } = BbkUtils;
 let count = 0;
 
 const getVehicleItemData = (vehicleList, vehicleCode) => {
@@ -42,20 +42,20 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     displacement && {
       text: displacement,
       icon: {
-        iconContent: '\uee81',
+        iconContent: icon.gasoline,
       },
     },
     // 没有空调时不出
     hasConditioner && conditionerDesc && {
       text: conditionerDesc,
       icon: {
-        iconContent: '\uee7c',
+        iconContent: icon.snow,
       },
     },
     transmissionName && {
       text: transmissionName,
       icon: {
-        iconContent: '\uee7d',
+        iconContent: icon.circleA,
       },
     },
   ];
@@ -74,19 +74,19 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
         {
           text: passengerNo,
           icon: {
-            iconContent: '\uee86',
+            iconContent: icon.seat,
           },
         },
         {
           text: luggageNo,
           icon: {
-            iconContent: '\uee82',
+            iconContent: icon.luggage,
           },
         },
         {
           text: doorNo,
           icon: {
-            iconContent: '\uee7f',
+            iconContent: icon.door,
           },
         },
       ],
@@ -156,7 +156,7 @@ const getVendorLabel = (
 
 const getSoldOutLabel = text => text && getVendorLabel()({
   text,
-  iconContent: htmlDecode(icon.circleWithSighFilled),
+  iconContent: icon.circleWithSighFilled,
 });
 
 const getVendorHeaderProps = (vendor) => {

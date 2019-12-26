@@ -61,4 +61,13 @@ export default {
   C_LIST_RECOMMEND_BUTTON: {
     KEY: 'C_LIST_RECOMMEND_BUTTON', NAME: '点击_列表页_搜索无结果推荐按钮',
   },
+  C_LIST_RECOMMEND_CHANGEAGE_CONFIRM: {
+    KEY: 'C_LIST_RECOMMEND_CHANGEAGE_CONFIRM', NAME: '点击_列表页_搜索无结果推荐_修改年龄_确认',
+  },
+  C_LIST_AGETIPPOP_SHOW: {
+    KEY: 'C_LIST_AGETIPPOP_SHOW', NAME: '点击_列表页_打开年龄说明弹层',
+  },
+  C_LIST_AGETIPPOP_CLOSE: {
+    KEY: 'C_LIST_AGETIPPOP_CLOSE', NAME: '点击_列表页_关闭年龄说明弹层',
+  },
 };

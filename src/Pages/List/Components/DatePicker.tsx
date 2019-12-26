@@ -7,6 +7,7 @@ interface IPropsType {
   handleDatePickerRef: (data: any) => void;
   setDateInfo: (data: any) => void;
   setDatePickerIsShow: (data: any) => void;
+  fetchList: () => void;
 }
 
 const ListDatePicker = (props: IPropsType) => {
@@ -18,6 +19,7 @@ const ListDatePicker = (props: IPropsType) => {
   const handleOnConfirm = (data) => {
     props.setDateInfo({ pickup: data.ptime, dropoff: data.rtime });
     props.setDatePickerIsShow({ visible: false });
+    props.fetchList();
     CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEDATE_CONFIRM.KEY });
   };
 

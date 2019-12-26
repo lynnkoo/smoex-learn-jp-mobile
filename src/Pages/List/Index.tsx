@@ -74,11 +74,15 @@ interface IListPropsType extends IBasePageProps {
   rentalDate: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
+  agePickerVisible: boolean;
+  ageTipPopVisible: boolean;
   progress: number;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
+  setAgePickerIsShow: ({ visible: boolean }) => void;
+  setAgeTipPopIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
 }
 
@@ -178,13 +182,19 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   onBackAndroid() {
-    const { datePickerVisible, locationDatePopVisible } = this.props;
+    const {
+      datePickerVisible, locationDatePopVisible, agePickerVisible, ageTipPopVisible,
+    } = this.props;
     if (datePickerVisible) {
       this.datePickerRef.dismiss(() => {
         this.props.setDatePickerIsShow({ visible: false });
       });
     } else if (locationDatePopVisible) {
       this.props.setLocationAndDatePopIsShow({ visible: false });
+    } else if (agePickerVisible) {
+      this.props.setAgePickerIsShow({ visible: false });
+    } else if (ageTipPopVisible) {
+      this.props.setAgeTipPopIsShow({ visible: false });
     } else {
       this.pageGoBack();
     }
@@ -296,7 +306,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <SearchPanelModal />
         <FilterAndSortModal
           filterModalRef={this.filterModalRef}
-         // @ts-ignore
+          // @ts-ignore
           navigation={this.props.navigation}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

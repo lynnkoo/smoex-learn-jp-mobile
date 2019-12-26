@@ -14,6 +14,7 @@ import {
   getSortList,
   getFilterBarItemsCode,
 } from '../Global/Cache/ListResSelectors';
+import { AppContext } from '../Util/Index';
 
 const { selector } = BbkUtils;
 
@@ -32,7 +33,7 @@ const getPriceRange = memoizeOne(
       const maxPrice = parseInt(maxPriceDesc.slice(maxPriceDesc.indexOf('-') + 1), 10);
       priceRange = {
         minRange: minPrice,
-        maxRange: maxPrice,
+        maxRange: maxPrice + 50,
       };
     } catch (e) {
       /* eslint-disable no-console */
@@ -96,8 +97,8 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               },
               isPriceGroup && priceIsSelected
                 ? {
-                  minPrice: selectedFilters.priceList[0].min,
-                  maxPrice: selectedFilters.priceList[0].max,
+                  minPrice: selectedFilters.priceList[0].min || getPriceRange(filterItems).minRange,
+                  maxPrice: selectedFilters.priceList[0].max || getPriceRange(filterItems).maxRange,
                 }
                 : {},
             ),
@@ -167,6 +168,10 @@ const getFilterData = (state) => {
       filterData = setFilterMenu(allFilterItems, displaySelectedFilters);
       isShowFooter = true;
       break;
+    case '':
+    case undefined:
+      isShowFooter = false;
+      break;
     default:
       filterData = setFilterMenu(
         popularFilterItems.filter(
@@ -188,6 +193,7 @@ const getFilterData = (state) => {
 
 const mapStateToProps = state => ({
   ...getFilterData(state),
+  currency: AppContext.LanguageInfo.currency,
   allVehicleCount: getAllVehicleCount(),
   allVendorPriceCount: getAllVendorPriceCount(),
 });

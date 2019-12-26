@@ -33,7 +33,8 @@ export default withTheme(
       };
       // 跳转Trip详情页地址
       /* eslint-disable max-len */
-      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}`;
+      const ticket = new Date().getTime();
+      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&cache=${ticket}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
     }, [locationAndDate, reference]);

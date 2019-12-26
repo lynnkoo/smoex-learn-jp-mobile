@@ -27,6 +27,7 @@ module.exports = {
       "ignoreRegExpLiterals": true,
       "ignoreUrls": true
     }],
+    "no-console": ["error"],
     "import/no-unresolved": "warn",
 
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],

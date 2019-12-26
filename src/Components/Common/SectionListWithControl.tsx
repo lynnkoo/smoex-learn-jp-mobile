@@ -302,6 +302,7 @@ export default class SectionListWithControl
           });
         }
       } catch (e) {
+        // eslint-disable-next-line
         console.warn('onViewableItemsChanged error', viewableItems.length);
       }
     }

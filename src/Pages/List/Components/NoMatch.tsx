@@ -4,6 +4,8 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import BbkComponentListNoMatch from '@ctrip/bbk-component-list-no-match';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 interface IPropsType {
   recommendInfo: any; // TODO type
@@ -56,11 +58,9 @@ const ListNoMatch = (props: IPropsType) => {
         break;
       default:
         fetchList();
-
-      // todo log
     }
+    CarLog.LogCode({ enName: ClickKey.C_LIST_RECOMMEND_BUTTON.KEY, type });
   };
-
 
   return (
     <View style={{ paddingTop: BbkUtils.getPixel(120) }}>

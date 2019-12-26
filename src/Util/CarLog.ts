@@ -85,7 +85,7 @@ class CarLog {
       allianceId: AppContext.MarketInfo.aId,
       visitortraceId: AppContext.MarketInfo.visitortraceId,
       sourceId: Channel.sourceId || '',
-      abVersion: '', // todo
+      abVersion: AppContext.ABTesting.trace,
       partialVersion: AppContext.CarEnv.buildTime,
       crnVersion: Application.version || '',
       uId: AppContext.UserInfo.UserID || '',

@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   shadowStyle: {
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     shadowColor: color.modalShadow,
     shadowOpacity: 1,

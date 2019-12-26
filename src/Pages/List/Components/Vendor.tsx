@@ -15,7 +15,7 @@ import VerdorHeader from './VendorHeader';
 
 const getLabelWrapStyle = memoizeOne(
   (type) => {
-    const rowTypes = ['normal', 'feature'];
+    const rowTypes = ['negative', 'positive'];
     return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
   },
 );
@@ -52,9 +52,9 @@ export default withTheme(
 
     const getLabelProps = (labelProps, type) => {
       const themeMap = {
-        feature: {
-          labelColor: theme.blueBg,
-        },
+        // positive: {
+        //   labelColor: theme.blueBg,
+        // },
         promotion: {
           labelColor: theme.orangePrice,
           labelBgColor: setOpacity(theme.orangePrice, 0.1),

@@ -65,7 +65,7 @@ export default class RnCarApp extends Component<any, StateType> {
                 messages={AppContext.SharkKeys.messages}
                 textComponent={Text}
               > */}
-                <Car {...this.props} />
+              <Car {...this.props} />
               {/* </IntlProvider> */}
             </BBkThemingProvider>
           </Provider>

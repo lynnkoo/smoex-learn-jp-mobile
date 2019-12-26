@@ -89,7 +89,8 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
     return (
       <View>
         {
-          progress > 0 &&
+          progress > 0
+          && (
           <BbkHorizontalNav
             style={[styles.mainWrap, styles.topBorder, styles.container]}
             indicatorWidth={BbkUtils.getPixel(80)}
@@ -98,6 +99,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
           >
             {vehGroupNav}
           </BbkHorizontalNav>
+          )
         }
         <ListProgress />
       </View>

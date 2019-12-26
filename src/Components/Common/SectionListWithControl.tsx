@@ -12,7 +12,6 @@ const { isIos, lazySelector } = BbkUtils;
 // @ts-ignore
 export interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
-  showFooter?: boolean;
   threshold?: number;
   throttle?: number;
   pullStartContent?: string;
@@ -42,6 +41,7 @@ interface SectionListWithControlState {
   refreshResult: boolean;
   showAndroidLoad: boolean;
   showAndroidRefresh: boolean;
+  showFooter?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -90,6 +90,7 @@ export default class SectionListWithControl
       refreshResult: null,
       showAndroidLoad: false,
       showAndroidRefresh: false,
+      showFooter: false,
     };
   }
 
@@ -134,17 +135,19 @@ export default class SectionListWithControl
     }
 
     if (triggerEvent === 'onScroll' && this.onScrollBegin) {
-      // console.log(triggerEvent, scrollUp, y, this.lastScrollY, load, refresh);
       if (scrollUp > 10 && scrollUpCallback) {
+        // console.log('scrollUpCallback', scrollUp, y, this.lastScrollY, load, !refresh);
         scrollUpCallback(event);
-      } else if (scrollUp < 0 && scrollDownCallback) {
-        // console.log('scrollDownCallback', triggerEvent, y, this.lastScrollY, scrollUp, !refresh)
+      } else if (scrollUp < -10 && scrollDownCallback) {
+        // console.log('scrollDownCallback', scrollUp, y, this.lastScrollY, load, !load)
         scrollDownCallback(event);
       }
       this.onScrollBegin = false;
     }
 
-    this.lastScrollY = y;
+    if (triggerEvent === 'onScrollBeginDrag') {
+      this.lastScrollY = y;
+    }
 
     return {
       load,
@@ -173,15 +176,15 @@ export default class SectionListWithControl
 
   onScrollBeginDrag = (event) => {
     this.onScrollBegin = true;
+    const {
+      load,
+      refresh,
+    } = this.triggerScroll(event, 'onScrollBeginDrag');
 
     if (isIos) {
       return;
     }
 
-    const {
-      load,
-      refresh,
-    } = this.triggerScroll(event, 'onScrollBeginDrag');
     const { throttle } = this.props;
 
     if (refresh && this.refreshControlWrap) {
@@ -239,7 +242,8 @@ export default class SectionListWithControl
     };
 
     if (load) {
-      const { showFooter, onLoadMore } = this.props;
+      const { onLoadMore } = this.props;
+      const { showFooter } = this.state;
       if (!showFooter) {
         return;
       }
@@ -283,15 +287,35 @@ export default class SectionListWithControl
     this.scroller = ref;
   }
 
+  onViewableItemsChanged = ({ viewableItems }) => {
+    const { sections } = this.props;
+    if (viewableItems.length > 0) {
+      try {
+        const last = _.last(viewableItems).section;
+        if (last.vehicleIndex === sections.length - 1) {
+          this.setState({
+            showFooter: isIos ? true : (sections.length > 1 || last.data.length > 1),
+          });
+        } else {
+          this.setState({
+            showFooter: false,
+          });
+        }
+      } catch (e) {
+        console.warn('onViewableItemsChanged error', viewableItems.length);
+      }
+    }
+  }
+
   render() {
     const {
       refreshing,
       onLoading,
       refreshResult,
+      showFooter,
     } = this.state;
     const {
       throttle,
-      showFooter,
       sections,
       renderItem,
       renderSectionHeader,
@@ -388,6 +412,13 @@ export default class SectionListWithControl
         ListHeaderComponent={listHeaderComponent}
         ListFooterComponent={listFooterComponent}
         ListEmptyComponent={ListEmptyComponent}
+        onViewableItemsChanged={this.onViewableItemsChanged}
+        // https://github.com/facebook/react-native/blob/master/Libraries/Lists/ViewabilityHelper.js
+        viewabilityConfig={{
+          minimumViewTime: throttle,
+          viewAreaCoveragePercentThreshold: 100,
+          // waitForInteraction: true
+        }}
       />
     );
   }

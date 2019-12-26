@@ -17,7 +17,7 @@ import { ClickKey } from '../../../Constants/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 import TipList from '../../../Containers/ListTipListContainer';
 
-const { selector, getPixel, isIos } = BbkUtils;
+const { selector, getPixel } = BbkUtils;
 
 const styles = StyleSheet.create({
   noMatchWrap: {
@@ -64,7 +64,7 @@ export interface VehicleListProps extends SectionListWithControlProps {
 
 const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
 // android 少于 2 条数据时不展示打通，无法触发 scroll
-const getShowFooter = sections => (isIos ? sections.length <= 0 : false);
+// const getShowFooter = sections => (isIos ? sections.length <= 0 : false);
 const VehicleList = (props: VehicleListProps) => {
   const {
     sections,
@@ -73,7 +73,7 @@ const VehicleList = (props: VehicleListProps) => {
   } = props;
   const [showMoreArr, setShowMoreArr] = useState(() => getShowMoreArr(sections, showMax));
   // android 少于 2 条数据时不展示打通，无法触发 scroll
-  const [showFooter, setShowFooter] = useState(() => getShowFooter(sections));
+  // const [showFooter, setShowFooter] = useState(() => getShowFooter(sections));
   const sectionsLen = sections.length;
 
   const renderItem = useCallback((data) => {
@@ -95,7 +95,7 @@ const VehicleList = (props: VehicleListProps) => {
         vehicleHeader={vehicleHeader}
         vehicleIndex={vehicleIndex}
         sectionsLen={sectionsLen}
-        setShowFooter={setShowFooter}
+        // setShowFooter={setShowFooter}
       />
     ), [sectionsLen]);
 
@@ -149,7 +149,7 @@ const VehicleList = (props: VehicleListProps) => {
 
   return (
     <SectionListWithControl
-      showFooter={showFooter}
+      // showFooter={showFooter}
       sections={sections}
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}

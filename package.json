@@ -65,6 +65,7 @@
     "@ctrip/bbk-component-tips": "0.0.20",
     "@ctrip/bbk-component-touchable": "0.0.39",
     "@ctrip/bbk-component-vendor-logo": "0.0.26",
+    "@ctrip/bbk-component-vendor-price-tag": "0.0.3",
     "@ctrip/bbk-logic": "0.0.40",
     "@ctrip/bbk-shark": "0.0.53",
     "@ctrip/bbk-theming": "0.0.49",

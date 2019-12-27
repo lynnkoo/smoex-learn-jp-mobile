@@ -5,17 +5,16 @@ import {
 } from '@ctrip/bbk-tokens';
 import memoizeOne from 'memoize-one';
 import { BbkUtils } from '@ctrip/bbk-utils';
-import { getSharkValue } from '@ctrip/bbk-shark';
 import { Utils } from '../../Util/Index';
 import {
   listDay, Reviews, total,
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
 import {
-  getVehAndProductList, getVehGroupList, isDiffLocation,
+  getVehAndProductList, getVehGroupList,
 } from '../../Global/Cache/ListResSelectors';
 
-const { getPixel, htmlDecode } = BbkUtils;
+const { getPixel } = BbkUtils;
 let count = 0;
 
 const getVehicleItemData = (vehicleList, vehicleCode) => {
@@ -43,20 +42,20 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     displacement && {
       text: displacement,
       icon: {
-        iconContent: '\uee81',
+        iconContent: icon.gasoline,
       },
     },
     // 没有空调时不出
     hasConditioner && conditionerDesc && {
       text: conditionerDesc,
       icon: {
-        iconContent: '\uee7c',
+        iconContent: icon.snow,
       },
     },
     transmissionName && {
       text: transmissionName,
       icon: {
-        iconContent: '\uee7d',
+        iconContent: icon.circleA,
       },
     },
   ];
@@ -75,19 +74,19 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
         {
           text: passengerNo,
           icon: {
-            iconContent: '\uee86',
+            iconContent: icon.seat,
           },
         },
         {
           text: luggageNo,
           icon: {
-            iconContent: '\uee82',
+            iconContent: icon.luggage,
           },
         },
         {
           text: doorNo,
           icon: {
-            iconContent: '\uee7f',
+            iconContent: icon.door,
           },
         },
       ],
@@ -157,78 +156,8 @@ const getVendorLabel = (
 
 const getSoldOutLabel = text => text && getVendorLabel()({
   text,
-  iconContent: htmlDecode(icon.circleWithSighFilled),
+  iconContent: icon.circleWithSighFilled,
 });
-
-interface labelList {
-  distance: {};
-  provider?: {};
-  negative?: {};
-  positive?: {};
-  promotion?: {};
-}
-
-const getVendorLabelItems = (vendor) => {
-  const {
-    pStoreRouteDesc, rStoreRouteDesc, allTags = [], platformName,
-  } = vendor;
-
-  const getNormalVendorLabel = getVendorLabel(tokenType.ColorType.BlueGray);
-
-  // 1：正向，2：负向，3：营销
-  const tagType = {
-    1: {
-      typeKey: 'positive',
-      args: [tokenType.ColorType.BlueGray],
-    },
-    2: {
-      typeKey: 'negative',
-      args: [tokenType.ColorType.Red],
-    },
-    3: {
-      typeKey: 'promotion',
-      args: [null, false, 'primary'],
-    },
-  };
-
-  const iconType = {
-    1: htmlDecode(icon.circleTickThin),
-    2: htmlDecode(icon.circleWithSigh),
-    // TODO-dyy: token update
-    3: htmlDecode(icon.discount),
-    // 3: htmlDecode(icon.flight),
-  };
-
-  const labels: labelList = {
-    distance: [
-      getNormalVendorLabel({
-        text: `${pStoreRouteDesc}${isDiffLocation() ? `\n${rStoreRouteDesc}` : ''}`,
-        iconContent: '\uee78',
-      }),
-    ],
-  };
-
-  if (platformName) {
-    labels.provider = [
-      getNormalVendorLabel({
-        text: getSharkValue('list_serviceProvidedBy', platformName),
-      }),
-    ];
-  }
-
-  allTags.forEach((tag) => {
-    const { type, title = 'Free Cancellation', icon: iconContent } = tag;
-    const params = tagType[type] || {};
-    const getVendorLabelFn = getVendorLabel(...params.args);
-    labels[params.typeKey] = labels[params.typeKey] || [];
-    labels[params.typeKey].push(getVendorLabelFn({
-      text: title,
-      iconContent: iconContent || iconType[type] || iconType[1],
-    }));
-  });
-
-  return labels;
-};
 
 const getVendorHeaderProps = (vendor) => {
   const {
@@ -256,12 +185,12 @@ const getVendorItemData = (vendor, vendorIndex) => {
     priceInfo, reference, privilegesPromotions, stockDesc,
   } = vendor;
   const priceDescProps = getPriceDescProps(priceInfo, privilegesPromotions);
-  const vendorLabelItems = getVendorLabelItems(vendor);
+  // const vendorLabelItems = getVendorLabelItems(vendor);
   const soldOutLabel = getSoldOutLabel(stockDesc);
   const vendorHeaderProps = getVendorHeaderProps(vendor);
   return {
     priceDescProps,
-    vendorLabelItems,
+    vendor,
     // 国内资源才有库存
     soldOutLabel,
     vendorHeaderProps,

@@ -7,7 +7,8 @@ import {
   CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
-  UPDATE_TEMP_SELECTED_FILTER,
+  SET_AGEPICKER_VISIBLE,
+  SET_AGETIPPOP_VISIBLE,
   RESET,
 } from './Types';
 
@@ -23,12 +24,6 @@ const getInitalState = () => ({
     bitsFilter: [],
     filterLabels: [],
   },
-  tempSelectedFilters: {
-    sortFilter: '1',
-    priceFilter: [],
-    bitsFilter: [],
-    filterLabels: [],
-  },
   bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
     filter: [],
   },
@@ -36,7 +31,8 @@ const getInitalState = () => ({
   locationDatePopVisible: false,
   datePickerVisible: false,
   datePickerFocusOnRtime: false,
-  isFilterCalculating: false,
+  agePickerVisible: false,
+  ageTipPopVisible: false,
 });
 
 const initalState = getInitalState();
@@ -82,10 +78,15 @@ export default (state = initalState, action) => {
         selectedFilters: Object.assign(
           { ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }),
       };
-    case UPDATE_TEMP_SELECTED_FILTER:
+    case SET_AGEPICKER_VISIBLE:
       return {
         ...state,
-        tempSelectedFilters: Object.assign(state.tempSelectedFilters, action.data),
+        agePickerVisible: action.data.visible,
+      };
+    case SET_AGETIPPOP_VISIBLE:
+      return {
+        ...state,
+        ageTipPopVisible: action.data.visible,
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

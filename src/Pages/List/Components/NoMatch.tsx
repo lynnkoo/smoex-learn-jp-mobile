@@ -3,16 +3,20 @@ import { View } from 'react-native';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import BbkComponentListNoMatch from '@ctrip/bbk-component-list-no-match';
+import { AgePickerApi } from '@ctrip/bbk-component-age-modal';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 interface IPropsType {
   recommendInfo: any; // TODO type
-  pTime: string;
-  rTime: string;
+  age: number | string;
   datePickerRef: any;
   fetchList: () => void;
   setDatePickerIsShow: (data: any) => void;
   setLocationAndDatePopIsShow: (data: any) => void;
+  setAgePickerIsShow: (data: any) => void;
+  setAge: (data: any) => void;
 }
 
 // recommendation
@@ -21,11 +25,12 @@ const RC = {
   timeR: 2,
   edit: 3,
   reload: 4,
+  age: 5,
 };
 
 const ListNoMatch = (props: IPropsType) => {
   const {
-    recommendInfo, datePickerRef, setDatePickerIsShow, setLocationAndDatePopIsShow, fetchList,
+    recommendInfo, age, datePickerRef, setDatePickerIsShow, setLocationAndDatePopIsShow, fetchList,
   } = props;
   const {
     promptTitle = '', promptSubTitle = '', type = '', buttonTitle = '',
@@ -36,6 +41,23 @@ const ListNoMatch = (props: IPropsType) => {
   const getSubTitle = () => promptSubTitle || getSharkValue('list_SystemBusySub');
 
   const getOperationButtonText = () => buttonTitle || getSharkValue('list_retry');
+
+  const handleAgeChange = (data) => {
+    props.setAge({ age: data });
+    props.setAgePickerIsShow({ visible: false });
+    props.fetchList();
+    CarLog.LogCode({ enName: ClickKey.C_LIST_RECOMMEND_CHANGEAGE_CONFIRM.KEY, age: data });
+  };
+
+  const onChangeAge = () => {
+    const apiAge = AgePickerApi({ age, confirmCallback: handleAgeChange });
+    if (apiAge) {
+      apiAge();
+    } else {
+      // todo osd&isd
+      props.setAgePickerIsShow({ visible: true });
+    }
+  };
 
   const handleOperateButtonPress = () => {
     switch (type) {
@@ -54,13 +76,14 @@ const ListNoMatch = (props: IPropsType) => {
       case RC.edit:
         setLocationAndDatePopIsShow({ visible: true });
         break;
+      case RC.age:
+        onChangeAge();
+        break;
       default:
         fetchList();
-
-      // todo log
     }
+    CarLog.LogCode({ enName: ClickKey.C_LIST_RECOMMEND_BUTTON.KEY, type });
   };
-
 
   return (
     <View style={{ paddingTop: BbkUtils.getPixel(120) }}>

@@ -1,10 +1,13 @@
 import React, { useCallback } from 'react';
 import RentalCarsDatePicker from '@ctrip/bbk-component-car-date-picker';
+import { CarLog } from '../../../Util/Index';
+import { ClickKey } from '../../../Constants/Index';
 
 interface IPropsType {
   handleDatePickerRef: (data: any) => void;
   setDateInfo: (data: any) => void;
   setDatePickerIsShow: (data: any) => void;
+  fetchList: () => void;
 }
 
 const ListDatePicker = (props: IPropsType) => {
@@ -16,12 +19,13 @@ const ListDatePicker = (props: IPropsType) => {
   const handleOnConfirm = (data) => {
     props.setDateInfo({ pickup: data.ptime, dropoff: data.rtime });
     props.setDatePickerIsShow({ visible: false });
-    // todo log
+    props.fetchList();
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEDATE_CONFIRM.KEY });
   };
 
   const handleOnCancel = () => {
     props.setDatePickerIsShow({ visible: false });
-    // todo log
+    CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEDATE_CANCEL.KEY });
   };
 
   return (

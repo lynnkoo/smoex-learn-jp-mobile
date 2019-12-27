@@ -6,12 +6,13 @@ import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog } from '../../Util/Index';
+import { listLoading } from './Texts';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -24,6 +25,7 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
   translateY: any,
   opacity: any,
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   shadowStyle: {
-    shadowOffset: { width: 0, height: 5 },
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     shadowColor: color.modalShadow,
     shadowOpacity: 1,
@@ -70,14 +72,18 @@ const styles = StyleSheet.create({
 interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
-  rentalDate: any;
+  indexCallbckData: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
+  agePickerVisible: boolean;
+  ageTipPopVisible: boolean;
   progress: number;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
+  setAgePickerIsShow: ({ visible: boolean }) => void;
+  setAgeTipPopIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
 }
 
@@ -140,7 +146,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
   }
 
   pageGoBack = () => {
@@ -177,13 +183,19 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   onBackAndroid() {
-    const { datePickerVisible, locationDatePopVisible } = this.props;
+    const {
+      datePickerVisible, locationDatePopVisible, agePickerVisible, ageTipPopVisible,
+    } = this.props;
     if (datePickerVisible) {
       this.datePickerRef.dismiss(() => {
         this.props.setDatePickerIsShow({ visible: false });
       });
     } else if (locationDatePopVisible) {
       this.props.setLocationAndDatePopIsShow({ visible: false });
+    } else if (agePickerVisible) {
+      this.props.setAgePickerIsShow({ visible: false });
+    } else if (ageTipPopVisible) {
+      this.props.setAgeTipPopIsShow({ visible: false });
     } else {
       this.pageGoBack();
     }
@@ -192,7 +204,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   // todo 移至到header内单独处理
   handlePressHeader = () => {
     if (this.props.progress !== 1) {
-      Toast.show('加载中，请稍候...'); // todo shark key
+      Toast.show(listLoading);
       return;
     }
     this.filterModalRef.current.hide({ animationOutType: 'fadeOut' });
@@ -201,11 +213,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   scrollUpCallback = () => {
-    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
   }
 
   scrollDownCallback = () => {
-    // this.scrollHeaderAnimation(0);
+    this.scrollHeaderAnimation(0);
   }
 
   scrollHeaderAnimation = (value) => {

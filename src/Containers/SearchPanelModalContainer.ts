@@ -20,7 +20,10 @@ import {
 } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
 import { getDatePickerVisible, getLocationDatePopVisible } from '../State/List/Selectors';
-import { setLocationAndDatePopIsShow, fetchListBatchQuery } from '../State/List/Actions';
+import {
+  setLocationAndDatePopIsShow, fetchListBatchQuery,
+  setAgeTipPopIsShow,
+} from '../State/List/Actions';
 import { setAge } from '../State/DriverAgeAndNumber/Actions';
 import { setDateInfo, setLocationInfo } from '../State/LocationAndDate/Actions';
 
@@ -56,6 +59,7 @@ const mapDispatchToProps = dispatch => ({
   setDateInfo: (data) => { dispatch(setDateInfo(data)); },
   fetchList: () => dispatch(fetchListBatchQuery()),
   setLocationInfo: (data) => { dispatch(setLocationInfo(data)); },
+  setAgeTipPopIsShow: (data) => { dispatch(setAgeTipPopIsShow(data)); },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchPanelModal);

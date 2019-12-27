@@ -7,6 +7,7 @@ import {
   CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
+  UPDATE_TEMP_SELECTED_FILTER,
   RESET,
 } from './Types';
 
@@ -22,6 +23,12 @@ const getInitalState = () => ({
     bitsFilter: [],
     filterLabels: [],
   },
+  tempSelectedFilters: {
+    sortFilter: '1',
+    priceFilter: [],
+    bitsFilter: [],
+    filterLabels: [],
+  },
   bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
     filter: [],
   },
@@ -29,6 +36,7 @@ const getInitalState = () => ({
   locationDatePopVisible: false,
   datePickerVisible: false,
   datePickerFocusOnRtime: false,
+  isFilterCalculating: false,
 });
 
 const initalState = getInitalState();
@@ -73,6 +81,11 @@ export default (state = initalState, action) => {
         ...state,
         selectedFilters: Object.assign(
           { ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }),
+      };
+    case UPDATE_TEMP_SELECTED_FILTER:
+      return {
+        ...state,
+        tempSelectedFilters: Object.assign(state.tempSelectedFilters, action.data),
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

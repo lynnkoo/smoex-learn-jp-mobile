@@ -4,11 +4,16 @@ import _ from 'lodash';
 import { FilterType } from '@ctrip/bbk-logic';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import FilterAndSortModal from '../Pages/List/Components/FilterAndSortModal';
-import { getActiveFilterBarCode, getSelectedFilters } from '../State/List/Selectors';
-import { updateSelectedFilter, setActiveFilterBarCode } from '../State/List/Actions';
 import {
-  getAllVehicleCount,
-  getAllVendorPriceCount,
+  getActiveFilterBarCode,
+  getSelectedFilters,
+} from '../State/List/Selectors';
+import {
+  updateSelectedFilter,
+  setActiveFilterBarCode,
+} from '../State/List/Actions';
+import {
+  getFilterCalculate,
   getPopularFilterItems,
   getFilterItems,
   getSortList,
@@ -18,6 +23,7 @@ import { AppContext } from '../Util/Index';
 
 const { selector } = BbkUtils;
 
+const PRICE_STEP = 50; // 价格滑条滑动间隔
 const getPriceRange = memoizeOne(
   (filterItem) => {
     let priceRange = {
@@ -182,26 +188,31 @@ const getFilterData = (state) => {
       isShowFooter = true;
       break;
   }
+
+  const selectedFilters = _.cloneDeep(getSelectedFilters(state));
+  console.log(filterData);
   return {
     filterData,
     isShowFooter,
     type: filterBarType,
-    selectedFilters: _.cloneDeep(getSelectedFilters(state)),
+    selectedFilters,
+    filterCalculater: getFilterCalculate(selectedFilters),
     allFilters: getFilterBarItemsCode() || [],
   };
 };
 
 const mapStateToProps = state => ({
   ...getFilterData(state),
+  priceStep: PRICE_STEP,
   currency: AppContext.LanguageInfo.currency,
-  allVehicleCount: getAllVehicleCount(),
-  allVendorPriceCount: getAllVendorPriceCount(),
 });
 
 /* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
   updateSelectedFilter: data => dispatch(updateSelectedFilter(data)),
+  // updateTempSelectedFilter: data => dispatch(updateTempSelectedFilter(data)),
   setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
+  getFilterCalculate: tempSelectedFilters => getFilterCalculate(tempSelectedFilters),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterAndSortModal);

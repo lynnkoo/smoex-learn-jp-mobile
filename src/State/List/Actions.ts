@@ -13,6 +13,7 @@ import {
   CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
+  UPDATE_TEMP_SELECTED_FILTER,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -86,6 +87,11 @@ export const setLocationAndDatePopIsShow = data => ({
 
 export const setDatePickerIsShow = data => ({
   type: SET_DATEPICKER_VISIBLE,
+  data,
+});
+
+export const updateTempSelectedFilter = data => ({
+  type: UPDATE_TEMP_SELECTED_FILTER,
   data,
 });
 

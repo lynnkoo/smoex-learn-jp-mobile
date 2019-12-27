@@ -207,7 +207,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       Toast.show(listLoading);
       return;
     }
-    this.filterModalRef.current.hide();
+    this.filterModalRef.current.hide({ animationOutType: 'fadeOut' });
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
@@ -250,6 +250,18 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
+  setNavigatorDragBack = (enable) => {
+    // @ts-ignore
+    const { presentedIndex, sceneConfigStack } = this.props.navigation.navigator.state;
+    const sceneConfig = sceneConfigStack[presentedIndex];
+    if (!sceneConfig || !sceneConfig.gestures) {
+      return false;
+    }
+    // @ts-ignore
+    this.props.navigation.navigator.state.sceneConfigStack[presentedIndex].gestures = enable;
+    return false;
+  }
+
   render() {
     const { listThreshold, headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
@@ -280,10 +292,12 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               />
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
-            <ListFilterBar
-              filterModalRef={this.filterModalRef}
-              style={styles.filterBarStyle}
-            />
+            {curStage === PAGESTAGE.SHOW && (
+              <ListFilterBar
+                filterModalRef={this.filterModalRef}
+                style={styles.filterBarStyle}
+              />
+            )}
             <VehGroupNav pageId={this.getPageId()} />
           </View>
 
@@ -307,8 +321,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <SearchPanelModal />
         <FilterAndSortModal
           filterModalRef={this.filterModalRef}
-          // @ts-ignore
-          navigation={this.props.navigation}
+          setNavigatorDragBack={this.setNavigatorDragBack}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
         {

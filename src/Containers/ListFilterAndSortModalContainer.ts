@@ -190,7 +190,7 @@ const getFilterData = (state) => {
   }
 
   const selectedFilters = _.cloneDeep(getSelectedFilters(state));
-  console.log(filterData);
+  
   return {
     filterData,
     isShowFooter,

@@ -19,7 +19,7 @@ import { listShowMore } from '../Texts';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
-const { selector, isIos, htmlDecode } = BbkUtils;
+const { selector } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
@@ -81,6 +81,7 @@ export const Vehicle = memo(withTheme(
 
 export const VehicleHeader = memo(withTheme(
   ({
+    // eslint-disable-next-line
     vehicleHeader, vehicleIndex, sectionsLen, setShowFooter, theme,
   }) => {
     const {
@@ -94,15 +95,19 @@ export const VehicleHeader = memo(withTheme(
     //   console.log('√【performance】Vehicle Header ', vehicleHeader.vehicleName)
     // })
 
-    const onLayout = useCallback(() => {
-      if (vehicleIndex === sectionsLen - 1) {
-        // android 少于 2 条数据时不展示打通，无法触发 scroll
-        setShowFooter(isIos ? true : sectionsLen > 1);
-      }
-    }, [vehicleIndex, sectionsLen, setShowFooter]);
+    // const onLayout = useCallback(() => {
+    //   // console.log('Vehicle Header onLayout', vehicleIndex, vehicleName, sectionsLen - 1)
+    //   if (vehicleIndex === sectionsLen - 1) {
+    //     // android 少于 2 条数据时不展示打通，无法触发 scroll
+    //     setShowFooter(isIos ? true : sectionsLen > 1);
+    //   }
+    // }, [vehicleIndex, sectionsLen, setShowFooter]);
 
     return (
-      <View style={{ backgroundColor: theme.backgroundColor }} onLayout={onLayout}>
+      <View
+        style={{ backgroundColor: theme.backgroundColor }}
+        // onLayout={onLayout}
+      >
         <BbkVehicleName
           name={vehicleName}
           groupName={groupName}
@@ -148,7 +153,7 @@ export const VehicleFooter = memo(withTheme(
           }]}
           textStyle={moreTextStyle}
           // TODO-dyy util 升级
-          iconContent={htmlDecode(`${icon.circleArrowDown};`)}
+          iconContent={icon.circleArrowDown}
           iconStyle={moreTextStyle}
         />
       </BbkTouchable>,

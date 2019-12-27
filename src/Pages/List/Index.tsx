@@ -6,7 +6,7 @@ import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
@@ -25,6 +25,7 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
   translateY: any,
   opacity: any,
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
 interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
-  rentalDate: any;
+  indexCallbckData: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
   agePickerVisible: boolean;
@@ -145,7 +146,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
   }
 
   pageGoBack = () => {
@@ -212,11 +213,11 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   scrollUpCallback = () => {
-    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
   }
 
   scrollDownCallback = () => {
-    // this.scrollHeaderAnimation(0);
+    this.scrollHeaderAnimation(0);
   }
 
   scrollHeaderAnimation = (value) => {

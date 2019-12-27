@@ -1,28 +1,23 @@
 import React, { useCallback } from 'react';
 import { View } from 'react-native';
-import _ from 'lodash';
-import memoizeOne from 'memoize-one';
 import { URL } from '@ctrip/crn';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkPriceDesc from '@ctrip/bbk-component-car-price-desc';
 import { setOpacity, border } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
+import VendorPriceTag from '@ctrip/bbk-component-vendor-price-tag';
 import { VehicleListStyle as style } from '../Styles';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 import VerdorHeader from './VendorHeader';
-
-const getLabelWrapStyle = memoizeOne(
-  (type) => {
-    const rowTypes = ['negative', 'positive'];
-    return [style.flexWrap, rowTypes.indexOf(type) > -1 && style.flexRow];
-  },
-);
+import {
+  isDiffLocation,
+} from '../../../Global/Cache/ListResSelectors';
 
 export default withTheme(
   ({
-    vendorLabelItems,
+    vendor,
     priceDescProps,
     vendorHeaderProps,
     theme,
@@ -51,27 +46,6 @@ export default withTheme(
       },
     };
 
-    const getLabelProps = (labelProps, type) => {
-      const themeMap = {
-        // positive: {
-        //   labelColor: theme.blueBg,
-        // },
-        promotion: {
-          labelColor: theme.orangePrice,
-          labelBgColor: setOpacity(theme.orangePrice, 0.1),
-        },
-        provider: {
-          labelColor: theme.fontSubLight,
-        },
-      };
-      return {
-        ...labelProps,
-        theme: themeMap[type],
-      };
-    };
-
-    const labelTypes = _.keys(vendorLabelItems);
-
     // useEffect(() => {
     //   console.log('【performance】Vendor Item ', vehicleName)
     // })
@@ -91,15 +65,12 @@ export default withTheme(
         />
 
         <BbkTouchable onPress={onVerdorHeaderPress}>
-          {
-            labelTypes.map(type => (
-              <View style={getLabelWrapStyle(type)} key={type}>
-                {
-                  vendorLabelItems[type].map(labelProps => <BbkLabel {...getLabelProps(labelProps, type)} key={labelProps.text} />)
-                }
-              </View>
-            ))
-          }
+          <VendorPriceTag
+            vendor={vendor}
+            showDistance
+            showProvider
+            isDiffLocation={isDiffLocation()}
+          />
 
           <View style={style.priceWrap}>
             {priceDescProps && <BbkPriceDesc {...priceDescProps} />}

@@ -135,10 +135,10 @@ export default class SectionListWithControl
     }
 
     if (triggerEvent === 'onScroll' && this.onScrollBegin) {
-      if (scrollUp > 10 && scrollUpCallback) {
+      if (scrollUp > 0 && scrollUpCallback) {
         // console.log('scrollUpCallback', scrollUp, y, this.lastScrollY, load, !refresh);
         scrollUpCallback(event);
-      } else if (scrollUp < -10 && scrollDownCallback) {
+      } else if (scrollUp < 0 && scrollDownCallback) {
         // console.log('scrollDownCallback', scrollUp, y, this.lastScrollY, load, !load)
         scrollDownCallback(event);
       }

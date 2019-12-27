@@ -18,11 +18,10 @@ const styles = StyleSheet.create({
   signStr: {
     width,
     paddingHorizontal: getPixel(2 * 16),
-    paddingTop: getPixel(2 * 8),
+    paddingTop: space.spaceS,
     paddingBottom: getPixel(2 * 12),
     overflow: 'hidden',
     backgroundColor: color.grayBg,
-    marginTop: -space.spaceL,
   },
   signPic: {
     width: width - getPixel(2 * 32),

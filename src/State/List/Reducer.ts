@@ -7,6 +7,8 @@ import {
   CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
+  SET_AGEPICKER_VISIBLE,
+  SET_AGETIPPOP_VISIBLE,
   RESET,
 } from './Types';
 
@@ -29,6 +31,8 @@ const getInitalState = () => ({
   locationDatePopVisible: false,
   datePickerVisible: false,
   datePickerFocusOnRtime: false,
+  agePickerVisible: false,
+  ageTipPopVisible: false,
 });
 
 const initalState = getInitalState();
@@ -73,6 +77,16 @@ export default (state = initalState, action) => {
         ...state,
         selectedFilters: Object.assign(
           { ...state.selectedFilters }, { priceFilter: [], bitsFilter: [], filterLabels: [] }),
+      };
+    case SET_AGEPICKER_VISIBLE:
+      return {
+        ...state,
+        agePickerVisible: action.data.visible,
+      };
+    case SET_AGETIPPOP_VISIBLE:
+      return {
+        ...state,
+        ageTipPopVisible: action.data.visible,
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

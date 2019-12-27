@@ -22,3 +22,7 @@ export const getActiveGroupIndex = (state) => {
 export const getDatePickerVisible = state => state.List.datePickerVisible;
 
 export const getLocationDatePopVisible = state => state.List.locationDatePopVisible;
+
+export const getAgePickerVisible = state => state.List.agePickerVisible;
+
+export const getAgeTipPopVisible = state => state.List.ageTipPopVisible;

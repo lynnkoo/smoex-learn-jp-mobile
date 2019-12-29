@@ -76,7 +76,7 @@ const ListProgress = (props: IPropsType) => {
   return (
     <Animated.View style={[styles.mainWrap, { opacity: animatedOpacity }]}>
       <View style={styles.progressWrap}>
-        <BbkText style={[font.body2LightStyle, { color: color.blueGrayBase }]}>
+        <BbkText style={[font.subTitle2Style, { color: color.blueGrayBase }]}>
           {combineTip}
         </BbkText>
       </View>

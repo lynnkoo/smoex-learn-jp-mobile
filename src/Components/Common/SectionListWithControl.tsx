@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   androidRefreshWrap: {
     position: 'absolute',
     width: '100%',
+    zIndex: -1,
   },
   iconStyle: {
     color: color.blueBase,
@@ -79,6 +80,9 @@ export default class SectionListWithControl
 
   onScrollBegin = false;
 
+  // eslint-disable-next-line
+  onScrollThrottle: any;
+
   static defaultProps = {
     throttle: 50,
   };
@@ -93,11 +97,14 @@ export default class SectionListWithControl
       showAndroidRefresh: false,
       showFooter: false,
     };
+    this.setScrollThrottle();
   }
 
-  onScrollThrottle = () => {
+  setScrollThrottle = () => {
     const { throttle } = this.props;
-    return isIos ? this.onScroll : _.throttle(this.onScroll, throttle, { trailing: false });
+    this.onScrollThrottle = isIos ? this.onScroll : _.throttle(this.onScroll, throttle, {
+      trailing: false,
+    });
   }
 
   // eslint-disable-next-line
@@ -411,7 +418,7 @@ export default class SectionListWithControl
         scrollEventThrottle={throttle}
         onScrollBeginDrag={this.onScrollBeginDrag}
         onScrollEndDrag={this.onScrollEndDrag}
-        onScroll={this.onScrollThrottle()}
+        onScroll={this.onScrollThrottle}
         onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
         ListHeaderComponent={listHeaderComponent}
         ListFooterComponent={listFooterComponent}

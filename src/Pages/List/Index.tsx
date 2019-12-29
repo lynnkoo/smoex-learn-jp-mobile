@@ -5,6 +5,7 @@ import {
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
+import _ from 'lodash';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color, druation, setOpacity } from '@ctrip/bbk-tokens';
@@ -103,6 +104,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   listThresholdLayout: number;
 
+  scrollHeaderThrottle: any;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -116,6 +119,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     this.headerAnimating = false;
     this.lastTranslateYAnim = 0;
     this.listThresholdLayout = 0;
+    this.setScrollHeaderThrottle();
   }
 
   /* eslint-disable class-methods-use-this */
@@ -211,14 +215,29 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   scrollUpCallback = () => {
-    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderThrottle(-DEFAULT_HEADER_HEIGHT);
   }
 
-  scrollDownCallback = () => {
-    this.scrollHeaderAnimation(0);
+  scrollDownCallback = (event) => {
+    const { y } = event.nativeEvent.contentOffset;
+    if (y < 50) {
+      this.scrollHeaderThrottle.cancel();
+      this.scrollHeaderThrottle(0, 0);
+    } else {
+      this.scrollHeaderThrottle(0);
+    }
   }
 
-  scrollHeaderAnimation = (value) => {
+  setScrollHeaderThrottle = () => {
+    this.scrollHeaderThrottle = _.throttle(
+      this.scrollHeaderAnimation,
+      druation.animationDurationSm,
+      {
+        trailing: false,
+      });
+  }
+
+  scrollHeaderAnimation = (value, duration = druation.animationDurationSm) => {
     const { headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
     if (this.lastTranslateYAnim === value || this.headerAnimating) {
@@ -230,13 +249,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         Animated.timing(translateY,
           {
             toValue: value,
-            duration: druation.animationDurationSm,
+            duration,
             useNativeDriver: true,
           },
         ),
         Animated.timing(opacity, {
           toValue: value < 0 ? 0 : 1,
-          duration: druation.animationDurationSm,
+          duration,
           useNativeDriver: true,
         }),
       ]),

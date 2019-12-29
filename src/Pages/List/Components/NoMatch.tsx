@@ -36,6 +36,8 @@ const ListNoMatch = (props: IPropsType) => {
     promptTitle = '', promptSubTitle = '', type = '', buttonTitle = '',
   } = recommendInfo || {};
 
+  const getImgType = () => (promptTitle ? ImgType.No_Search_Result : ImgType.No_Network);
+
   const getTitle = () => promptTitle || getSharkValue('list_SystemBusy');
 
   const getSubTitle = () => promptSubTitle || getSharkValue('list_SystemBusySub');
@@ -88,7 +90,7 @@ const ListNoMatch = (props: IPropsType) => {
   return (
     <View style={{ paddingTop: BbkUtils.getPixel(120) }}>
       <BbkComponentListNoMatch
-        type={ImgType.No_Network}
+        type={getImgType()}
         title={getTitle()}
         subTitle={getSubTitle()}
         isShowOperateButton

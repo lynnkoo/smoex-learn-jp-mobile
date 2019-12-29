@@ -1,5 +1,6 @@
 import React, {
-  memo, useState, useRef, forwardRef, useImperativeHandle, RefObject, useEffect, useCallback,
+  memo, useState, useRef, forwardRef,
+  useImperativeHandle, RefObject, useEffect, useCallback,
 } from 'react';
 import {
   View,
@@ -7,7 +8,7 @@ import {
 import _ from 'lodash';
 import BbkComponentCarFilterModal from '@ctrip/bbk-component-car-filter-modal';
 import BbkComponentFilterList from '@ctrip/bbk-component-filter-list';
-import { FilterType } from '@ctrip/bbk-logic';
+import { FilterType, FilterCalculaterType } from '@ctrip/bbk-logic';
 import BbkComponentSelectMenu, { BbkSelectMenu } from '@ctrip/bbk-component-select-menu';
 import { FilterBarType } from '../../../Constants/Index';
 
@@ -17,7 +18,8 @@ interface IFilterInner {
   type: string;
   filterData: Array<Object>;
   currency: string;
-  onHide?: () => void;
+  priceStep?: number;
+  onHide?: (animation?: any) => void;
   updateSelectedFilter?: (data: any) => void;
   updateTempFilter?: (data: any, handleType: string, type: string, isPriceLabel: boolean) => void;
   updateTempPrice?: (data: any, handleType: string) => void;
@@ -28,14 +30,14 @@ interface IFilterType extends FilterType {
 }
 
 export interface IFilterAndSort extends IFilterInner {
-  allVehicleCount: number;
-  allVendorPriceCount: number;
+  filterCalculater: FilterCalculaterType;
   selectedFilters: IFilterType;
   allFilters: any;
   isShowFooter: boolean;
-  navigation: any;
   filterModalRef: RefObject<any>;
+  setNavigatorDragBack: (data: any) => void;
   setActiveFilterBarCode: (data: any) => void;
+  getFilterCalculate?: (data: any) => any;
 }
 
 const initFilterData = (filterType, tempFilterData) => {
@@ -75,7 +77,8 @@ const isEqualInner = (prevProps, nextProps) => nextProps.type === ''
                      || nextProps.type === undefined;
 
 const RenderInner: React.FC<IFilterInner> = memo(({
-  type, filterData, currency, updateSelectedFilter, updateTempFilter, updateTempPrice, onHide,
+  type, filterData, currency, priceStep, updateSelectedFilter,
+  updateTempFilter, updateTempPrice, onHide,
 }: IFilterInner) => (
   <View>
     {type === FilterBarType.Sort && (
@@ -113,6 +116,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     <BbkComponentFilterList
       filterGroups={initFilterData(type, filterData)}
       currency={currency}
+      priceStep={priceStep}
       changeTempFilterData={(label, handleType, isPriceLabel) => {
         updateTempFilter(label, handleType, type, isPriceLabel);
       }}
@@ -127,39 +131,35 @@ const RenderInner: React.FC<IFilterInner> = memo(({
   </View>
 ), isEqualInner);
 
-const setNavigatorDragBack = (navigation, enable) => {
-  const { presentedIndex, sceneConfigStack } = navigation.navigator.state;
-  const sceneConfig = sceneConfigStack[presentedIndex];
-  if (sceneConfig) {
-    sceneConfig.gestures = enable;
-  }
-};
-
-const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
+const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   filterData,
   selectedFilters,
   allFilters = [],
-  allVehicleCount,
-  allVendorPriceCount,
+  filterCalculater = { vehiclesCount: 0, pricesCount: 0 },
   isShowFooter,
   type,
   currency,
-  navigation,
+  priceStep,
   filterModalRef,
+  setNavigatorDragBack,
   updateSelectedFilter,
   setActiveFilterBarCode,
+  getFilterCalculate,
 }: IFilterAndSort) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [animationConfig, setAnimationConfig] = useState(null);
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
   const [tempPrice, setTempPrice] = useState({});
   // eslint-disable-next-line prefer-const
   let [filterDataState, setFilterDataState] = useState([]);
+  const [count, setCount] = useState(filterCalculater);
   const [toggleClearFilter, setToggleClearFilter] = useState(false);
 
   filterDataState = filterData;
-  // useEffect(() => {
-  //   setFilterDataState(filterData);
-  // }, [filterData]);
+
+  useEffect(() => {
+    setCount(filterCalculater);
+  }, [filterCalculater]);
 
   useEffect(() => {
     const initFilterCode = allFilters.map(item => ({
@@ -177,12 +177,44 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
         && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
   }, [selectedFilters.priceFilter]);
 
-  const onHide = useCallback(() => {
+  const onHide = useCallback((animation = { }) => {
     setActiveFilterBarCode('');
+    setAnimationConfig(animation);
     setModalVisible(false);
     setFilterDataState([]);
-    setNavigatorDragBack(navigation, true);
-  }, [navigation, setActiveFilterBarCode]);
+    setCount({ vehiclesCount: 0, pricesCount: 0 });
+    setNavigatorDragBack(true);
+  }, [setActiveFilterBarCode, setNavigatorDragBack]);
+
+  const setSelectedFilters = useCallback((labelVal, priceVal) => {
+    let savedFilter = [];
+    let bitsFilter = [];
+    let price = priceVal;
+
+    labelVal.forEach((temp) => {
+      savedFilter = savedFilter.concat(temp.selectedLabelList);
+    });
+    const savedBitsFilter = savedFilter.filter(
+      filter => filter && filter.code && filter.code.indexOf('Price') === -1);
+    bitsFilter = savedBitsFilter.map(filter => filter && filter.code);
+
+    // @ts-ignore;
+    if (price && price.min === 0 && price.max === 0) {
+      price = {};
+    }
+
+    return {
+      sortFilter: selectedFilters.sortFilter,
+      bitsFilter,
+      filterLabels: savedFilter,
+      priceFilter: JSON.stringify(price) === '{}' ? [] : [price],
+    };
+  }, [selectedFilters.sortFilter]);
+
+  const updateFilterCalculate = useCallback((labelVal, priceVal) => {
+    const temp = setSelectedFilters(labelVal, priceVal);
+    setCount(getFilterCalculate(temp));
+  }, [getFilterCalculate, setSelectedFilters]);
 
   const updateTempFilter = useCallback((label, handleType, typeName, isPriceLabel) => {
     const temp = tempFilterLabel.map((item) => {
@@ -204,7 +236,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
     });
 
     setTempFilterLabel(temp);
-  }, [tempFilterLabel]);
+    updateFilterCalculate(temp, tempPrice);
+  }, [updateFilterCalculate, tempFilterLabel, tempPrice]);
 
   const updateTempPrice = useCallback((price, priceType) => {
     const temp: any = tempPrice;
@@ -218,31 +251,17 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
     if (!temp.min) temp.min = 0;
     if (!temp.max) temp.max = 0;
     setTempPrice(temp);
-  }, [tempPrice]);
+    updateFilterCalculate(tempFilterLabel, temp);
+  }, [updateFilterCalculate, tempFilterLabel, tempPrice]);
 
   const onSaveFilter = useCallback(() => {
-    let savedFilter = [];
-    let bitsFilter = [];
-    let price = tempPrice;
+    const temp = setSelectedFilters(tempFilterLabel, tempPrice);
 
-    tempFilterLabel.forEach((temp) => {
-      savedFilter = savedFilter.concat(temp.selectedLabelList);
-    });
-    const savedBitsFilter = savedFilter.filter(
-      filter => filter && filter.code && filter.code.indexOf('Price') === -1);
-    bitsFilter = savedBitsFilter.map(filter => filter && filter.code);
-
-    // @ts-ignore;
-    if (price && price.min === 0 && price.max === 0) {
-      price = {};
-    }
-    updateSelectedFilter({
-      bitsFilter,
-      filterLabels: savedFilter,
-      priceFilter: JSON.stringify(price) === '{}' ? [] : [price],
-    });
+    updateFilterCalculate(tempFilterLabel, tempPrice);
+    updateSelectedFilter(temp);
     onHide();
-  }, [onHide, tempFilterLabel, tempPrice, updateSelectedFilter]);
+  }, [setSelectedFilters, tempFilterLabel, tempPrice,
+    updateFilterCalculate, updateSelectedFilter, onHide]);
 
   const onClearFilter = useCallback(() => {
     const tempCode = tempFilterLabel.map((item) => {
@@ -282,13 +301,15 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
     setTempPrice({});
     setFilterDataState(tempFilterDataState);
     setTempFilterLabel(tempCode);
-  }, [filterDataState, tempFilterLabel, toggleClearFilter, type]);
+    updateFilterCalculate(tempCode, {});
+  }, [filterDataState, updateFilterCalculate, tempFilterLabel, toggleClearFilter, type]);
 
   const privateFilterModalRef = useRef();
   useImperativeHandle(filterModalRef, () => ({
-    show: () => {
+    show: (animation) => {
+      setAnimationConfig(animation);
       setModalVisible(true);
-      setNavigatorDragBack(navigation, false);
+      setNavigatorDragBack(false);
     },
     hide: onHide,
   }));
@@ -301,8 +322,11 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
       ref={privateFilterModalRef}
       modalVisible={modalVisible}
       isShowFooter={isShowFooter}
-      ModelsNumber={allVehicleCount}
-      PricesNumber={allVendorPriceCount}
+      ModelsNumber={count.vehiclesCount}
+      PricesNumber={count.pricesCount}
+      // @ts-ignore
+      animationConfig={animationConfig}
+      // @ts-ignore
       onHide={onHide}
       onDetermine={onSaveFilter}
       onClear={onClearFilter}
@@ -311,6 +335,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
         type={type}
         filterData={filterDataState}
         currency={currency}
+        priceStep={priceStep}
         updateSelectedFilter={updateSelectedFilter}
         updateTempFilter={updateTempFilter}
         updateTempPrice={updateTempPrice}
@@ -318,6 +343,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = forwardRef(({
       />
     </BbkComponentCarFilterModal>
   );
-});
+};
 
-export default FilterAndSortModal;
+export default forwardRef(FilterAndSortModal);

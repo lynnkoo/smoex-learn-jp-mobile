@@ -15,6 +15,7 @@ import {
   SET_DATEPICKER_VISIBLE,
   SET_AGEPICKER_VISIBLE,
   SET_AGETIPPOP_VISIBLE,
+  SET_SORTANDFILTER_VISIBLE,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -98,6 +99,12 @@ export const setAgePickerIsShow = data => ({
 
 export const setAgeTipPopIsShow = data => ({
   type: SET_AGETIPPOP_VISIBLE,
+  data,
+});
+
+
+export const setFilterModalIsShow = data => ({
+  type: SET_SORTANDFILTER_VISIBLE,
   data,
 });
 

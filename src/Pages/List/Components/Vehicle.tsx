@@ -159,9 +159,9 @@ export const VehicleFooter = memo(withTheme(
         <BbkCarRightIcon
           text={listShowMore(moreNumber)}
           style={style.more}
-          textStyle={[moreTextStyle, style.moreIcon]}
+          textStyle={moreTextStyle}
           iconContent={htmlDecode(icon.circleArrowDown)}
-          iconStyle={moreTextStyle}
+          iconStyle={[moreTextStyle, style.moreIcon]}
         />
       </BbkTouchable>,
       <View style={style.vehicleMarginBottom} />,

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import {
-  border, space, font,
+  border, space, font, icon,
 } from '@ctrip/bbk-tokens';
 import { BbkUtils, BbkChannel } from '@ctrip/bbk-utils';
 
@@ -49,7 +49,8 @@ export const VehicleListStyle = StyleSheet.create({
     ...font.body2LightStyle,
   },
   moreIcon: {
-    marginRight: space.spaceS,
+    marginLeft: space.spaceS,
+    fontFamily: icon.iconFamily,
   },
   vehicleImage: {
     width: getPixel(335),

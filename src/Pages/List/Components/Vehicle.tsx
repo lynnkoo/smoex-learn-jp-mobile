@@ -19,7 +19,7 @@ import { listShowMore } from '../Texts';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
-const { selector } = BbkUtils;
+const { selector, htmlDecode } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({ item, section, theme }) => {
@@ -35,7 +35,11 @@ export const Vehicle = memo(withTheme(
     // })
 
     return (
-      <View style={[style.wrap, { backgroundColor: theme.backgroundColor }]}>
+      <View style={[style.wrap, {
+        backgroundColor: theme.backgroundColor,
+        borderTopColor: theme.grayBorder,
+      }]}
+      >
         <View style={[style.flexRow]}>
           <BbkCarImage
             source={{ uri: imgUrl }}
@@ -115,6 +119,7 @@ export const VehicleHeader = memo(withTheme(
           isHotLabel={isHotLabel}
           // 一期没有弹层，不展示icon
           showSimilarIcon={false}
+          style={style.vehicleHeaderWrap}
         />
       </View>
     );
@@ -144,17 +149,19 @@ export const VehicleFooter = memo(withTheme(
 
     return selector(
       moreNumber,
-      <BbkTouchable onPress={showMoreHandler}>
+      <BbkTouchable
+        onPress={showMoreHandler}
+        style={[style.showMoreWrap, style.vehicleMarginBottom, {
+          backgroundColor: theme.backgroundColor,
+          borderTopColor: theme.grayBorder,
+        }]}
+      >
         <BbkCarRightIcon
           text={listShowMore(moreNumber)}
-          style={[style.more, style.vehicleMarginBottom, {
-            backgroundColor: theme.backgroundColor,
-            borderBottomColor: theme.grayBorder,
-          }]}
+          style={style.more}
           textStyle={moreTextStyle}
-          // TODO-dyy util 升级
-          iconContent={icon.circleArrowDown}
-          iconStyle={moreTextStyle}
+          iconContent={htmlDecode(icon.circleArrowDown)}
+          iconStyle={[moreTextStyle, style.moreIcon]}
         />
       </BbkTouchable>,
       <View style={style.vehicleMarginBottom} />,

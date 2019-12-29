@@ -1,4 +1,4 @@
-import { getProductGroupsAndCount } from '@ctrip/bbk-logic';
+import { getProductGroupsAndCount, FilterCalculater } from '@ctrip/bbk-logic';
 import { FrontEndConfig } from '../../Constants/Index';
 import { getStore } from '../../State/Store';
 
@@ -62,6 +62,18 @@ export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;
 
 // 获取所有报价个数
 export const getAllVendorPriceCount = () => getBaseResData().allVendorPriceCount || 0;
+
+export const getFilterCalculate = (tempSelectedFilters) => {
+  const filterCalculater = FilterCalculater(
+    getBaseProductGroups(),
+    getAllFilterMenuItems(),
+    tempSelectedFilters,
+    getHashCode(),
+  );
+
+  // console.log(filterCalculater);
+  return filterCalculater;
+};
 
 const getFilterItemsByHierarchy = (hierarchy: number) => {
   const targetList = [];

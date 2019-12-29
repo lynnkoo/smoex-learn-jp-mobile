@@ -6,8 +6,8 @@
   "scripts": {
     "patch": "crn-cli run-patch",
     "start": "crn-cli start --port 5389",
-    "android": "crn-cli run-android --app-version 8.14 --port 5389",
-    "ios": "crn-cli run-ios --app-version 8.14 --port 5389",
+    "android": "crn-cli run-android --app-version 8.17 --port 5389",
+    "ios": "crn-cli run-ios --app-version 8.17 --port 5389",
     "start:trip": "crn-cli start --port 5388",
     "android:trip": "crn-cli run-android --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --port 5388",
     "ios:trip": "crn-cli run-ios --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --reset --port 5388",
@@ -33,7 +33,7 @@
   "peerDependencies": {
     "@ctrip/bbk-tokens": "^0.0.34",
     "@ctrip/bbk-theming": "^0.0.35",
-    "@ctrip/bbk-utils": "^0.0.26"
+    "@ctrip/bbk-utils": "^0.0.39"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
@@ -68,7 +68,7 @@
     "@ctrip/bbk-shark": "0.0.51",
     "@ctrip/bbk-theming": "0.0.47",
     "@ctrip/bbk-tokens": "0.0.48",
-    "@ctrip/bbk-utils": "0.0.35",
+    "@ctrip/bbk-utils": "0.0.39",
     "@ctrip/crn": "git+http://git.dev.sh.ctripcorp.com/crn/crn.git#rel/7.4.0_ibu",
     "@ctrip/ibu_crn_ext": "^7.4.0",
     "@react-native-community/eslint-config": "^0.0.5",

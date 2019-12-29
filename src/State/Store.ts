@@ -41,7 +41,7 @@ const unmountStore = () => {
   store = null;
 };
 
-const initialiseAppState = (): void => {
+const initialiseAppState = async (): Promise<void> => {
   store.dispatch(getCountryInfo());
   store.dispatch(getLocationAndDateInfo());
   store.dispatch(getDriverAge());

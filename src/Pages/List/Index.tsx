@@ -7,7 +7,7 @@ import {
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
-import { color } from '@ctrip/bbk-tokens';
+import { color, setOpacity } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   shadowStyle: {
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
-    shadowColor: color.modalShadow,
+    shadowColor: setOpacity(color.black, 0.08),
     shadowOpacity: 1,
     elevation: 4,
   },

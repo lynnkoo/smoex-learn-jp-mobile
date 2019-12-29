@@ -4,15 +4,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
 } from 'react-native';
 import {
-  ViewPort, HeaderView, IBasePageProps, Toast,
+  ViewPort, HeaderView, IBasePageProps,
 } from '@ctrip/crn';
-import { AppContext, CarLog } from '../../Util/Index';
+import { AppContext } from '../../Util/Index';
 import CPage, { IStateType } from '../../Components/App/CPage';
-import { TextWithLogCode, TouchableOpacityWithLogCode } from '../../Components/Index';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,12 +17,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     flexDirection: 'column',
     paddingVertical: 20,
-  },
-  appContext: {
-    height: 188,
-    flex: 1,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'gray',
   },
   container2: {
     flex: 1,
@@ -36,17 +27,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 5,
     borderColor: 'gray',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-  },
-  btn: {
-    borderColor: 'gray',
-    height: 30,
-    width: 100,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
   },
 });
 
@@ -97,79 +79,9 @@ export default class Debug extends CPage<PropsType, StateType> {
       <ViewPort>
         <HeaderView title={this.getPageId()} page={this} />
         <ScrollView style={styles.container}>
-          <View>
-            <TextInput
-              value={this.getAppContext()}
-              multiline
-              style={styles.appContext}
-            />
-          </View>
           <View style={styles.container2}>
-            <Text>{this.props.count}</Text>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => this.props.debugIncrement()}
-            >
-              <Text>increment</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => this.props.debugDecrement()}
-            >
-              <Text>decrement</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => this.push('Demo')}
-            >
-              <Text>to Demo</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.container2}>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => CarLog.LogCode({ enName: 'test-click', pageId: this.getPageId() })}
-            >
-              <Text>测试点击埋点</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => CarLog.LogTrace({ key: '000', info: { eventResult: true } })}
-            >
-              <Text>测试trace埋点</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={
-                () => CarLog.LogMetric({
-                  key: '002', value: 500, info: { pageId: this.getPageId() },
-                })
-              }
-            >
-              <Text>测试metric埋点</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.container2}>
-            <TextWithLogCode
-              pageId={this.getPageId()}
-              enName="test textLogCode"
-              logOtherInfo={{ code: 1 }}
-              onPress={() => { Toast.show('test withLogCode'); }}
-            >
-              {'测试TextWithLogCode组件'}
-            </TextWithLogCode>
-          </View>
-
-          <View style={styles.container2}>
-            <TouchableOpacityWithLogCode
-              pageId={this.getPageId()}
-              enName="test TouchableOpacityLogCode"
-              onPress={() => { Toast.show('test TouchableOpacityLogCode'); }}
-            >
-              <Text>测试TouchableOpacityWithLogCode组件</Text>
-            </TouchableOpacityWithLogCode>
+            <Text>版本号: </Text>
+            <Text>{AppContext.CarEnv.buildTime}</Text>
           </View>
         </ScrollView>
       </ViewPort>

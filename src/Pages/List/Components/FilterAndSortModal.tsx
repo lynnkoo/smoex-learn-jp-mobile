@@ -1,6 +1,5 @@
 import React, {
-  memo, useState, useRef, forwardRef,
-  useImperativeHandle, RefObject, useEffect, useCallback,
+  memo, useState, useEffect, useCallback,
 } from 'react';
 import {
   View, ViewStyle,
@@ -30,14 +29,15 @@ interface IFilterType extends FilterType {
 }
 
 export interface IFilterAndSort extends IFilterInner {
+  visible: boolean;
   filterCalculater: FilterCalculaterType;
   selectedFilters: IFilterType;
   allFilters: any;
   isShowFooter: boolean;
-  filterModalRef: RefObject<any>;
   setNavigatorDragBack: (data: any) => void;
   setActiveFilterBarCode: (data: any) => void;
   getFilterCalculate?: (data: any) => any;
+  setFilterModalIsShow: (data: any) => any;
   style?: ViewStyle
 }
 
@@ -133,6 +133,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
 ), isEqualInner);
 
 const FilterAndSortModal: React.FC<IFilterAndSort> = ({
+  visible,
   filterData,
   selectedFilters,
   allFilters = [],
@@ -141,15 +142,14 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   type,
   currency,
   priceStep,
-  filterModalRef,
   setNavigatorDragBack,
   updateSelectedFilter,
   setActiveFilterBarCode,
   getFilterCalculate,
+  setFilterModalIsShow,
   style,
 }: IFilterAndSort) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [animationConfig, setAnimationConfig] = useState(null);
+  const animationConfig = null;
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
   const [tempPrice, setTempPrice] = useState({});
   // eslint-disable-next-line prefer-const
@@ -179,14 +179,20 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
         && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
   }, [selectedFilters.priceFilter]);
 
-  const onHide = useCallback((animation = {}) => {
-    setActiveFilterBarCode('');
-    setAnimationConfig(animation);
-    setModalVisible(false);
-    setFilterDataState([]);
-    setCount({ vehiclesCount: 0, pricesCount: 0 });
-    setNavigatorDragBack(true);
-  }, [setActiveFilterBarCode, setNavigatorDragBack]);
+  useEffect(() => {
+    if (!visible) {
+      setActiveFilterBarCode('');
+      setFilterDataState([]);
+      setCount({ vehiclesCount: 0, pricesCount: 0 });
+      setNavigatorDragBack(true);
+    } else {
+      setNavigatorDragBack(false);
+    }
+  }, [setActiveFilterBarCode, setNavigatorDragBack, visible]);
+
+  const onHide = useCallback(() => {
+    setFilterModalIsShow({ visible: false });
+  }, [setFilterModalIsShow]);
 
   const setSelectedFilters = useCallback((labelVal, priceVal) => {
     let savedFilter = [];
@@ -306,23 +312,12 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     updateFilterCalculate(tempCode, {});
   }, [filterDataState, updateFilterCalculate, tempFilterLabel, toggleClearFilter, type]);
 
-  const privateFilterModalRef = useRef();
-  useImperativeHandle(filterModalRef, () => ({
-    show: (animation) => {
-      setAnimationConfig(animation);
-      setModalVisible(true);
-      setNavigatorDragBack(false);
-    },
-    hide: onHide,
-  }));
-
-  if (modalVisible && filterDataState && filterDataState.length === 0) return null;
+  if (visible && filterDataState && filterDataState.length === 0) return null;
 
   return (
     <BbkComponentCarFilterModal
       // @ts-ignore
-      ref={privateFilterModalRef}
-      modalVisible={modalVisible}
+      modalVisible={visible}
       isShowFooter={isShowFooter}
       ModelsNumber={count.vehiclesCount}
       PricesNumber={count.pricesCount}
@@ -348,4 +343,4 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   );
 };
 
-export default forwardRef(FilterAndSortModal);
+export default FilterAndSortModal;

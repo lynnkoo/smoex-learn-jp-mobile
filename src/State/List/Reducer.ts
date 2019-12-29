@@ -9,6 +9,7 @@ import {
   SET_DATEPICKER_VISIBLE,
   SET_AGEPICKER_VISIBLE,
   SET_AGETIPPOP_VISIBLE,
+  SET_SORTANDFILTER_VISIBLE,
   RESET,
 } from './Types';
 
@@ -33,6 +34,7 @@ const getInitalState = () => ({
   datePickerFocusOnRtime: false,
   agePickerVisible: false,
   ageTipPopVisible: false,
+  sortAndFilterVisible: false,
 });
 
 const initalState = getInitalState();
@@ -87,6 +89,11 @@ export default (state = initalState, action) => {
       return {
         ...state,
         ageTipPopVisible: action.data.visible,
+      };
+    case SET_SORTANDFILTER_VISIBLE:
+      return {
+        ...state,
+        sortAndFilterVisible: action.data.visible,
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

@@ -4,7 +4,7 @@ import List from '../Pages/List/Index';
 import {
   initActiveGroupId, getStatus, fetchListBatchQuery,
   setDatePickerIsShow, setLocationAndDatePopIsShow, setAgePickerIsShow,
-  setAgeTipPopIsShow,
+  setAgeTipPopIsShow, setFilterModalIsShow,
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 import {
@@ -40,6 +40,7 @@ const mapDispatchToProps = dispatch => ({
   setLocationAndDatePopIsShow: data => dispatch(setLocationAndDatePopIsShow(data)),
   setAgePickerIsShow: data => dispatch(setAgePickerIsShow(data)),
   setAgeTipPopIsShow: (data) => { dispatch(setAgeTipPopIsShow(data)); },
+  setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

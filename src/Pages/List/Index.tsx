@@ -7,7 +7,7 @@ import {
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
-import { color } from '@ctrip/bbk-tokens';
+import { color, druation } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
@@ -232,13 +232,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         Animated.timing(translateY,
           {
             toValue: value,
-            duration: 500,
+            duration: druation.animationDurationSm,
             useNativeDriver: true,
           },
         ),
         Animated.timing(opacity, {
           toValue: value < 0 ? 0 : 1,
-          duration: 500,
+          duration: druation.animationDurationSm,
           useNativeDriver: true,
         }),
       ]),

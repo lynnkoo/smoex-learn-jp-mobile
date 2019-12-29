@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { withTheme } from '@ctrip/bbk-theming';
 import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import {
-  color, icon, space, setOpacity, font,
+  color, icon, space, setOpacity, font, border,
 } from '@ctrip/bbk-tokens';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import BbkText from '@ctrip/bbk-component-text';
@@ -22,6 +23,7 @@ interface SelectedFilterItemProps {
 interface SelectedFilterItemsProps {
   filters: SelectedFilterItemProps[];
   clearFilter: (code: string) => void;
+  theme?: any
 }
 
 const styles = StyleSheet.create({
@@ -30,6 +32,7 @@ const styles = StyleSheet.create({
     padding: space.spaceXXL,
     backgroundColor: color.white,
     marginTop: -space.spaceL,
+    borderTopWidth: border.borderSizeSm,
   },
   filterTitle: {
     ...font.body3Style,
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.spaceL,
     paddingVertical: space.spaceS,
     marginTop: space.spaceL,
+    marginRight: space.spaceL,
     backgroundColor: setOpacity(color.blueBase, 0.08),
   },
   filterItemText: {
@@ -46,6 +50,10 @@ const styles = StyleSheet.create({
   },
   filterItemClose: {
     marginLeft: space.spaceS,
+  },
+  filterItems: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });
 
@@ -67,14 +75,22 @@ const SelectedFilterItem = ({ code, name, clearFilter }: SelectedFilterItemProps
   );
 };
 
-const SelectedFilterItems = ({ filters = [], clearFilter }: SelectedFilterItemsProps) => selector(
+const SelectedFilterItems = ({
+  filters = [],
+  clearFilter,
+  theme,
+}: SelectedFilterItemsProps) => selector(
   filters.length > 0,
-  <View style={styles.filterWrapper}>
+  <View style={[styles.filterWrapper, {
+    borderTopColor: theme.grayBorder,
+  }]}
+  >
     <BbkText style={styles.filterTitle}>
       {getSharkValue('list_changeFilterTips')}
 :
     </BbkText>
-    {
+    <View style={styles.filterItems}>
+      {
         filters.map(filter => (
           <SelectedFilterItem
             key={filter.code}
@@ -83,7 +99,8 @@ const SelectedFilterItems = ({ filters = [], clearFilter }: SelectedFilterItemsP
           />
         ))
       }
+    </View>
   </View>,
 );
 
-export default memo(SelectedFilterItems);
+export default memo(withTheme(SelectedFilterItems));

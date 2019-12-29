@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   androidRefreshWrap: {
-    marginTop: -35,
+    position: 'absolute',
+    width: '100%',
   },
   iconStyle: {
     color: color.blueBase,
@@ -345,7 +346,9 @@ export default class SectionListWithControl
     const refreshControl = (
       // ts-ignore
       <RefreshControl
-        style={isIos ? styles.controlWrap : styles.androidRefreshWrap}
+        style={isIos ? styles.controlWrap : [styles.androidRefreshWrap, {
+          top: throttle - 35,
+        }]}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // @ts-ignore

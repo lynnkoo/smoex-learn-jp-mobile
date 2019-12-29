@@ -3,7 +3,7 @@ import React, {
   useImperativeHandle, RefObject, useEffect, useCallback,
 } from 'react';
 import {
-  View,
+  View, ViewStyle,
 } from 'react-native';
 import _ from 'lodash';
 import BbkComponentCarFilterModal from '@ctrip/bbk-component-car-filter-modal';
@@ -38,6 +38,7 @@ export interface IFilterAndSort extends IFilterInner {
   setNavigatorDragBack: (data: any) => void;
   setActiveFilterBarCode: (data: any) => void;
   getFilterCalculate?: (data: any) => any;
+  style?: ViewStyle
 }
 
 const initFilterData = (filterType, tempFilterData) => {
@@ -74,7 +75,7 @@ const initFilterData = (filterType, tempFilterData) => {
 };
 
 const isEqualInner = (prevProps, nextProps) => nextProps.type === ''
-                     || nextProps.type === undefined;
+  || nextProps.type === undefined;
 
 const RenderInner: React.FC<IFilterInner> = memo(({
   type, filterData, currency, priceStep, updateSelectedFilter,
@@ -93,13 +94,13 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     )}
 
     {(type === FilterBarType.Supplier
-    || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
-    <BbkComponentFilterList
-      filterGroups={initFilterData(type, filterData)}
-      changeTempFilterData={(label, handleType) => {
-        updateTempFilter(label, handleType, type, false);
-      }}
-    />
+        || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
+          <BbkComponentFilterList
+            filterGroups={initFilterData(type, filterData)}
+            changeTempFilterData={(label, handleType) => {
+              updateTempFilter(label, handleType, type, false);
+            }}
+          />
     )}
 
     {type === FilterBarType.Seats && (
@@ -145,6 +146,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   updateSelectedFilter,
   setActiveFilterBarCode,
   getFilterCalculate,
+  style,
 }: IFilterAndSort) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [animationConfig, setAnimationConfig] = useState(null);
@@ -177,7 +179,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
         && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
   }, [selectedFilters.priceFilter]);
 
-  const onHide = useCallback((animation = { }) => {
+  const onHide = useCallback((animation = {}) => {
     setActiveFilterBarCode('');
     setAnimationConfig(animation);
     setModalVisible(false);
@@ -330,6 +332,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       onHide={onHide}
       onDetermine={onSaveFilter}
       onClear={onClearFilter}
+      style={style}
     >
       <RenderInner
         type={type}

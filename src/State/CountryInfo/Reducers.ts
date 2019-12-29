@@ -1,13 +1,7 @@
 import { SET_COUNTRY_INFO, GET_COUNTRY_INFO } from './Types';
 import { CountryInfoActionType } from './Actions';
-import Utils from '../../Util/Utils';
-import { FrontEndConfig } from '../../Constants/Index';
 
-const getInitalState = () => (
-  Utils.isTrip()
-    ? { countryId: '', countryCode: '', countryName: '' }
-    : { ...FrontEndConfig.CountryDefaultConfig }
-);
+const getInitalState = () => ({ countryId: '', countryCode: '', countryName: '' });
 
 const initalState = getInitalState();
 

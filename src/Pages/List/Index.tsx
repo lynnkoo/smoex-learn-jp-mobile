@@ -6,7 +6,7 @@ import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
@@ -25,6 +25,7 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 
+const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
   translateY: any,
   opacity: any,
@@ -71,14 +72,18 @@ const styles = StyleSheet.create({
 interface IListPropsType extends IBasePageProps {
   isLoading: boolean;
   isFail: boolean;
-  rentalDate: any;
+  indexCallbckData: any;
   datePickerVisible: boolean;
   locationDatePopVisible: boolean;
+  agePickerVisible: boolean;
+  ageTipPopVisible: boolean;
   progress: number;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
+  setAgePickerIsShow: ({ visible: boolean }) => void;
+  setAgeTipPopIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
 }
 
@@ -141,7 +146,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   sendEvents() {
-    Event.sendEvent(EventName.changeRentalDate, this.props.rentalDate);
+    Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
   }
 
   pageGoBack = () => {
@@ -178,13 +183,19 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   }
 
   onBackAndroid() {
-    const { datePickerVisible, locationDatePopVisible } = this.props;
+    const {
+      datePickerVisible, locationDatePopVisible, agePickerVisible, ageTipPopVisible,
+    } = this.props;
     if (datePickerVisible) {
       this.datePickerRef.dismiss(() => {
         this.props.setDatePickerIsShow({ visible: false });
       });
     } else if (locationDatePopVisible) {
       this.props.setLocationAndDatePopIsShow({ visible: false });
+    } else if (agePickerVisible) {
+      this.props.setAgePickerIsShow({ visible: false });
+    } else if (ageTipPopVisible) {
+      this.props.setAgeTipPopIsShow({ visible: false });
     } else {
       this.pageGoBack();
     }
@@ -196,17 +207,17 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       Toast.show(listLoading);
       return;
     }
-    this.filterModalRef.current.hide();
+    this.filterModalRef.current.hide({ animationOutType: 'fadeOut' });
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
   scrollUpCallback = () => {
-    // this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
   }
 
   scrollDownCallback = () => {
-    // this.scrollHeaderAnimation(0);
+    this.scrollHeaderAnimation(0);
   }
 
   scrollHeaderAnimation = (value) => {
@@ -239,6 +250,18 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
+  setNavigatorDragBack = (enable) => {
+    // @ts-ignore
+    const { presentedIndex, sceneConfigStack } = this.props.navigation.navigator.state;
+    const sceneConfig = sceneConfigStack[presentedIndex];
+    if (!sceneConfig || !sceneConfig.gestures) {
+      return false;
+    }
+    // @ts-ignore
+    this.props.navigation.navigator.state.sceneConfigStack[presentedIndex].gestures = enable;
+    return false;
+  }
+
   render() {
     const { listThreshold, headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
@@ -269,10 +292,12 @@ export default class List extends CPage<IListPropsType, ListStateType> {
               />
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
-            <ListFilterBar
-              filterModalRef={this.filterModalRef}
-              style={styles.filterBarStyle}
-            />
+            {curStage === PAGESTAGE.SHOW && (
+              <ListFilterBar
+                filterModalRef={this.filterModalRef}
+                style={styles.filterBarStyle}
+              />
+            )}
             <VehGroupNav pageId={this.getPageId()} />
           </View>
 
@@ -296,8 +321,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <SearchPanelModal />
         <FilterAndSortModal
           filterModalRef={this.filterModalRef}
-         // @ts-ignore
-          navigation={this.props.navigation}
+          setNavigatorDragBack={this.setNavigatorDragBack}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
         {

@@ -8,7 +8,7 @@ import BbkThemeProvider from '@ctrip/bbk-theming';
 import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
 import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
 import { getSharkValue } from '@ctrip/bbk-shark';
-import { color } from '@ctrip/bbk-tokens';
+import { color, druation as druationToken } from '@ctrip/bbk-tokens';
 import { themeLight, themeDark } from '../Theme';
 import { listLoading } from '../Texts';
 import VehicleList, { VehicleListProps } from './VehicleList';
@@ -162,22 +162,17 @@ export default class VehicleListWithControl extends
   }
 
   animate = (index, callback = () => { }) => {
-    const { translateYAnim, initIndex: initIdx } = this.state;
     const { setActiveGroupId } = this.props;
-    const { scrollViewHeight } = this;
     // console.log('【performance】animate ', initIdx, index)
     this.isScrolling = true;
-    Animated.timing(
-      translateYAnim,
-      {
-        toValue: scrollViewHeight * (initIdx - index),
-        duration: 500,
-        useNativeDriver: true,
+    this.translateY(
+      index,
+      druationToken.animationDurationBase,
+      () => {
+        this.isScrolling = false;
+        callback();
       },
-    ).start(() => {
-      this.isScrolling = false;
-      callback();
-    });
+    );
     if (this.scrollerRef[index]) {
       this.scrollToTop(index);
     }
@@ -290,17 +285,8 @@ export default class VehicleListWithControl extends
       this.animating = false;
       return;
     }
-    const { translateYAnim, initIndex } = this.state;
-    const { scrollViewHeight } = this;
     // console.log('【performance】tabScroll ', initIndex, nextIndex)
-    Animated.timing(
-      translateYAnim,
-      {
-        toValue: scrollViewHeight * (initIndex - nextIndex),
-        duration: 0,
-        useNativeDriver: true,
-      },
-    ).start();
+    this.translateY(nextIndex, 0);
     this.setState({
       index: nextIndex,
     });
@@ -320,18 +306,6 @@ export default class VehicleListWithControl extends
     }
   }
 
-  // 滑动头部隐藏时需要更新 VehicleList 高度及定位
-  resetHeightStyle() {
-    this.cacheList.forEach((dom, index) => {
-      // TODO-dyy 滑动不对，打通影响
-      // const test: any = this.getStyle(index)[1];
-      // console.log('----------resetHeightStyle', index, test.top, test.height)
-      this.scrollerRef[index].setNativeProps({
-        style: this.getStyle(index),
-      });
-    });
-  }
-
   // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(props) {
     const { index, listData, threshold } = this.props;
@@ -346,12 +320,39 @@ export default class VehicleListWithControl extends
       const { height, threshold: nextThreshold } = props;
       this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
       this.resetHeightStyle();
+      this.resetTranslateY();
     }
   }
 
   resetScrollTop() {
     _.forEach(this.scrollerRef, (ref, index) => {
       this.scrollToTop(index);
+    });
+  }
+
+  resetTranslateY() {
+    const { index } = this.state;
+    this.translateY(index, 0);
+  }
+
+  translateY(index, duration = druationToken.animationDurationBase, callback = () => { }) {
+    const { translateYAnim, initIndex } = this.state;
+    Animated.timing(
+      translateYAnim,
+      {
+        toValue: this.scrollViewHeight * (initIndex - index),
+        duration,
+        useNativeDriver: true,
+      },
+    ).start(callback);
+  }
+
+  // 滑动头部隐藏时需要更新 VehicleList 高度及定位
+  resetHeightStyle() {
+    this.cacheList.forEach((dom, index) => {
+      this.scrollerRef[index].setNativeProps({
+        style: this.getStyle(index),
+      });
     });
   }
 

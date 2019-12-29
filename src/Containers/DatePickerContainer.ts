@@ -4,7 +4,7 @@ import ListDatePicker from '../Pages/List/Components/DatePicker';
 import { getDatePickerVisible } from '../State/List/Selectors';
 import { getPickUpTime, getDropOffTime } from '../State/LocationAndDate/Selectors';
 import { setDateInfo } from '../State/LocationAndDate/Actions';
-import { setDatePickerIsShow } from '../State/List/Actions';
+import { setDatePickerIsShow, fetchListBatchQuery } from '../State/List/Actions';
 
 
 const mapStateToProps = state => ({
@@ -19,6 +19,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setDateInfo: (data) => { dispatch(setDateInfo(data)); },
   setDatePickerIsShow: (data) => { dispatch(setDatePickerIsShow(data)); },
+  fetchList: () => dispatch(fetchListBatchQuery()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListDatePicker);

@@ -15,6 +15,7 @@ interface IPropsType {
   setDateInfo: (data: any) => void;
   fetchList: () => void;
   setLocationInfo: (data: any) => void;
+  setAgeTipPopIsShow: ({ visible: boolean }) => void;
 }
 
 const addressUrl = '/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=address';
@@ -104,6 +105,16 @@ const SearchPanelModal = (props: IPropsType) => {
     CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_DROPOFF_DATE.KEY });
   }
 
+  const onPressAgeTip = () => {
+    props.setAgeTipPopIsShow({ visible: false });
+    CarLog.LogCode({ enName: ClickKey.C_LIST_AGETIPPOP_SHOW.KEY });
+  }
+
+  const onAgeTipClose = () => {
+    props.setAgeTipPopIsShow({ visible: true });
+    CarLog.LogCode({ enName: ClickKey.C_LIST_AGETIPPOP_CLOSE.KEY });
+  }
+
   return (
     <BbkComponentSearchPanelModal
       onCancel={onCancel}
@@ -118,6 +129,8 @@ const SearchPanelModal = (props: IPropsType) => {
       onPressSearch={onPressSearch}
       onPressAgeSelect={onPressAgeSelect}
       onIsShowDropOffChange={onIsShowDropOffChange}
+      onPressAgeTip={onPressAgeTip}
+      onAgeTipClose={onAgeTipClose}
       {...props}
     />
   );

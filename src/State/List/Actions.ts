@@ -13,6 +13,8 @@ import {
   CLEAR_SELECTED_FILTER,
   SET_LOCATIONDATEPOP_VISIBLE,
   SET_DATEPICKER_VISIBLE,
+  SET_AGEPICKER_VISIBLE,
+  SET_AGETIPPOP_VISIBLE,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -86,6 +88,16 @@ export const setLocationAndDatePopIsShow = data => ({
 
 export const setDatePickerIsShow = data => ({
   type: SET_DATEPICKER_VISIBLE,
+  data,
+});
+
+export const setAgePickerIsShow = data => ({
+  type: SET_AGEPICKER_VISIBLE,
+  data,
+});
+
+export const setAgeTipPopIsShow = data => ({
+  type: SET_AGETIPPOP_VISIBLE,
   data,
 });
 

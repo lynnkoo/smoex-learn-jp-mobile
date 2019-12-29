@@ -43,11 +43,11 @@ const formatLocationFromEvent = (location) => {
     countryName,
     latitude,
     longtitude,
-    countryId,
     locationType,
+    cityId,
   } = location;
   return {
-    cid: countryId,
+    cid: cityId,
     cname: cityName,
     country: countryName,
     area: {

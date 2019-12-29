@@ -19,7 +19,7 @@ interface IPropsType {
 }
 
 const addressUrl = '/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=address';
-// const addressUrl = 'http://127.0.0.1:5387/index.ios.bundle?CRNModuleName=rn_ibu_car&CRNType=1&page=address'
+// const addressUrl = 'http://localhost:5389/index.ios.bundle?CRNModuleName=rn_ibu_car&CRNType=1&page=address'
 
 const SearchPanelModal = (props: IPropsType) => {
   const {
@@ -93,7 +93,7 @@ const SearchPanelModal = (props: IPropsType) => {
   };
 
   const onIsShowDropOffChange = (isShowDropOff) => {
-    props.setLocationInfo({ isShowDropOff });
+    props.setLocationInfo({ isShowDropOff, dropOff: rentalLocation.pickUp });
     CarLog.LogCode({ enName: ClickKey.C_LIST_CHANGEINFO_POP_SWITCH_DROPOFF.KEY, isShowDropOff });
   };
 

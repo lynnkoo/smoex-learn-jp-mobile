@@ -2,7 +2,7 @@ import React, {
   memo, useState, useEffect, useCallback,
 } from 'react';
 import {
-  View,
+  View, ViewStyle,
 } from 'react-native';
 import _ from 'lodash';
 import BbkComponentCarFilterModal from '@ctrip/bbk-component-car-filter-modal';
@@ -38,6 +38,7 @@ export interface IFilterAndSort extends IFilterInner {
   setActiveFilterBarCode: (data: any) => void;
   getFilterCalculate?: (data: any) => any;
   setFilterModalIsShow: (data: any) => any;
+  style?: ViewStyle
 }
 
 const initFilterData = (filterType, tempFilterData) => {
@@ -146,6 +147,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   setActiveFilterBarCode,
   getFilterCalculate,
   setFilterModalIsShow,
+  style,
 }: IFilterAndSort) => {
   const animationConfig = null;
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
@@ -325,6 +327,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       onHide={onHide}
       onDetermine={onSaveFilter}
       onClear={onClearFilter}
+      style={style}
     >
       <RenderInner
         type={type}

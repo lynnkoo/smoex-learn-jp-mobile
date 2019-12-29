@@ -1,14 +1,15 @@
 import { StyleSheet } from 'react-native';
 import {
-  border, space, font,
+  border, space, font, icon,
 } from '@ctrip/bbk-tokens';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { BbkUtils, BbkChannel } from '@ctrip/bbk-utils';
 
 const { getPixel } = BbkUtils;
 
 export const VehicleListStyle = StyleSheet.create({
   wrap: {
     paddingHorizontal: space.spaceXXL,
+    borderTopWidth: border.borderSizeSm,
   },
   labelFlexLeft: {
     justifyContent: 'flex-start',
@@ -42,10 +43,14 @@ export const VehicleListStyle = StyleSheet.create({
   },
   more: {
     paddingVertical: space.spaceXXL,
-    borderBottomWidth: border.borderSizeSm,
+    // borderBottomWidth: border.borderSizeSm,
   },
   moreText: {
     ...font.body2LightStyle,
+  },
+  moreIcon: {
+    marginLeft: space.spaceS,
+    fontFamily: icon.iconFamily,
   },
   vehicleImage: {
     width: getPixel(335),
@@ -65,6 +70,15 @@ export const VehicleListStyle = StyleSheet.create({
   },
   comment: {
     marginLeft: space.spaceS,
+  },
+  vendorPriceWrap: {
+    marginLeft: BbkChannel.isTrip() ? space.spaceS : space.spaceXS,
+  },
+  vehicleHeaderWrap: {
+    borderBottomWidth: 0,
+  },
+  showMoreWrap: {
+    borderTopWidth: border.borderSizeSm,
   },
 });
 

@@ -7,7 +7,7 @@ import memoizeOne from 'memoize-one';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import { Utils } from '../../Util/Index';
 import {
-  listDay, Reviews, total,
+  listDay, review, total,
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
 import {
@@ -38,6 +38,26 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
     recommendDesc,
   } = vehicle;
   count += 1;
+  const vehicleLabelsHorizontal = [
+    {
+      text: passengerNo,
+      icon: {
+        iconContent: icon.seat,
+      },
+    },
+    {
+      text: luggageNo,
+      icon: {
+        iconContent: icon.luggage,
+      },
+    },
+    {
+      text: doorNo,
+      icon: {
+        iconContent: icon.door,
+      },
+    },
+  ];
   const vehicleLabels = [
     displacement && {
       text: displacement,
@@ -70,26 +90,7 @@ const getVehicleItemData = (vehicleList, vehicleCode) => {
       imgUrl: Utils.fullImgProtocal(imageList[0]),
       // 只有国内有牌照，一期无此字段
       // vehicleImageLabel: brandEName,
-      vehicleLabelsHorizontal: [
-        {
-          text: passengerNo,
-          icon: {
-            iconContent: icon.seat,
-          },
-        },
-        {
-          text: luggageNo,
-          icon: {
-            iconContent: icon.luggage,
-          },
-        },
-        {
-          text: doorNo,
-          icon: {
-            iconContent: icon.door,
-          },
-        },
-      ],
+      vehicleLabelsHorizontal: vehicleLabelsHorizontal.filter(o => o.text > 0),
       vehicleLabels: vehicleLabels.filter(v => v),
     },
     recommendDesc,
@@ -173,7 +174,7 @@ const getVendorHeaderProps = (vendor) => {
     vendorName,
     title: vendorTag.title,
     scoreDesc: level,
-    commentDesc: `${commentCount} ${Reviews}`,
+    commentDesc: review(commentCount),
     score: overallRating,
     totalScore: maximumRating,
     scoreLow: type > 1,

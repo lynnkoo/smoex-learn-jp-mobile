@@ -295,9 +295,8 @@ export default class VehicleListWithControl extends
   scrollToTop(index) {
     // fix no match
     try {
-      this.scrollerRef[index].scrollToLocation({
-        sectionIndex: 0,
-        itemIndex: 0,
+      this.scrollerRef[index].scrollTo({
+        y: 0,
         animated: false,
       });
     } catch (e) {

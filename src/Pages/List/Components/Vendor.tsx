@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { URL } from '@ctrip/crn';
 import BbkLabel from '@ctrip/bbk-component-label';
 import BbkPriceDesc from '@ctrip/bbk-component-car-price-desc';
-import { setOpacity, border } from '@ctrip/bbk-tokens';
+import { border } from '@ctrip/bbk-tokens';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkTouchable from '@ctrip/bbk-component-touchable';
 import VendorPriceTag from '@ctrip/bbk-component-vendor-price-tag';
@@ -55,7 +55,7 @@ export default withTheme(
         style.vendor,
         index !== 0 && {
           borderTopWidth: border.borderSizeSm,
-          borderTopColor: setOpacity(theme.black, 0.1),
+          borderTopColor: theme.grayBorder,
         },
       ]}
       >
@@ -70,6 +70,7 @@ export default withTheme(
             showDistance
             showProvider
             isDiffLocation={isDiffLocation()}
+            style={style.vendorPriceWrap}
           />
 
           <View style={style.priceWrap}>

@@ -322,6 +322,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         <FilterAndSortModal
           filterModalRef={this.filterModalRef}
           setNavigatorDragBack={this.setNavigatorDragBack}
+          style={{ marginTop: listThreshold - BbkUtils.getPixel(84) }}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />
         {

@@ -29,6 +29,7 @@ interface VehicleListWithControlProps extends VehicleListProps {
   threshold?: number;
   locationDatePopVisible: boolean;
   setActiveGroupId: (args: any) => void;
+  refFn?: (args: any) => void;
 }
 
 interface VehicleListWithControlState {
@@ -89,6 +90,7 @@ export default class VehicleListWithControl extends
       translateYAnim: new Animated.Value(0),
     };
     this.scrollViewHeight = getScrollViewHeight(height, threshold);
+    props.refFn(this);
   }
 
   getTheme() {
@@ -166,14 +168,14 @@ export default class VehicleListWithControl extends
     const { setActiveGroupId } = this.props;
     // console.log('【performance】animate ', initIdx, index)
     this.isScrolling = true;
-    this.translateY(
+    this.translateY({
       index,
-      druationToken.animationDurationBase,
-      () => {
+      duration: druationToken.animationDurationBase,
+      callback: () => {
         this.isScrolling = false;
         callback();
       },
-    );
+    });
     if (this.scrollerRef[index]) {
       this.scrollToTop(index);
     }
@@ -246,14 +248,24 @@ export default class VehicleListWithControl extends
        * 曝光埋点
        */
       onViewableItemsChanged: this.setExposureData,
+      scrollViewHeight: this.scrollViewHeight,
     };
   }
 
   setExposureData = ({ changed }) => {
     _.forEach(changed, ({ item }) => {
-      _.forEach(item.data[0], (vendor) => {
-        setExposureKey(vendor.key);
-      });
+      try {
+        if (item.data) {
+          _.forEach(item.data[0], (vendor) => {
+            setExposureKey(vendor.key);
+          });
+        } else {
+          setExposureKey(item.key);
+        }
+      } catch (e) {
+        // eslint-disable-next-line
+        console.warn('setExposureData error', item.data, item);
+      }
     });
   }
 
@@ -299,7 +311,10 @@ export default class VehicleListWithControl extends
       return;
     }
     // console.log('【performance】tabScroll ', initIndex, nextIndex)
-    this.translateY(nextIndex, 0);
+    this.translateY({
+      index: nextIndex,
+      duration: 0,
+    });
     this.setState({
       index: nextIndex,
     });
@@ -335,7 +350,6 @@ export default class VehicleListWithControl extends
       const { height, threshold: nextThreshold } = props;
       this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
       this.resetHeightStyle();
-      this.resetTranslateY();
     }
   }
 
@@ -345,21 +359,35 @@ export default class VehicleListWithControl extends
     });
   }
 
-  resetTranslateY() {
+  resetTranslateY(duration) {
     const { index } = this.state;
-    this.translateY(index, 0);
+    return this.translateY({
+      index,
+      duration,
+      delayStart: true,
+    });
   }
 
-  translateY(index, duration = druationToken.animationDurationBase, callback = () => { }) {
+  translateY({
+    index,
+    duration = druationToken.animationDurationBase,
+    callback = () => {},
+    delayStart = false,
+  }) {
     const { translateYAnim, initIndex } = this.state;
-    Animated.timing(
+    // console.log('translateY', this.scrollViewHeight);
+    const animation = Animated.timing(
       translateYAnim,
       {
         toValue: this.scrollViewHeight * (initIndex - index),
         duration,
         useNativeDriver: true,
       },
-    ).start(callback);
+    );
+    if (delayStart) {
+      return animation;
+    }
+    return animation.start(callback);
   }
 
   // 滑动头部隐藏时需要更新 VehicleList 高度及定位

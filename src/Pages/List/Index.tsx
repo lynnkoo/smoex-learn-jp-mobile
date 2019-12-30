@@ -107,6 +107,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   scrollHeaderThrottle: any;
 
+  vehicleListRef: any;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -251,11 +253,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   scrollHeaderAnimation = (value, duration = druation.animationDurationSm) => {
     const { headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
-    if (this.lastTranslateYAnim === value || this.headerAnimating) {
+    if (this.lastTranslateYAnim === value || this.headerAnimating || this.props.progress !== 1) {
       return;
     }
     this.lastTranslateYAnim = value;
-    Animated.sequence([
+    this.setState({
+      listThreshold: this.listThresholdLayout + value,
+    }, () => {
       Animated.parallel([
         Animated.timing(translateY,
           {
@@ -269,11 +273,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           duration,
           useNativeDriver: true,
         }),
-      ]),
-    ]).start(() => {
-      this.headerAnimating = false;
-      this.setState({
-        listThreshold: this.listThresholdLayout + value,
+        this.vehicleListRef.resetTranslateY(0),
+      ]).start(() => {
+        this.headerAnimating = false;
       });
     });
   }
@@ -339,6 +341,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
                 threshold={listThreshold}
                 scrollUpCallback={this.scrollUpCallback}
                 scrollDownCallback={this.scrollDownCallback}
+                refFn={(ref) => { this.vehicleListRef = ref; }}
               />
             )
           }

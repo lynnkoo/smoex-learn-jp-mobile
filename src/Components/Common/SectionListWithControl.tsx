@@ -122,10 +122,10 @@ export default class SectionListWithControl
 
     if (isIos) {
       // 不满一屏的情况
-      if (scrollUp > 0 && y + height > contentHeight + threshold) {
+      if (scrollUp > threshold && y + height > contentHeight + threshold) {
         load = true;
       }
-      if (scrollUp < 0 && y < -threshold) {
+      if (scrollUp < threshold && y < -threshold) {
         refresh = true;
       }
     } else {
@@ -303,7 +303,8 @@ export default class SectionListWithControl
         const last = _.last(viewableItems).section;
         if (last.vehicleIndex === sections.length - 1) {
           this.setState({
-            showFooter: isIos ? true : (sections.length > 1 || last.data.length > 1),
+            // showFooter: isIos ? true : (sections.length > 1 || last.data.length > 1),
+            showFooter: true,
           });
         } else {
           this.setState({
@@ -315,7 +316,7 @@ export default class SectionListWithControl
         }
       } catch (e) {
         // eslint-disable-next-line
-        console.warn('onViewableItemsChanged error', viewableItems.length);
+        console.warn('onViewableItemsChanged error', e);
       }
     }
   }

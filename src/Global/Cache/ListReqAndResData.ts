@@ -43,7 +43,7 @@ export const getExposureData = () => {
     const vehicle = _.find(vehicleList, { vehicleCode }) || {};
     const vendor = _.find(
       vendorPriceList,
-      vendorItem => vendorItem.reference.bizVendorCode === bizVendorCode
+      vendorItem => vendorItem.reference.bizVendorCode === bizVendorCode,
     );
     res.push({
       vehicle,

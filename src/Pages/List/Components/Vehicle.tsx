@@ -37,10 +37,12 @@ export const Vehicle = memo(withTheme(
     return (
       <View style={[style.wrap, {
         backgroundColor: theme.backgroundColor,
-        borderTopColor: theme.grayBorder,
       }]}
       >
-        <View style={[style.flexRow]}>
+        <View style={[style.flexRow, style.vehicleImgWrap, {
+          borderTopColor: theme.grayBorder,
+        }]}
+        >
           <BbkCarImage
             source={{ uri: imgUrl }}
             resizeMode="cover"

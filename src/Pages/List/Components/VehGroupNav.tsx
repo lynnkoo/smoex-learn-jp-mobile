@@ -36,10 +36,6 @@ const styles = StyleSheet.create({
   mainWrap: {
     borderBottomWidth: 0,
   },
-  topBorder: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: color.grayBorder,
-  },
   navItemWrap: {
     height: BbkUtils.getPixel(78),
     paddingHorizontal: BbkUtils.getPixel(20),
@@ -92,7 +88,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
           progress > 0 && vehGroupNav.length > 0
           && (
             <BbkHorizontalNav
-              style={[styles.mainWrap, styles.topBorder, styles.container]}
+              style={[styles.mainWrap, styles.container]}
               indicatorWidth={BbkUtils.getPixel(80)}
               indicatorHeight={BbkUtils.getPixel(6)}
               selectedId={activeGroupId}

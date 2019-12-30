@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-// import { Text } from 'react-native';
 import { Provider } from 'react-redux';
-// import { IntlProvider } from 'react-intl';
 import { App, LoadingView } from '@ctrip/crn';
 import BBkThemingProvider from '@ctrip/bbk-theming';
 import BbkChannel from '@ctrip/bbk-utils';
@@ -15,7 +13,6 @@ import appLoad, {
 } from './AppLoad';
 import { initialiseStore, getStore } from './State/Store';
 import { getCountryId } from './State/CountryInfo/Selectors';
-// import { AppContext } from './Util/Index';
 import AppUnLoad from './AppUnLoad';
 import Utils from './Util/Utils';
 
@@ -108,13 +105,7 @@ export default class RnCarApp extends Component<any, StateType> {
         <ErrorBoundary>
           <Provider store={getStore()}>
             <BBkThemingProvider channel={BbkChannel.getChannel()}>
-              {/* <IntlProvider
-                locale={AppContext.SharkKeys.lang}
-                messages={AppContext.SharkKeys.messages}
-                textComponent={Text}
-              > */}
               <Car {...this.props} />
-              {/* </IntlProvider> */}
             </BBkThemingProvider>
           </Provider>
         </ErrorBoundary>

@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import {
   View, StyleSheet, Animated,
 } from 'react-native';
@@ -85,6 +85,7 @@ interface IListPropsType extends IBasePageProps {
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
   setAgePickerIsShow: ({ visible: boolean }) => void;
   setAgeTipPopIsShow: ({ visible: boolean }) => void;
+  setFilterModalIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
 }
 
@@ -93,8 +94,6 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-  filterModalRef: RefObject<any>;
-
   datePickerRef: any;
 
   hasInitFetch: boolean;
@@ -117,7 +116,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       },
     };
     ListReqAndResData.removeData();
-    this.filterModalRef = React.createRef();
     this.headerAnimating = false;
     this.lastTranslateYAnim = 0;
     this.listThresholdLayout = 0;
@@ -211,7 +209,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       Toast.show(listLoading);
       return;
     }
-    this.filterModalRef.current.hide({ animationOutType: 'fadeOut' });
+    this.props.setFilterModalIsShow({ visible: false });
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
@@ -312,10 +310,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
             {curStage === PAGESTAGE.SHOW && (
-              <ListFilterBar
-                filterModalRef={this.filterModalRef}
-                style={styles.filterBarStyle}
-              />
+              <ListFilterBar style={styles.filterBarStyle} />
             )}
             <VehGroupNav pageId={this.getPageId()} />
           </View>
@@ -339,7 +334,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         </Animated.View>
         <SearchPanelModal />
         <FilterAndSortModal
-          filterModalRef={this.filterModalRef}
           setNavigatorDragBack={this.setNavigatorDragBack}
           style={{ marginTop: listThreshold - BbkUtils.getPixel(84) }}
         />

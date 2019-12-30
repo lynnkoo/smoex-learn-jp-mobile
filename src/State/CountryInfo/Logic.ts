@@ -9,27 +9,29 @@ export const getCountryInfo = createLogic({
   type: GET_COUNTRY_INFO,
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
-    const curResidency = await Utils.promisable(IBUCountry.getCurrentCountry)('callback');
-    if (curResidency) {
-      let countryInfo = FrontEndConfig.CountryDefaultConfig;
-      const param = {
-        countryCode: curResidency.countryCode,
-      };
-
-      const res = await CarFetch.queryAppCountryId(param).catch(() => {
-        dispatch(setCountryInfo(countryInfo));
-        done();
-      });
-      const countryId = res && res.isSuccessful && res.countryId;
-
-      if (countryId) {
-        countryInfo = {
-          countryId,
+    if (Utils.isTrip() && IBUCountry && IBUCountry.getCurrentCountry) {
+      const curResidency = await Utils.promisable(IBUCountry.getCurrentCountry)('callback');
+      if (curResidency) {
+        let countryInfo = FrontEndConfig.CountryDefaultConfig;
+        const param = {
           countryCode: curResidency.countryCode,
-          countryName: curResidency.localizationName,
         };
+
+        const res = await CarFetch.queryAppCountryId(param).catch(() => {
+          dispatch(setCountryInfo(countryInfo));
+          done();
+        });
+        const countryId = res && res.isSuccessful && res.countryId;
+
+        if (countryId) {
+          countryInfo = {
+            countryId,
+            countryCode: curResidency.countryCode,
+            countryName: curResidency.localizationName,
+          };
+        }
+        dispatch(setCountryInfo(countryInfo));
       }
-      dispatch(setCountryInfo(countryInfo));
     }
     done();
   },

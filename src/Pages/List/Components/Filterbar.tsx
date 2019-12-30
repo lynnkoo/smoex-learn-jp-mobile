@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Animated, Easing } from 'react-native';
 import BbkFilterBar from '@ctrip/bbk-component-car-filter-bar';
 import { BbkUtils } from '@ctrip/bbk-utils';
@@ -10,7 +10,7 @@ interface IPropsType {
   items: any[];
 }
 
-const FilterBar = (props: IPropsType) => {
+const FilterBar = memo((props: IPropsType) => {
   const { progress, progressIsFinish, ...otherProps } = props;
   const [isShowed, setIsShowed] = useState(false);
   const [animatedHeight] = useState(new Animated.Value(0));
@@ -37,5 +37,5 @@ const FilterBar = (props: IPropsType) => {
       />
     </Animated.View>
   );
-};
+});
 export default FilterBar;

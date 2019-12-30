@@ -16,6 +16,7 @@ import {
   SET_AGEPICKER_VISIBLE,
   SET_AGETIPPOP_VISIBLE,
   SET_PROGRESS_ISFINISH,
+  SET_SORTANDFILTER_VISIBLE,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -104,6 +105,11 @@ export const setAgeTipPopIsShow = data => ({
 
 export const setProgressIsFinish = data => ({
   type: SET_PROGRESS_ISFINISH,
+  data,
+});
+
+export const setFilterModalIsShow = data => ({
+  type: SET_SORTANDFILTER_VISIBLE,
   data,
 });
 

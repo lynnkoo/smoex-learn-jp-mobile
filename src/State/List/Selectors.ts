@@ -28,3 +28,5 @@ export const getLocationDatePopVisible = state => state.List.locationDatePopVisi
 export const getAgePickerVisible = state => state.List.agePickerVisible;
 
 export const getAgeTipPopVisible = state => state.List.ageTipPopVisible;
+
+export const getSortAndFilterVisible = state => state.List.sortAndFilterVisible;

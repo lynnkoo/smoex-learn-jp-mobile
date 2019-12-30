@@ -4,14 +4,14 @@ import List from '../Pages/List/Index';
 import {
   initActiveGroupId, getStatus, fetchListBatchQuery,
   setDatePickerIsShow, setLocationAndDatePopIsShow, setAgePickerIsShow,
-  setAgeTipPopIsShow,
+  setAgeTipPopIsShow, setFilterModalIsShow,
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 import {
   getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible,
   getProgress, getAgePickerVisible, getAgeTipPopVisible,
 } from '../State/List/Selectors';
-import { getFormatRentalDate } from '../State/LocationAndDate/Selectors';
+import { getFormatRentalDate, getIsShowDropOff } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
 import { isDebugMode } from '../State/Debug/Selectors';
 
@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
   indexCallbckData: {
     rentalDate: getFormatRentalDate(state),
     age: getAge(state),
+    isShowDropOff: getIsShowDropOff(state),
   },
   progress: getProgress(state),
   datePickerVisible: getDatePickerVisible(state),
@@ -39,6 +40,7 @@ const mapDispatchToProps = dispatch => ({
   setLocationAndDatePopIsShow: data => dispatch(setLocationAndDatePopIsShow(data)),
   setAgePickerIsShow: data => dispatch(setAgePickerIsShow(data)),
   setAgeTipPopIsShow: (data) => { dispatch(setAgeTipPopIsShow(data)); },
+  setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

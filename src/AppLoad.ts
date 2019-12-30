@@ -1,9 +1,9 @@
-import { IBUSharkUtil } from '@ctrip/crn';
+import { IBUSharkUtil, Business } from '@ctrip/crn';
 import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
 import {
-  AppContext, MarketInfoType, Utils, User, CarStorage,
+  AppContext, Utils, User, CarStorage,
 } from './Util/Index';
-import { initialiseStore, initialiseAppState } from './State/Store';
+import { initialiseAppState } from './State/Store';
 import { initialiseABTesting } from './Util/ABTesting';
 import { Platform, Language } from './Constants/Index';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
@@ -13,10 +13,19 @@ import CarI18n from './Util/CarI18n';
 import Locale from './Util/Locale';
 import DebugLog from './Util/DebugLog';
 
-const initialisePropsUrl = (props) => {
+const initialisePropsUrl = (props: any) => {
   const { url, urlQuery } = props;
   AppContext.setUrl(url);
   AppContext.setUrlQuery(urlQuery);
+};
+
+// initialise car environment
+// buildTime, apptype
+const initialiseCarEnv = () => {
+  AppContext.setCarEnv({
+    buildTime: BuildTime,
+    appType: Utils.getAppType(AppContext.UrlQuery.apptype),
+  });
 };
 
 const initialiseStorage = ({ urlQuery }) => {
@@ -48,21 +57,19 @@ const getChannelId = ({ channelid, from, s }) => {
 
   if (!channelid && Utils.isTrip()) id = CHANNEL_ID.IBU_DEFAULT;
 
+  // todo: UNKNOW?
+  if (!channelid) id = CHANNEL_ID.CTRIP_DEFAULT;
+
   return id;
 };
 
-const getAidSidWakeUpData = (props) => {
+const getAidSidWakeUpData = async (props) => {
   let sidValue = '';
   let aidValue = '';
   let awakeTime = '';
   /* eslint-disable camelcase */
-  // const { awake_sid, awake_allianceid, awake_time } = Util.isInChromeDebug
-  //   ? { awake_sid: '', awake_allianceid: '', awake_time: '' }
-  //   : Business.getWakeUpDataSync();
-  // todo
-  const awake_sid = '';
-  const awake_allianceid = '';
-  const awake_time = '';
+  // @ts-ignore
+  const { awake_sid, awake_allianceid, awake_time } = await Business.getWakeUpDataPromise();
 
   if (props.sid) sidValue = props.sid;
 
@@ -92,40 +99,42 @@ const getAidSidWakeUpData = (props) => {
   };
 };
 
-const getMarket = (): MarketInfoType => {
+// initialise channelid
+// channelId, childChannelId, visitortraceId
+const initialiseChannelId = () => {
   const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
   const { childchannelid, visitortraceid } = propsUrl;
-  const { sId, aId, awakeTime } = getAidSidWakeUpData(propsUrl);
-  return {
+  AppContext.setMarketInfo({
     channelId: getChannelId(propsUrl),
     childChannelId: childchannelid || '',
     visitortraceId: visitortraceid || '',
+    sId: '',
+    aId: '',
+    awakeTime: '',
+  });
+};
+
+// initialise market
+// aid, sid, awake_time, visitortraceId
+const initialiseMarket = async () => {
+  const propsUrl = Utils.convertKeysToLowerCase(AppContext.UrlQuery);
+  const { sId, aId, awakeTime } = await getAidSidWakeUpData(propsUrl);
+  const { channelId, childChannelId, visitortraceId } = AppContext.MarketInfo;
+  AppContext.setMarketInfo({
+    channelId,
+    childChannelId,
+    visitortraceId,
     sId,
     aId,
     awakeTime,
-  };
+  });
 };
 
-const initialiseAppContext = async () => {
+const appLoad = async (props: any) => {
   // initialise UserInfo
   User.isLogin();
 
-  // initialise car environment
-  // buildTime, apptype
-  AppContext.setCarEnv({
-    buildTime: BuildTime,
-    appType: Utils.getAppType(AppContext.UrlQuery.apptype),
-  });
-
-  // initialise market
-  // aid, sid, awake_time, visitortraceId
-  AppContext.setMarketInfo(getMarket());
-};
-
-const appLoad = (props: any) => {
-  initialisePropsUrl(props);
-  initialiseAppContext();
-  initialiseStore();
+  initialiseMarket();
   initialiseStorage(props);
   initialiseABTesting();
   initialiseAppState();
@@ -146,7 +155,7 @@ const loadSharkData = async () => {
   return { lang: '', messages: {} };
 };
 
-const loadLanguageAndSharkAsync = async () => {
+const appPreLoad = async () => {
   const label = 'loadLanguageAsync';
   DebugLog.time(label);
 
@@ -161,7 +170,9 @@ const loadLanguageAndSharkAsync = async () => {
   const locale = localeInstance.getLocale();
   const language = localeInstance.getLanguage().toUpperCase();
   const localeLanguage = [Language.HK, Language.TW].includes(language) ? Language.CN : language;
+
   DebugLog.timeEnd(label);
+
   AppContext.setSharkKeys(sharkKeys.lang, sharkKeys.messages);
   AppContext.setLanguageInfo({
     locale,
@@ -171,5 +182,10 @@ const loadLanguageAndSharkAsync = async () => {
   });
 };
 
-export { loadLanguageAndSharkAsync };
+export {
+  appPreLoad,
+  initialisePropsUrl,
+  initialiseChannelId,
+  initialiseCarEnv,
+};
 export default appLoad;

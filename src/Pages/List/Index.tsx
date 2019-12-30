@@ -321,8 +321,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         </Animated.View>
         <SearchPanelModal />
         <FilterAndSortModal
-          enableNavigatorDragBack={this.enableNavigatorDragBack}
-          disableNavigatorDragBack={this.disableNavigatorDragBack}
+          enableNavigatorDragBack={CPage.enableNativeDragBack}
+          disableNavigatorDragBack={CPage.disableNativeDragBack}
           style={{ marginTop: listThreshold - BbkUtils.getPixel(84) }}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

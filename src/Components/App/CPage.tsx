@@ -74,14 +74,6 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     }
   }
 
-  disableNavigatorDragBack() {
-    CPage.disableNativeDragBack();
-  }
-
-  enableNavigatorDragBack() {
-    CPage.enableNativeDragBack();
-  }
-
   logPagePerformance() {
     const interactiveTime = +new Date() - +this.pageLastActiveTime;
     CarLog.LogMetric({ key: LogKey.METRIC_PAGE_INTERACTIVE_TIME, value: interactiveTime, info: { pageId: this.getPageId() } });

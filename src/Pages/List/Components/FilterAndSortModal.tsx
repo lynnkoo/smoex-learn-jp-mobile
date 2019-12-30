@@ -5,7 +5,8 @@ import {
   View, ViewStyle,
 } from 'react-native';
 import _ from 'lodash';
-import BbkComponentCarFilterModal from '@ctrip/bbk-component-car-filter-modal';
+import BbkComponentCarFilterModal,
+{ FilterFooter, IBbkComponentCarFilterModalFooter } from '@ctrip/bbk-component-car-filter-modal';
 import BbkComponentFilterList from '@ctrip/bbk-component-filter-list';
 import { FilterType, FilterCalculaterType } from '@ctrip/bbk-logic';
 import BbkComponentSelectMenu, { BbkSelectMenu } from '@ctrip/bbk-component-select-menu';
@@ -13,7 +14,7 @@ import { FilterBarType } from '../../../Constants/Index';
 
 const { SelectMenuType } = BbkSelectMenu;
 
-interface IFilterInner {
+interface IFilterInner extends IBbkComponentCarFilterModalFooter {
   type: string;
   filterData: Array<Object>;
   currency: string;
@@ -33,7 +34,6 @@ export interface IFilterAndSort extends IFilterInner {
   filterCalculater: FilterCalculaterType;
   selectedFilters: IFilterType;
   allFilters: any;
-  isShowFooter: boolean;
   disableNavigatorDragBack: () => void;
   enableNavigatorDragBack: () => void;
   setActiveFilterBarCode: (data: any) => void;
@@ -79,8 +79,8 @@ const isEqualInner = (prevProps, nextProps) => nextProps.type === ''
   || nextProps.type === undefined;
 
 const RenderInner: React.FC<IFilterInner> = memo(({
-  type, filterData, currency, priceStep, updateSelectedFilter,
-  updateTempFilter, updateTempPrice, onHide,
+  type, filterData, ModelsNumber, PricesNumber, currency, priceStep, updateSelectedFilter,
+  updateTempFilter, updateTempPrice, onHide, onDetermine, onClear,
 }: IFilterInner) => (
   <View>
     {type === FilterBarType.Sort && (
@@ -96,39 +96,63 @@ const RenderInner: React.FC<IFilterInner> = memo(({
 
     {(type === FilterBarType.Supplier
         || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
-          <BbkComponentFilterList
-            filterGroups={initFilterData(type, filterData)}
-            changeTempFilterData={(label, handleType) => {
-              updateTempFilter(label, handleType, type, false);
-            }}
-          />
+          <>
+            <BbkComponentFilterList
+              filterGroups={initFilterData(type, filterData)}
+              changeTempFilterData={(label, handleType) => {
+                updateTempFilter(label, handleType, type, false);
+              }}
+            />
+            <FilterFooter
+              ModelsNumber={ModelsNumber}
+              PricesNumber={PricesNumber}
+              onDetermine={onDetermine}
+              onClear={onClear}
+            />
+          </>
     )}
 
     {type === FilterBarType.Seats && (
-    <BbkComponentSelectMenu
-      filterData={initFilterData(type, filterData)}
-      type={SelectMenuType.Multiple}
-      onToggle={(label, handleType) => {
-        updateTempFilter(label, handleType, type, false);
-      }}
-    />
+    <>
+      <BbkComponentSelectMenu
+        filterData={initFilterData(type, filterData)}
+        type={SelectMenuType.Multiple}
+        onToggle={(label, handleType) => {
+          updateTempFilter(label, handleType, type, false);
+        }}
+      />
+      <FilterFooter
+        ModelsNumber={ModelsNumber}
+        PricesNumber={PricesNumber}
+        onDetermine={onDetermine}
+        onClear={onClear}
+      />
+    </>
     )}
 
     {type === FilterBarType.Filters && (
-    <BbkComponentFilterList
-      filterGroups={initFilterData(type, filterData)}
-      currency={currency}
-      priceStep={priceStep}
-      changeTempFilterData={(label, handleType, isPriceLabel) => {
-        updateTempFilter(label, handleType, type, isPriceLabel);
-      }}
-      updateStartPrice={(startPrice) => {
-        updateTempPrice(startPrice, 'start');
-      }}
-      updateEndPrice={(endPrice) => {
-        updateTempPrice(endPrice, 'end');
-      }}
-    />
+    <>
+      <BbkComponentFilterList
+        filterGroups={initFilterData(type, filterData)}
+        currency={currency}
+        priceStep={priceStep}
+        changeTempFilterData={(label, handleType, isPriceLabel) => {
+          updateTempFilter(label, handleType, type, isPriceLabel);
+        }}
+        updateStartPrice={(startPrice) => {
+          updateTempPrice(startPrice, 'start');
+        }}
+        updateEndPrice={(endPrice) => {
+          updateTempPrice(endPrice, 'end');
+        }}
+      />
+      <FilterFooter
+        ModelsNumber={ModelsNumber}
+        PricesNumber={PricesNumber}
+        onDetermine={onDetermine}
+        onClear={onClear}
+      />
+    </>
     )}
   </View>
 ), isEqualInner);
@@ -139,7 +163,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   selectedFilters,
   allFilters = [],
   filterCalculater = { vehiclesCount: 0, pricesCount: 0 },
-  isShowFooter,
   type,
   currency,
   priceStep,
@@ -184,7 +207,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   useEffect(() => {
     if (!visible) {
       setActiveFilterBarCode('');
-      setFilterDataState([]);
+      // setFilterDataState([]);
       setCount({ vehiclesCount: 0, pricesCount: 0 });
       enableNavigatorDragBack();
     } else {
@@ -320,20 +343,19 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     <BbkComponentCarFilterModal
       // @ts-ignore
       modalVisible={visible}
-      isShowFooter={isShowFooter}
-      ModelsNumber={count.vehiclesCount}
-      PricesNumber={count.pricesCount}
       // @ts-ignore
       animationConfig={animationConfig}
       // @ts-ignore
       onHide={onHide}
-      onDetermine={onSaveFilter}
-      onClear={onClearFilter}
       style={style}
     >
       <RenderInner
         type={type}
         filterData={filterDataState}
+        ModelsNumber={count.vehiclesCount}
+        PricesNumber={count.pricesCount}
+        onDetermine={onSaveFilter}
+        onClear={onClearFilter}
         currency={currency}
         priceStep={priceStep}
         updateSelectedFilter={updateSelectedFilter}

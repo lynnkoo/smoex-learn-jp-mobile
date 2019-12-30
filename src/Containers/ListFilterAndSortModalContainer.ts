@@ -156,7 +156,6 @@ const getFilterData = (state) => {
   const allFilterItems = getFilterItems();
 
   let filterData = [];
-  let isShowFooter = false;
 
   switch (filterBarType) {
     case 'Sort':
@@ -170,15 +169,12 @@ const getFilterData = (state) => {
             && displaySelectedFilters.codeList.some((f: any) => f === item.code),
         });
       });
-      isShowFooter = false;
       break;
     case 'Filters':
       filterData = setFilterMenu(allFilterItems, displaySelectedFilters);
-      isShowFooter = true;
       break;
     case '':
     case undefined:
-      isShowFooter = false;
       break;
     default:
       filterData = setFilterMenu(
@@ -187,7 +183,6 @@ const getFilterData = (state) => {
         ),
         displaySelectedFilters,
       );
-      isShowFooter = true;
       break;
   }
 
@@ -195,7 +190,6 @@ const getFilterData = (state) => {
 
   return {
     filterData,
-    isShowFooter,
     type: filterBarType,
     selectedFilters,
     filterCalculater: getFilterCalculate(selectedFilters),

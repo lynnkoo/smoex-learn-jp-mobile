@@ -26,8 +26,6 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
     this.pageInitialiseTime = new Date();
     this.pageLastActiveTime = new Date();
     this.pageAppearCount = 0;
-     // @ts-ignore
-    this._navigatorSceneConfigStackGestures = [];
     AppContext.setPageInstance(this);
   }
 
@@ -79,36 +77,20 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   disableNavigatorDragBack() {
     try {
       const self = AppContext.PageInstance;
-      const { page, navigation } = self.props;
+      const { page } = self.props;
       if (page.isInitialPage) {
           CPage.disableNativeDragBack();
       }
-
-      let { presentedIndex, sceneConfigStack } = navigation.navigator.state;
-      const sceneConfig = sceneConfigStack[presentedIndex];
-      if (!sceneConfig || !sceneConfig.gestures) {
-        return false;
-      }
-      self._navigatorSceneConfigStackGestures[presentedIndex] = sceneConfig.gestures
-      self.props.navigation.navigator.state.sceneConfigStack[presentedIndex].gestures = null;
-    } catch (e) {
-      console.log(e)
-     }
+    } catch (e) { }
   }
 
   enableNavigatorDragBack() {
     try {
       const self = AppContext.PageInstance;
-      const { page, navigation } = self.props;
+      const { page } = self.props;
       if (page.isInitialPage) {
         CPage.enableNativeDragBack();
       }
-      let { presentedIndex, sceneConfigStack } = navigation.navigator.state;
-      const sceneConfig = sceneConfigStack[presentedIndex];
-      if (!sceneConfig || sceneConfig.gestures) {
-        return false;
-      }
-      self.props.navigation.navigator.state.sceneConfigStack[presentedIndex].gestures = self._navigatorSceneConfigStackGestures[presentedIndex];
     } catch (e) { }
   }
 

@@ -22,7 +22,9 @@ import { ClickKey } from '../../../Constants/Index';
 const { selector, htmlDecode } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
-  ({ item, section, theme }) => {
+  ({
+    item, section, onLayout, theme,
+  }) => {
     const {
       recommendDesc, vehicleDesc, vehicleHeader,
     } = section;
@@ -35,12 +37,16 @@ export const Vehicle = memo(withTheme(
     // })
 
     return (
-      <View style={[style.wrap, {
-        backgroundColor: theme.backgroundColor,
-        borderTopColor: theme.grayBorder,
-      }]}
+      <View
+        style={[style.wrap, {
+          backgroundColor: theme.backgroundColor,
+        }]}
+        onLayout={onLayout}
       >
-        <View style={[style.flexRow]}>
+        <View style={[style.flexRow, style.vehicleImgWrap, {
+          borderTopColor: theme.grayBorder,
+        }]}
+        >
           <BbkCarImage
             source={{ uri: imgUrl }}
             resizeMode="cover"
@@ -85,8 +91,7 @@ export const Vehicle = memo(withTheme(
 
 export const VehicleHeader = memo(withTheme(
   ({
-    // eslint-disable-next-line
-    vehicleHeader, vehicleIndex, sectionsLen, setShowFooter, theme,
+    vehicleHeader, onLayout, theme,
   }) => {
     const {
       vehicleName,
@@ -99,18 +104,10 @@ export const VehicleHeader = memo(withTheme(
     //   console.log('√【performance】Vehicle Header ', vehicleHeader.vehicleName)
     // })
 
-    // const onLayout = useCallback(() => {
-    //   // console.log('Vehicle Header onLayout', vehicleIndex, vehicleName, sectionsLen - 1)
-    //   if (vehicleIndex === sectionsLen - 1) {
-    //     // android 少于 2 条数据时不展示打通，无法触发 scroll
-    //     setShowFooter(isIos ? true : sectionsLen > 1);
-    //   }
-    // }, [vehicleIndex, sectionsLen, setShowFooter]);
-
     return (
       <View
         style={{ backgroundColor: theme.backgroundColor }}
-        // onLayout={onLayout}
+        onLayout={onLayout}
       >
         <BbkVehicleName
           name={vehicleName}

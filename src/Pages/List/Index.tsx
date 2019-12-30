@@ -25,6 +25,7 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
+import { getExposureData, removeExposureData } from '../../Global/Cache/ListReqAndResData';
 
 const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
@@ -106,6 +107,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   scrollHeaderThrottle: any;
 
+  vehicleListRef: any;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -131,11 +134,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     super.componentDidMount();
     this.props.fetchList();
     this.registerEvents();
+    removeExposureData();
   }
 
   componentWillUnmount() {
     removeEvents();
     this.sendEvents();
+    this.logExposureData();
   }
 
   registerEvents() {
@@ -149,6 +154,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   sendEvents() {
     Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
+  }
+
+  logExposureData() {
+    const data = getExposureData();
+    CarLog.LogTrace({
+      key: '123546',
+      info: data,
+    });
   }
 
   pageGoBack = () => {
@@ -240,11 +253,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   scrollHeaderAnimation = (value, duration = druation.animationDurationSm) => {
     const { headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
-    if (this.lastTranslateYAnim === value || this.headerAnimating) {
+    if (this.lastTranslateYAnim === value || this.headerAnimating || this.props.progress !== 1) {
       return;
     }
     this.lastTranslateYAnim = value;
-    Animated.sequence([
+    this.setState({
+      listThreshold: this.listThresholdLayout + value,
+    }, () => {
       Animated.parallel([
         Animated.timing(translateY,
           {
@@ -258,11 +273,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           duration,
           useNativeDriver: true,
         }),
-      ]),
-    ]).start(() => {
-      this.headerAnimating = false;
-      this.setState({
-        listThreshold: this.listThresholdLayout + value,
+        this.vehicleListRef.resetTranslateY(0),
+      ]).start(() => {
+        this.headerAnimating = false;
       });
     });
   }
@@ -315,6 +328,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
                 threshold={listThreshold}
                 scrollUpCallback={this.scrollUpCallback}
                 scrollDownCallback={this.scrollDownCallback}
+                refFn={(ref) => { this.vehicleListRef = ref; }}
               />
             )
           }

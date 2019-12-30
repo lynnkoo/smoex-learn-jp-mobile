@@ -54,7 +54,7 @@ export default withTheme(
       <View style={[
         style.vendor,
         index !== 0 && {
-          borderTopWidth: border.borderSizeSm,
+          borderTopWidth: border.borderSizeXsm,
           borderTopColor: theme.grayBorder,
         },
       ]}

@@ -88,6 +88,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
               indicatorWidth={BbkUtils.getPixel(80)}
               indicatorHeight={BbkUtils.getPixel(6)}
               selectedId={activeGroupId}
+              spaceAround={true}
             >
               {vehGroupNav}
             </BbkHorizontalNav>

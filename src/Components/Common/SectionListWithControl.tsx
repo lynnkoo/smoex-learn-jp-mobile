@@ -118,8 +118,11 @@ export default class SectionListWithControl
     let refresh = false;
     const scrollUp = y - this.lastScrollY;
 
-    // console.log(triggerEvent, y, this.lastScrollY, scrollUp)
+    // console.log(triggerEvent, y, this.lastScrollY, scrollUp, this.onScrollBegin)
 
+    /**
+     * 列表页打通，下拉上一个，上滑下一个
+     */
     if (isIos) {
       // 不满一屏的情况
       if (scrollUp > threshold && y + height > contentHeight + threshold) {
@@ -142,15 +145,36 @@ export default class SectionListWithControl
       showAndroidRefresh = nextShowAndroidRefresh;
     }
 
-    if (triggerEvent === 'onScroll' && this.onScrollBegin) {
-      if (scrollUp > 0 && scrollUpCallback) {
-        // console.log('scrollUpCallback', scrollUp, y, this.lastScrollY, load, !refresh);
-        scrollUpCallback(event);
-      } else if (scrollUp < 0 && scrollDownCallback) {
-        // console.log('scrollDownCallback', scrollUp, y, this.lastScrollY, load, !load)
-        scrollDownCallback(event);
+    /**
+     * 头部隐藏/显示
+     */
+    let triggerScrollUpCallback = false;
+    let triggerScrollDownCallback = false;
+    if (this.onScrollBegin && triggerEvent === 'onScroll') {
+      if (scrollUp > 0) {
+        triggerScrollUpCallback = true;
+      } else if (scrollUp < 0) {
+        triggerScrollDownCallback = true;
       }
       this.onScrollBegin = false;
+    }
+
+    // 安卓顶部不会触发 onScroll的情况
+    if (
+      !isIos
+      && this.onScrollBegin
+      && triggerEvent === 'onScrollEndDrag'
+      && y === 0
+      && scrollUp === 0
+    ) {
+      triggerScrollDownCallback = true;
+      this.onScrollBegin = false;
+    }
+
+    if (triggerScrollUpCallback && scrollUpCallback) {
+      scrollUpCallback(event);
+    } else if (triggerScrollDownCallback && scrollDownCallback) {
+      scrollDownCallback(event);
     }
 
     if (triggerEvent === 'onScrollBeginDrag') {

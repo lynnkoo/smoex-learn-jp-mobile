@@ -25,11 +25,15 @@ export default withTheme(
     locationAndDate,
     reference,
     index,
+    vehicleIndex,
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
         ...locationAndDate,
-        book: reference,
+        book: {
+          sortNum: vehicleIndex,
+          ...reference,
+        },
       };
       // 跳转Trip详情页地址
       /* eslint-disable max-len */
@@ -37,7 +41,7 @@ export default withTheme(
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&cache=${ticket}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
-    }, [locationAndDate, reference]);
+    }, [locationAndDate, reference, vehicleIndex]);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

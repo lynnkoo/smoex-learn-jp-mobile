@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(84),
     backgroundColor: color.white,
+    minWidth: BbkUtils.vw(100),
     ...Platform.select({
       android: {
         borderBottomWidth: StyleSheet.hairlineWidth,

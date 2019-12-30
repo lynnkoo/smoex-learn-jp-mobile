@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     width: width - getPixel(2 * 32),
     height: getPixel(2 * 58),
     position: 'absolute',
-    top: getPixel(2 * 8),
+    top: getPixel(8),
     left: getPixel(2 * 16),
   },
   signSale: {

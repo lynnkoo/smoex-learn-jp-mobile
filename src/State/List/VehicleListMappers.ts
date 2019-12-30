@@ -177,11 +177,11 @@ const getVendorHeaderProps = (vendor) => {
     commentDesc: review(commentCount),
     score: overallRating,
     totalScore: maximumRating,
-    scoreLow: type > 1,
+    scoreLow: type && type > 1,
   };
 };
 
-const getVendorItemData = (vendor, vendorIndex) => {
+const getVendorItemData = (vendor, vehicleCode) => {
   const {
     priceInfo, reference, privilegesPromotions, stockDesc,
   } = vendor;
@@ -196,14 +196,14 @@ const getVendorItemData = (vendor, vendorIndex) => {
     soldOutLabel,
     vendorHeaderProps,
     reference,
-    vendorIndex,
+    key: `${vehicleCode}|${reference.bizVendorCode}`,
   };
 };
 
 const getVendorListData = (
-  vendorPriceList, vehicleIndex,
-) => _.map(vendorPriceList, (vendor, vendorIndex) => {
-  const vendorItemData = getVendorItemData(vendor, `${vehicleIndex}-${vendorIndex}`);
+  vendorPriceList, vehicleCode,
+) => _.map(vendorPriceList, (vendor) => {
+  const vendorItemData = getVendorItemData(vendor, vehicleCode);
   return vendorItemData;
 });
 
@@ -218,7 +218,7 @@ export const getVehicleListData = memoizeOne(
       const vehicleListData = productList.map((product, vehicleIndex) => {
         const { vehicleCode, vendorPriceList } = product;
         const vehicleItemData = getVehicleItemData(vehicleList, vehicleCode);
-        const vendorListData = getVendorListData(vendorPriceList, vehicleIndex);
+        const vendorListData = getVendorListData(vendorPriceList, vehicleCode);
         return {
           vehicleIndex,
           ...vehicleItemData,

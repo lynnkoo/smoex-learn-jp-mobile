@@ -118,14 +118,17 @@ export default class SectionListWithControl
     let refresh = false;
     const scrollUp = y - this.lastScrollY;
 
-    // console.log(triggerEvent, y, this.lastScrollY, scrollUp)
+    // console.log(triggerEvent, y, this.lastScrollY, scrollUp, this.onScrollBegin)
 
+    /**
+     * 列表页打通，下拉上一个，上滑下一个
+     */
     if (isIos) {
       // 不满一屏的情况
-      if (scrollUp > 0 && y + height > contentHeight + threshold) {
+      if (scrollUp > threshold && y + height > contentHeight + threshold) {
         load = true;
       }
-      if (scrollUp < 0 && y < -threshold) {
+      if (scrollUp < threshold && y < -threshold) {
         refresh = true;
       }
     } else {
@@ -142,15 +145,36 @@ export default class SectionListWithControl
       showAndroidRefresh = nextShowAndroidRefresh;
     }
 
-    if (triggerEvent === 'onScroll' && this.onScrollBegin) {
-      if (scrollUp > 0 && scrollUpCallback) {
-        // console.log('scrollUpCallback', scrollUp, y, this.lastScrollY, load, !refresh);
-        scrollUpCallback(event);
-      } else if (scrollUp < 0 && scrollDownCallback) {
-        // console.log('scrollDownCallback', scrollUp, y, this.lastScrollY, load, !load)
-        scrollDownCallback(event);
+    /**
+     * 头部隐藏/显示
+     */
+    let triggerScrollUpCallback = false;
+    let triggerScrollDownCallback = false;
+    if (this.onScrollBegin && triggerEvent === 'onScroll') {
+      if (scrollUp > 0) {
+        triggerScrollUpCallback = true;
+      } else if (scrollUp < 0) {
+        triggerScrollDownCallback = true;
       }
       this.onScrollBegin = false;
+    }
+
+    // 安卓顶部不会触发 onScroll的情况
+    if (
+      !isIos
+      && this.onScrollBegin
+      && triggerEvent === 'onScrollEndDrag'
+      && y === 0
+      && scrollUp === 0
+    ) {
+      triggerScrollDownCallback = true;
+      this.onScrollBegin = false;
+    }
+
+    if (triggerScrollUpCallback && scrollUpCallback) {
+      scrollUpCallback(event);
+    } else if (triggerScrollDownCallback && scrollDownCallback) {
+      scrollDownCallback(event);
     }
 
     if (triggerEvent === 'onScrollBeginDrag') {
@@ -295,23 +319,28 @@ export default class SectionListWithControl
     this.scroller = ref;
   }
 
-  onViewableItemsChanged = ({ viewableItems }) => {
-    const { sections } = this.props;
+  onViewableItemsChanged = (args) => {
+    const { viewableItems } = args;
+    const { sections, onViewableItemsChanged } = this.props;
     if (viewableItems.length > 0) {
       try {
         const last = _.last(viewableItems).section;
         if (last.vehicleIndex === sections.length - 1) {
           this.setState({
-            showFooter: isIos ? true : (sections.length > 1 || last.data.length > 1),
+            // showFooter: isIos ? true : (sections.length > 1 || last.data.length > 1),
+            showFooter: true,
           });
         } else {
           this.setState({
             showFooter: false,
           });
         }
+        if (onViewableItemsChanged) {
+          onViewableItemsChanged(args);
+        }
       } catch (e) {
         // eslint-disable-next-line
-        console.warn('onViewableItemsChanged error', viewableItems.length);
+        console.warn('onViewableItemsChanged error', e);
       }
     }
   }

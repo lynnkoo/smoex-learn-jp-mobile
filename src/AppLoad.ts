@@ -5,7 +5,7 @@ import {
 } from './Util/Index';
 import { initialiseAppState } from './State/Store';
 import { initialiseABTesting } from './Util/ABTesting';
-import { Platform, Language } from './Constants/Index';
+import { Platform } from './Constants/Index';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 import StorageKey from './Constants/StorageKey';
 import BuildTime from './BuildTime';
@@ -169,7 +169,6 @@ const appPreLoad = async () => {
   const localeInstance = new Locale(currentLocale.locale);
   const locale = localeInstance.getLocale();
   const language = localeInstance.getLanguage().toUpperCase();
-  const localeLanguage = [Language.HK, Language.TW].includes(language) ? Language.CN : language;
 
   DebugLog.timeEnd(label);
 
@@ -178,7 +177,7 @@ const appPreLoad = async () => {
     locale,
     site: language,
     currency: currentCurrency ? currentCurrency.code : '',
-    language: localeLanguage,
+    language,
   });
 };
 

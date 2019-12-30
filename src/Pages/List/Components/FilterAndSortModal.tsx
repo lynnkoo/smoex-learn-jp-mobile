@@ -34,7 +34,8 @@ export interface IFilterAndSort extends IFilterInner {
   selectedFilters: IFilterType;
   allFilters: any;
   isShowFooter: boolean;
-  setNavigatorDragBack: (data: any) => void;
+  disableNavigatorDragBack: () => void;
+  enableNavigatorDragBack: () => void;
   setActiveFilterBarCode: (data: any) => void;
   getFilterCalculate?: (data: any) => any;
   setFilterModalIsShow: (data: any) => any;
@@ -142,7 +143,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   type,
   currency,
   priceStep,
-  setNavigatorDragBack,
+  disableNavigatorDragBack,
+  enableNavigatorDragBack,
   updateSelectedFilter,
   setActiveFilterBarCode,
   getFilterCalculate,
@@ -184,11 +186,11 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       setActiveFilterBarCode('');
       setFilterDataState([]);
       setCount({ vehiclesCount: 0, pricesCount: 0 });
-      setNavigatorDragBack(true);
+      enableNavigatorDragBack();
     } else {
-      setNavigatorDragBack(false);
+      disableNavigatorDragBack();
     }
-  }, [setActiveFilterBarCode, setNavigatorDragBack, visible]);
+  }, [setActiveFilterBarCode, disableNavigatorDragBack, visible, enableNavigatorDragBack]);
 
   const onHide = useCallback(() => {
     setFilterModalIsShow({ visible: false });

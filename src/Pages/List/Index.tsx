@@ -267,18 +267,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     });
   }
 
-  setNavigatorDragBack = (enable) => {
-    // @ts-ignore
-    const { presentedIndex, sceneConfigStack } = this.props.navigation.navigator.state;
-    const sceneConfig = sceneConfigStack[presentedIndex];
-    if (!sceneConfig || !sceneConfig.gestures) {
-      return false;
-    }
-    // @ts-ignore
-    this.props.navigation.navigator.state.sceneConfigStack[presentedIndex].gestures = enable;
-    return false;
-  }
-
   render() {
     const { listThreshold, headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
@@ -334,7 +322,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         </Animated.View>
         <SearchPanelModal />
         <FilterAndSortModal
-          setNavigatorDragBack={this.setNavigatorDragBack}
+          enableNavigatorDragBack={this.enableNavigatorDragBack}
+          disableNavigatorDragBack={this.disableNavigatorDragBack}
           style={{ marginTop: listThreshold - BbkUtils.getPixel(84) }}
         />
         <RentalCarsDatePicker handleDatePickerRef={this.handleDatePickerRef} />

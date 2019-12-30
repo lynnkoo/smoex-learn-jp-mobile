@@ -25,6 +25,7 @@ import SearchPanelModal from '../../Containers/SearchPanelModalContainer';
 import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
+import { getExposureData, removeExposureData } from '../../Global/Cache/ListReqAndResData';
 
 const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
@@ -131,11 +132,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     super.componentDidMount();
     this.props.fetchList();
     this.registerEvents();
+    removeExposureData();
   }
 
   componentWillUnmount() {
     removeEvents();
     this.sendEvents();
+    this.logExposureData();
   }
 
   registerEvents() {
@@ -149,6 +152,14 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   sendEvents() {
     Event.sendEvent(EventName.changeRentalDate, this.props.indexCallbckData);
+  }
+
+  logExposureData() {
+    const data = getExposureData();
+    CarLog.LogTrace({
+      key: '123546',
+      info: data,
+    });
   }
 
   pageGoBack = () => {

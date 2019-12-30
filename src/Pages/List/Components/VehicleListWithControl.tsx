@@ -14,6 +14,7 @@ import { listLoading } from '../Texts';
 import VehicleList, { VehicleListProps } from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
 import { Utils } from '../../../Util/Index';
+import { setExposureKey } from '../../../Global/Cache/ListReqAndResData';
 
 interface VehicleListWithControlProps extends VehicleListProps {
   maxIndex?: number;
@@ -241,7 +242,19 @@ export default class VehicleListWithControl extends
       noticeContent,
       loadingContent,
       noMoreContent,
+      /**
+       * 曝光埋点
+       */
+      onViewableItemsChanged: this.setExposureData,
     };
+  }
+
+  setExposureData = ({ changed }) => {
+    _.forEach(changed, ({ item }) => {
+      _.forEach(item.data[0], (vendor) => {
+        setExposureKey(vendor.key);
+      });
+    });
   }
 
   /**

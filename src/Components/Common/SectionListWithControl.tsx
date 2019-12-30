@@ -295,8 +295,9 @@ export default class SectionListWithControl
     this.scroller = ref;
   }
 
-  onViewableItemsChanged = ({ viewableItems }) => {
-    const { sections } = this.props;
+  onViewableItemsChanged = (args) => {
+    const { viewableItems } = args;
+    const { sections, onViewableItemsChanged } = this.props;
     if (viewableItems.length > 0) {
       try {
         const last = _.last(viewableItems).section;
@@ -308,6 +309,9 @@ export default class SectionListWithControl
           this.setState({
             showFooter: false,
           });
+        }
+        if (onViewableItemsChanged) {
+          onViewableItemsChanged(args);
         }
       } catch (e) {
         // eslint-disable-next-line

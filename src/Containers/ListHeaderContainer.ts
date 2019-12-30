@@ -13,6 +13,7 @@ import {
   getDropOffLocationType,
 } from '../State/LocationAndDate/Selectors';
 import { fetchListBatchQuery } from '../State/List/Actions';
+import { getProgress } from '../State/List/Selectors';
 
 const mapStateToProps = state => ({
   data: {
@@ -29,7 +30,7 @@ const mapStateToProps = state => ({
       locationName: getDropOffLocationName(state),
     },
   },
-  enableChange: true,
+  enableChange: getProgress(state) === 1,
   currency: AppContext.LanguageInfo.currency,
 });
 

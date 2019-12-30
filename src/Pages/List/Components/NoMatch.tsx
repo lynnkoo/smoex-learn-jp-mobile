@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { BbkUtils } from '@ctrip/bbk-utils';
@@ -28,7 +28,7 @@ const RC = {
   age: 5,
 };
 
-const ListNoMatch = (props: IPropsType) => {
+const ListNoMatch = memo((props: IPropsType) => {
   const {
     recommendInfo, age, datePickerRef, setDatePickerIsShow, setLocationAndDatePopIsShow, fetchList,
   } = props;
@@ -100,5 +100,5 @@ const ListNoMatch = (props: IPropsType) => {
       />
     </View>
   );
-};
+});
 export default ListNoMatch;

@@ -19,8 +19,8 @@ export const setDebugModeSuccess = createLogic({
     }
     if (result === 'true') {
       dispatch(getDebugModeSuccess(true));
-      done();
     }
+    done();
   },
 });
 

@@ -6,14 +6,14 @@
   "scripts": {
     "patch": "crn-cli run-patch",
     "start": "crn-cli start --port 5389",
-    "android": "crn-cli run-android --app-version 8.14 --port 5389",
-    "ios": "crn-cli run-ios --app-version 8.14 --port 5389",
+    "android": "crn-cli run-android --app-version 8.17 --port 5389",
+    "ios": "crn-cli run-ios --app-version 8.17 --port 5389",
     "start:trip": "crn-cli start --port 5388",
     "android:trip": "crn-cli run-android --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --port 5388",
     "ios:trip": "crn-cli run-ios --appid 37 --app-version 7.4.0 --simulator 'iPhone 8 Plus' --reset --port 5388",
     "lint": "npm run lint:js",
     "lint:js": "eslint . --ignore-path .eslintignore --ext .js,.ts,.tsx",
-    "lint:fix": "npm run build:version && npm run lint:js:fix",
+    "lint:fix": "npm run lint:js:fix",
     "lint:js:staged": "eslint . --ignore-path .eslintignore",
     "lint:js:fix": "npm run lint:js -- --fix",
     "lint:js:fix:staged": "eslint . --ignore-path .eslintignore --fix",
@@ -33,7 +33,7 @@
   "peerDependencies": {
     "@ctrip/bbk-tokens": "^0.0.34",
     "@ctrip/bbk-theming": "^0.0.35",
-    "@ctrip/bbk-utils": "^0.0.26"
+    "@ctrip/bbk-utils": "^0.0.39"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
@@ -129,7 +129,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run build:version && git add . && lint-staged"
     }
   },
   "iconFont": [

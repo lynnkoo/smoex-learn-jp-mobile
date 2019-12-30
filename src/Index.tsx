@@ -6,12 +6,18 @@ import { App, LoadingView } from '@ctrip/crn';
 import BBkThemingProvider from '@ctrip/bbk-theming';
 import BbkChannel from '@ctrip/bbk-utils';
 import pages from './Routers/Index';
-import { getStore } from './State/Store';
 import { ErrorBoundary } from './Components/Index';
-import appLoad, { loadLanguageAndSharkAsync } from './AppLoad';
-import { APP_ID } from './Constants/Platform';
+import appLoad, {
+  appPreLoad,
+  initialisePropsUrl,
+  initialiseChannelId,
+  initialiseCarEnv,
+} from './AppLoad';
+import { initialiseStore, getStore } from './State/Store';
+import { getCountryId } from './State/CountryInfo/Selectors';
 // import { AppContext } from './Util/Index';
 import AppUnLoad from './AppUnLoad';
+import Utils from './Util/Utils';
 
 const navigationBarConfig = {
   hide: true,
@@ -29,6 +35,8 @@ interface StateType {
   isPreloadFinished: boolean,
 }
 export default class RnCarApp extends Component<any, StateType> {
+  observeCountry: any = null;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -39,15 +47,55 @@ export default class RnCarApp extends Component<any, StateType> {
 
   componentWillUnmount() {
     AppUnLoad();
+    this.unSubscribeCountry();
+  }
+
+  subscribeCountry = () => {
+    this.observeCountry = getStore().subscribe(() => {
+      if (getCountryId(getStore().getState())) {
+        this.preLoadFinish();
+        this.unSubscribeCountry();
+      }
+    });
+  }
+
+  preLoadFinish = () => {
+    this.setState({ isPreloadFinished: true });
+  }
+
+  unSubscribeCountry = () => {
+    if (this.observeCountry) {
+      this.observeCountry();
+    }
   }
 
   preLoad = async (props) => {
-    /* eslint-disable dot-notation */
-    if (global['__crn_appId'] === APP_ID.TRIP) {
-      await loadLanguageAndSharkAsync();
+    // initialise AppContext props
+    initialisePropsUrl(props);
+
+    // initialise channelid
+    // channelId, childChannelId, visitortraceId
+    initialiseChannelId();
+
+    // initialise car environment
+    // buildTime, apptype
+    initialiseCarEnv();
+
+    // load language
+    // load shark
+    await appPreLoad();
+
+    // initialise store
+    initialiseStore();
+
+    if (Utils.isTrip()) {
+      this.subscribeCountry();
+      appLoad(props);
+    } else {
+      this.setState({ isPreloadFinished: true }, () => {
+        appLoad(props);
+      });
     }
-    appLoad(props);
-    this.setState({ isPreloadFinished: true });
   };
 
   render() {

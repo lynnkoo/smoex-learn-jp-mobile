@@ -7,10 +7,12 @@ import FilterAndSortModal from '../Pages/List/Components/FilterAndSortModal';
 import {
   getActiveFilterBarCode,
   getSelectedFilters,
+  getSortAndFilterVisible,
 } from '../State/List/Selectors';
 import {
   updateSelectedFilter,
   setActiveFilterBarCode,
+  setFilterModalIsShow,
 } from '../State/List/Actions';
 import {
   getFilterCalculate,
@@ -203,6 +205,7 @@ const getFilterData = (state) => {
 
 const mapStateToProps = state => ({
   ...getFilterData(state),
+  visible: getSortAndFilterVisible(state),
   priceStep: PRICE_STEP,
   currency: AppContext.LanguageInfo.currency,
 });
@@ -212,6 +215,7 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedFilter: data => dispatch(updateSelectedFilter(data)),
   // updateTempSelectedFilter: data => dispatch(updateTempSelectedFilter(data)),
   setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
+  setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
   getFilterCalculate: tempSelectedFilters => getFilterCalculate(tempSelectedFilters),
 });
 

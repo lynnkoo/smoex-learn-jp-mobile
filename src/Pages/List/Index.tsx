@@ -1,10 +1,11 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import {
   View, StyleSheet, Animated,
 } from 'react-native';
 import {
   ViewPort, IBasePageProps, Event, Toast,
 } from '@ctrip/crn';
+import _ from 'lodash';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
 import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color, druation, setOpacity } from '@ctrip/bbk-tokens';
@@ -84,6 +85,7 @@ interface IListPropsType extends IBasePageProps {
   setLocationAndDatePopIsShow: ({ visible: boolean }) => void;
   setAgePickerIsShow: ({ visible: boolean }) => void;
   setAgeTipPopIsShow: ({ visible: boolean }) => void;
+  setFilterModalIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
 }
 
@@ -92,8 +94,6 @@ const removeEvents = () => {
 };
 
 export default class List extends CPage<IListPropsType, ListStateType> {
-  filterModalRef: RefObject<any>;
-
   datePickerRef: any;
 
   hasInitFetch: boolean;
@@ -103,6 +103,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   lastTranslateYAnim: number;
 
   listThresholdLayout: number;
+
+  scrollHeaderThrottle: any;
 
   constructor(props) {
     super(props);
@@ -114,10 +116,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       },
     };
     ListReqAndResData.removeData();
-    this.filterModalRef = React.createRef();
     this.headerAnimating = false;
     this.lastTranslateYAnim = 0;
     this.listThresholdLayout = 0;
+    this.setScrollHeaderThrottle();
   }
 
   /* eslint-disable class-methods-use-this */
@@ -207,20 +209,35 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       Toast.show(listLoading);
       return;
     }
-    this.filterModalRef.current.hide({ animationOutType: 'fadeOut' });
+    this.props.setFilterModalIsShow({ visible: false });
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
   }
 
   scrollUpCallback = () => {
-    this.scrollHeaderAnimation(-DEFAULT_HEADER_HEIGHT);
+    this.scrollHeaderThrottle(-DEFAULT_HEADER_HEIGHT);
   }
 
-  scrollDownCallback = () => {
-    this.scrollHeaderAnimation(0);
+  scrollDownCallback = (event) => {
+    const { y } = event.nativeEvent.contentOffset;
+    if (y < 50) {
+      this.scrollHeaderThrottle.cancel();
+      this.scrollHeaderThrottle(0, 0);
+    } else {
+      this.scrollHeaderThrottle(0);
+    }
   }
 
-  scrollHeaderAnimation = (value) => {
+  setScrollHeaderThrottle = () => {
+    this.scrollHeaderThrottle = _.throttle(
+      this.scrollHeaderAnimation,
+      druation.animationDurationSm,
+      {
+        trailing: false,
+      });
+  }
+
+  scrollHeaderAnimation = (value, duration = druation.animationDurationSm) => {
     const { headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
     if (this.lastTranslateYAnim === value || this.headerAnimating) {
@@ -232,13 +249,13 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         Animated.timing(translateY,
           {
             toValue: value,
-            duration: druation.animationDurationSm,
+            duration,
             useNativeDriver: true,
           },
         ),
         Animated.timing(opacity, {
           toValue: value < 0 ? 0 : 1,
-          duration: druation.animationDurationSm,
+          duration,
           useNativeDriver: true,
         }),
       ]),
@@ -293,10 +310,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
             </Animated.View>
             {/** todo FilterBar 展开动画 */}
             {curStage === PAGESTAGE.SHOW && (
-              <ListFilterBar
-                filterModalRef={this.filterModalRef}
-                style={styles.filterBarStyle}
-              />
+              <ListFilterBar style={styles.filterBarStyle} />
             )}
             <VehGroupNav pageId={this.getPageId()} />
           </View>
@@ -320,7 +334,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
         </Animated.View>
         <SearchPanelModal />
         <FilterAndSortModal
-          filterModalRef={this.filterModalRef}
           setNavigatorDragBack={this.setNavigatorDragBack}
           style={{ marginTop: listThreshold - BbkUtils.getPixel(84) }}
         />

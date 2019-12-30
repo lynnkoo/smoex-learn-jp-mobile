@@ -295,13 +295,16 @@ export default class VehicleListWithControl extends
   scrollToTop(index) {
     // fix no match
     try {
-      this.scrollerRef[index].scrollTo({
-        y: 0,
+      this.scrollerRef[index].scrollToLocation({
+        sectionIndex: 0,
+        itemIndex: 0,
         animated: false,
+        // fix ListHeaderExtraComponent offset 一个足够大的值
+        viewOffset: 1000,
       });
     } catch (e) {
       /* eslint-disable no-console */
-      console.warn('scrollToLocation error', index);
+      console.warn('scrollToLocation error', index, e);
     }
   }
 

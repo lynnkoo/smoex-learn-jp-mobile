@@ -15,6 +15,7 @@ import {
   SET_DATEPICKER_VISIBLE,
   SET_AGEPICKER_VISIBLE,
   SET_AGETIPPOP_VISIBLE,
+  SET_PROGRESS_ISFINISH,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -98,6 +99,11 @@ export const setAgePickerIsShow = data => ({
 
 export const setAgeTipPopIsShow = data => ({
   type: SET_AGETIPPOP_VISIBLE,
+  data,
+});
+
+export const setProgressIsFinish = data => ({
+  type: SET_PROGRESS_ISFINISH,
   data,
 });
 

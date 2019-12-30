@@ -25,6 +25,7 @@ export const apiListBatchQuery = createLogic({
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
     dispatch(reset());
+    ListReqAndResData.removeData();
     const requestId = uuid();
     batchGroups.forEach((m) => {
       dispatch(fetchApiList({ vendorGroup: m, requestId }));

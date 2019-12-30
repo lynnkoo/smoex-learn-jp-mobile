@@ -9,6 +9,7 @@ import {
   SET_DATEPICKER_VISIBLE,
   SET_AGEPICKER_VISIBLE,
   SET_AGETIPPOP_VISIBLE,
+  SET_PROGRESS_ISFINISH,
   RESET,
 } from './Types';
 
@@ -16,6 +17,7 @@ const getInitalState = () => ({
   isLoading: true,
   isFail: false,
   progress: 0,
+  progressIsFinish: false,
   activeGroupId: '',
   activeFilterBarCode: '',
   selectedFilters: {
@@ -87,6 +89,11 @@ export default (state = initalState, action) => {
       return {
         ...state,
         ageTipPopVisible: action.data.visible,
+      };
+    case SET_PROGRESS_ISFINISH:
+      return {
+        ...state,
+        progressIsFinish: action.data,
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

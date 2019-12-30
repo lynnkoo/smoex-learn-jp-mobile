@@ -10,9 +10,10 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 const { width } = Dimensions.get('window');
 
 interface IPropsType {
-  progress: number,
-  vehCount: number,
-  priceCount: number
+  progress: number;
+  vehCount: number;
+  priceCount: number;
+  setProgressIsFinish: (isFinished: boolean) => void;
 }
 
 const styles = StyleSheet.create({
@@ -62,13 +63,13 @@ const ListProgress = (props: IPropsType) => {
           easing: Easing.ease,
         }).start(() => {
           setIsFinished(true);
+          props.setProgressIsFinish(true);
         });
       }
     });
-  }, [animatedOpacity, animatedProgress, isFinished, progress]);
+  }, [animatedOpacity, animatedProgress, isFinished, progress, props]);
 
-  if (isFinished) return null;
-  if (progress === 0) return null;
+  if (isFinished || progress === 0 || vehCount === 0) return null;
 
   const tip1 = getSharkValue('listCombine_fetchResult', vehCount);
   const tip2 = getSharkValue('listCombine_fetchResult2', priceCount);

@@ -1,6 +1,6 @@
 // This file is used to record the response record of the interface
 import { CarLog } from '../../Util/Index';
-import { ApiResCode } from '../../Constants/Index';
+import { ApiResCode, LogKey } from '../../Constants/Index';
 
 // Record every response of the list page for analysis of missing quotes
 export const LogListEachTrace = (isError, param, res) => {
@@ -9,7 +9,7 @@ export const LogListEachTrace = (isError, param, res) => {
   let resStr = '';
   if (res && res.baseResponse) resStr = JSON.stringify(res.baseResponse);
   CarLog.LogTrace({
-    key: '122790',
+    key: LogKey.TRACE_LIST_EACH_RES,
     info: {
       eventResult: isSuccess,
       request: JSON.stringify(param),
@@ -82,7 +82,7 @@ export const LogListFinalTrace = (param, res) => {
   }
 
   CarLog.LogTrace({
-    key: '122791',
+    key: LogKey.TRACE_LIST_FINAL_RES,
     info: {
       eventResult: isSuccess,
       request: JSON.stringify(param),

@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
 } from 'react-native';
 import {
   ViewPort, HeaderView, IBasePageProps,
@@ -29,6 +30,13 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  appContextContainer: {
+    marginTop: 10,
+    height: 188,
+    flex: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'gray',
   },
 });
 
@@ -83,6 +91,11 @@ export default class Debug extends CPage<PropsType, StateType> {
             <Text>版本号: </Text>
             <Text>{AppContext.CarEnv.buildTime}</Text>
           </View>
+          <TextInput
+            value={this.getAppContext()}
+            multiline
+            style={styles.appContextContainer}
+          />
         </ScrollView>
       </ViewPort>
     );

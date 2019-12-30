@@ -83,7 +83,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
   updateTempFilter, updateTempPrice, onHide, onDetermine, onClear,
 }: IFilterInner) => (
   <View>
-    {type === FilterBarType.Sort && (
+    {!!type && type === FilterBarType.Sort && (
     <BbkComponentSelectMenu
       filterData={initFilterData(type, filterData)}
       type={SelectMenuType.Single}
@@ -94,7 +94,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     />
     )}
 
-    {(type === FilterBarType.Supplier
+    {!!type && (type === FilterBarType.Supplier
         || (type && type.indexOf('Vendor_') > -1)) && ( // 供应商筛选项code为Vendor_
           <>
             <BbkComponentFilterList
@@ -112,7 +112,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
           </>
     )}
 
-    {type === FilterBarType.Seats && (
+    {!!type && type === FilterBarType.Seats && (
     <>
       <BbkComponentSelectMenu
         filterData={initFilterData(type, filterData)}
@@ -130,7 +130,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
     </>
     )}
 
-    {type === FilterBarType.Filters && (
+    {!!type && type === FilterBarType.Filters && (
     <>
       <BbkComponentFilterList
         filterGroups={initFilterData(type, filterData)}

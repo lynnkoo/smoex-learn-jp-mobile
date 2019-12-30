@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import {
   View, Animated, Easing, StyleSheet, Dimensions,
 } from 'react-native';
@@ -10,9 +10,10 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 const { width } = Dimensions.get('window');
 
 interface IPropsType {
-  progress: number,
-  vehCount: number,
-  priceCount: number
+  progress: number;
+  vehCount: number;
+  priceCount: number;
+  setProgressIsFinish: (isFinished: boolean) => void;
 }
 
 const styles = StyleSheet.create({
@@ -33,12 +34,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListProgress = (props: IPropsType) => {
+const ListProgress = memo((props: IPropsType) => {
   const [isFinished, setIsFinished] = useState(false);
   const [animatedOpacity, setAnimatedOpacity] = useState(new Animated.Value(1));
   const [animatedProgress, setAnimatedProgress] = useState(new Animated.Value(0));
 
-  const { progress, vehCount, priceCount } = props;
+  const {
+    progress, vehCount, priceCount, setProgressIsFinish,
+  } = props;
   useEffect(() => {
     if (isFinished && progress === 0) {
       setIsFinished(false);
@@ -62,13 +65,13 @@ const ListProgress = (props: IPropsType) => {
           easing: Easing.ease,
         }).start(() => {
           setIsFinished(true);
+          setProgressIsFinish(true);
         });
       }
     });
-  }, [animatedOpacity, animatedProgress, isFinished, progress]);
+  }, [animatedOpacity, animatedProgress, isFinished, progress, setProgressIsFinish]);
 
-  if (isFinished) return null;
-  if (progress === 0) return null;
+  if (isFinished || progress === 0 || vehCount === 0) return null;
 
   const tip1 = getSharkValue('listCombine_fetchResult', vehCount);
   const tip2 = getSharkValue('listCombine_fetchResult2', priceCount);
@@ -83,6 +86,6 @@ const ListProgress = (props: IPropsType) => {
       <Animated.View style={[styles.progressBar, { width: animatedProgress }]} />
     </Animated.View>
   );
-};
+});
 
 export default ListProgress;

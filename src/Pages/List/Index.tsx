@@ -296,7 +296,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
                 style={styles.headerStyle}
               />
             </Animated.View>
-            {/** todo FilterBar 展开动画 */}
             {curStage === PAGESTAGE.SHOW && (
               <ListFilterBar style={styles.filterBarStyle} />
             )}

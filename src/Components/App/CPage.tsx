@@ -75,25 +75,12 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
   }
 
   disableNavigatorDragBack() {
-    try {
-      const self = AppContext.PageInstance;
-      const { page } = self.props;
-      if (page.isInitialPage) {
-          CPage.disableNativeDragBack();
-      }
-    } catch (e) { }
+    CPage.disableNativeDragBack();
   }
 
   enableNavigatorDragBack() {
-    try {
-      const self = AppContext.PageInstance;
-      const { page } = self.props;
-      if (page.isInitialPage) {
-        CPage.enableNativeDragBack();
-      }
-    } catch (e) { }
+    CPage.enableNativeDragBack();
   }
-
 
   logPagePerformance() {
     const interactiveTime = +new Date() - +this.pageLastActiveTime;

@@ -177,7 +177,7 @@ const getVendorHeaderProps = (vendor) => {
     commentDesc: review(commentCount),
     score: overallRating,
     totalScore: maximumRating,
-    scoreLow: type > 1,
+    scoreLow: type && type > 1,
   };
 };
 

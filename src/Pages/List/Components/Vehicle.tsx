@@ -26,7 +26,7 @@ export const Vehicle = memo(withTheme(
     item, section, onLayout, theme,
   }) => {
     const {
-      recommendDesc, vehicleDesc, vehicleHeader,
+      recommendDesc, vehicleDesc, vehicleHeader, vehicleIndex,
     } = section;
     const {
       imgUrl, vehicleImageLabel, vehicleLabelsHorizontal, vehicleLabels,
@@ -81,7 +81,13 @@ export const Vehicle = memo(withTheme(
         {
           _.map(item, (data, index) => (
             // eslint-disable-next-line
-            <Vendor key={index} index={index} {...data} vehicleName={vehicleHeader.vehicleName} />
+            <Vendor
+              key={index}
+              index={index}
+              {...data}
+              vehicleName={vehicleHeader.vehicleName}
+              vehicleIndex={vehicleIndex}
+            />
           ))
         }
       </View>

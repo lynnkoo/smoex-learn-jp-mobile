@@ -1,39 +1,46 @@
 import moment from 'moment';
 import { SET_DATE_INFO, SET_LOCATION_INFO, GET_LOCATION_DATE_INFO } from './Types';
 import { LocationAndDateActionType } from './Actions';
-import { initDatePickup, initDateDropoff } from '../../__datas__/LocationAndDate';
+import { Utils } from '../../Util/Index';
+import {
+  initDatePickup, initDateDropoff, CtripOsdInitRentalLocation,
+} from '../../__datas__/LocationAndDate';
+
+const getRentalLocation = () => (Utils.isTrip()
+  ? {
+    pickUp: {
+      cid: 0,
+      cname: '',
+      country: '',
+      realcountry: '',
+      area: {
+        id: '',
+        name: '',
+        lat: 0,
+        lng: 0,
+        type: '',
+      },
+    },
+    dropOff: {
+      cid: 0,
+      cname: '',
+      country: '',
+      realcountry: '',
+      area: {
+        id: '',
+        name: '',
+        lat: 0,
+        lng: 0,
+        type: '',
+      },
+    },
+    isShowDropOff: false,
+  }
+  : CtripOsdInitRentalLocation);
 
 const getInitalState = () => (
   {
-    rentalLocation: {
-      pickUp: {
-        cid: 0,
-        cname: '',
-        country: '',
-        realcountry: '',
-        area: {
-          id: '',
-          name: '',
-          lat: 0,
-          lng: 0,
-          type: '',
-        },
-      },
-      dropOff: {
-        cid: 0,
-        cname: '',
-        country: '',
-        realcountry: '',
-        area: {
-          id: '',
-          name: '',
-          lat: 0,
-          lng: 0,
-          type: '',
-        },
-      },
-      isShowDropOff: false,
-    },
+    rentalLocation: { ...getRentalLocation() },
     rentalDate: {
       pickUp: { dateTime: initDatePickup },
       dropOff: { dateTime: initDateDropoff },

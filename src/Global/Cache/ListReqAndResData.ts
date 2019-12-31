@@ -37,16 +37,14 @@ export const getExposureData = () => {
   const productGroups = getBaseProductGroups() || [];
   const res = [];
   // 只在全部车型下面查找即可
-  const allProductList = _.reduce(productGroups, function(result, { productList }) {
-    return [
-      ...productList,
-      ...result
-    ];
-  }, []);
+  const allProductList = _.reduce(productGroups, (result, { productList }) => [
+    ...productList,
+    ...result,
+  ], []);
   if (productGroups) {
     _.forEach(keys, (key) => {
       const [vehicleCode, bizVendorCode] = key.split('|');
-      const { vendorPriceList }: any = _.find(allProductList, {vehicleCode}) || {};
+      const { vendorPriceList }: any = _.find(allProductList, { vehicleCode }) || {};
       const vehicle = _.find(vehicleList, { vehicleCode });
       const vendor = _.find(
         vendorPriceList,

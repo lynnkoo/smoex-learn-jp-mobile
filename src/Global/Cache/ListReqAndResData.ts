@@ -33,23 +33,27 @@ export const getExposureKeys = () => _.keys(exposureData);
 
 export const getExposureData = () => {
   const keys = getExposureKeys();
-  const { productGroups, vehicleList } = getVehAndProductList();
+  const { productGroups = [], vehicleList } = getVehAndProductList();
   const res = [];
   // 只在全部车型下面查找即可
-  const allProductList = productGroups[0].productList;
-  _.forEach(keys, (key) => {
-    const [vehicleCode, bizVendorCode] = key.split('|');
-    const { vendorPriceList }: any = _.find(allProductList, { vehicleCode }) || {};
-    const vehicle = _.find(vehicleList, { vehicleCode }) || {};
-    const vendor = _.find(
-      vendorPriceList,
-      vendorItem => vendorItem.reference.bizVendorCode === bizVendorCode,
-    );
-    res.push({
-      vehicle,
-      vendor: _.omit(vendor, ['filterAggregations']),
+  const allProductList = _.get(productGroups[0], 'productList');
+  if (allProductList) {
+    _.forEach(keys, (key) => {
+      const [vehicleCode, bizVendorCode] = key.split('|');
+      const { vendorPriceList }: any = _.find(allProductList, { vehicleCode }) || {};
+      const vehicle = _.find(vehicleList, { vehicleCode });
+      const vendor = _.find(
+        vendorPriceList,
+        vendorItem => vendorItem.reference.bizVendorCode === bizVendorCode,
+      );
+      if (vehicle) {
+        res.push({
+          vehicle,
+          vendor: _.omit(vendor, ['filterAggregations']),
+        });
+      }
     });
-  });
+  }
 
   return res;
 };

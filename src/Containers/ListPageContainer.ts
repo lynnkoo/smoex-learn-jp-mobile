@@ -8,8 +8,8 @@ import {
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 import {
-  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible,
-  getProgress, getAgePickerVisible, getAgeTipPopVisible,
+  getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getAgePickerVisible,
+  getAgeTipPopVisible, getFilterBarIsShow,
 } from '../State/List/Selectors';
 import { getFormatRentalDate, getIsShowDropOff } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
@@ -24,11 +24,11 @@ const mapStateToProps = state => ({
     age: getAge(state),
     isShowDropOff: getIsShowDropOff(state),
   },
-  progress: getProgress(state),
   datePickerVisible: getDatePickerVisible(state),
   locationDatePopVisible: getLocationDatePopVisible(state),
   agePickerVisible: getAgePickerVisible(state),
   ageTipPopVisible: getAgeTipPopVisible(state),
+  filterBarIsShow: getFilterBarIsShow(state),
 });
 
 const mapDispatchToProps = dispatch => ({

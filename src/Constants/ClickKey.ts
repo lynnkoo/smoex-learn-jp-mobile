@@ -70,4 +70,28 @@ export default {
   C_LIST_AGETIPPOP_CLOSE: {
     KEY: 'C_LIST_AGETIPPOP_CLOSE', NAME: '点击_列表页_关闭年龄说明弹层',
   },
+  C_LIST_SORTPOP_SHOW: {
+    KEY: 'C_LIST_SORTPOP_SHOW', NAME: '点击_列表页_打开排序弹层',
+  },
+  C_LIST_SORTPOP_CLOSE: {
+    KEY: 'C_LIST_SORTPOP_CLOSE', NAME: '点击_列表页_关闭排序弹层',
+  },
+  C_LIST_FILTERPOP_SHOW: {
+    KEY: 'C_LIST_FILTERPOP_SHOW', NAME: '点击_列表页_打开综合筛选弹层',
+  },
+  C_LIST_FILTERPOP_CLOSE: {
+    KEY: 'C_LIST_FILTERPOP_CLOSE', NAME: '点击_列表页_关闭综合筛选弹层',
+  },
+  C_LIST_POPULARFILTERPOP_SHOW: {
+    KEY: 'C_LIST_POPULARFILTERPOP_SHOW', NAME: '点击_列表页_打开中间筛选弹层',
+  },
+  C_LIST_POPULARFILTERPOP_CLOSE: {
+    KEY: 'C_LIST_POPULARFILTERPOP_CLOSE', NAME: '点击_列表页_关闭中间筛选弹层',
+  },
+  C_LIST_SAVED_FILTERS: {
+    KEY: 'C_LIST_SAVED_FILTERS', NAME: '点击_列表页_保存弹层筛选项',
+  },
+  C_LIST_SAVED_SORT: {
+    KEY: 'C_LIST_SAVED_SORT', NAME: '点击_列表页_排序项',
+  },
 };

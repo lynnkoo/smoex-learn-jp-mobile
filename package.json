@@ -129,7 +129,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run build:version && git add . && lint-staged"
+      "pre-commit": "npm run build:version && git add src/BuildTime.ts && lint-staged"
     }
   },
   "iconFont": [

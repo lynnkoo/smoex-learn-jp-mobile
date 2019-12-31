@@ -11,6 +11,7 @@ import {
   SET_AGETIPPOP_VISIBLE,
   SET_PROGRESS_ISFINISH,
   SET_SORTANDFILTER_VISIBLE,
+  SET_FILTERBAR_ISSHOW,
   RESET,
 } from './Types';
 
@@ -37,6 +38,7 @@ const getInitalState = () => ({
   agePickerVisible: false,
   ageTipPopVisible: false,
   sortAndFilterVisible: false,
+  filterBarIsShow: false,
 });
 
 const initalState = getInitalState();
@@ -101,6 +103,11 @@ export default (state = initalState, action) => {
       return {
         ...state,
         sortAndFilterVisible: action.data.visible,
+      };
+    case SET_FILTERBAR_ISSHOW:
+      return {
+        ...state,
+        filterBarIsShow: action.data,
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };

@@ -8,10 +8,13 @@ interface IPropsType {
   progress: number;
   progressIsFinish: boolean;
   items: any[];
+  setFilterBarIsShow: (filterBarIsShow: boolean) => void;
 }
 
 const FilterBar = memo((props: IPropsType) => {
-  const { progress, progressIsFinish, ...otherProps } = props;
+  const {
+    progress, progressIsFinish, setFilterBarIsShow, ...otherProps
+  } = props;
   const [isShowed, setIsShowed] = useState(false);
   const [animatedHeight] = useState(new Animated.Value(0));
   useEffect(() => {
@@ -22,9 +25,10 @@ const FilterBar = memo((props: IPropsType) => {
         easing: Easing.linear,
       }).start(() => {
         setIsShowed(true);
+        setFilterBarIsShow(true);
       });
     }
-  }, [animatedHeight, isShowed, progress, progressIsFinish]);
+  }, [animatedHeight, isShowed, progress, progressIsFinish, setFilterBarIsShow]);
 
   if (props.items.length === 2) { return null; }
   return (

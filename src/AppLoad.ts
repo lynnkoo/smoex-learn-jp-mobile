@@ -168,7 +168,7 @@ const appPreLoad = async () => {
   const [currentLocale, currentCurrency, sharkKeys] = task;
   const localeInstance = new Locale(currentLocale.locale);
   const locale = localeInstance.getLocale();
-  const language = localeInstance.getLanguage().toUpperCase();
+  const language = localeInstance.getLanguage().toLowerCase();
 
   DebugLog.timeEnd(label);
 

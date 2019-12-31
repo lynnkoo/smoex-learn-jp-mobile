@@ -43,7 +43,7 @@ export default withTheme(
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&age=${age}&cache=${ticket}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
-    }, [locationAndDate, reference, vehicleIndex]);
+    }, [age, locationAndDate, reference, vehicleIndex]);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

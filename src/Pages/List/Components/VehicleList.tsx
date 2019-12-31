@@ -125,9 +125,12 @@ const VehicleList = (props: VehicleListProps) => {
     setShowMoreArr(getShowMoreArr(sections, showMax));
   }, [sections, showMax]);
 
-  const onLogin = () => {
+  const onLogin = async () => {
     CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
-    User.toLogin();
+    const res = await User.toLogin();
+    if (res) {
+      setShowLoginItem(false);
+    }
   };
 
   const renderSectionFooter = useCallback((

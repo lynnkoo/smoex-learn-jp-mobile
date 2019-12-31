@@ -25,9 +25,30 @@ import { AppContext } from '../Util/Index';
 
 const { selector } = BbkUtils;
 
-const PRICE_STEP = 50; // 价格滑条滑动间隔
+const getPriceStep = memoizeOne(
+  (currency) => {
+    let priceStep = 50;
+
+    switch (currency) {
+      case 'JPY':
+        priceStep = 1000;
+        break;
+      case 'KRW':
+        priceStep = 10000;
+        break;
+      default:
+        priceStep = 50;
+        break;
+    }
+
+    return priceStep;
+  },
+);
+
+const PRICE_STEP = getPriceStep(AppContext.LanguageInfo.currency); // 价格滑条滑动间隔
+
 const getPriceRange = memoizeOne(
-  (filterItem) => {
+  (filterItem, priceStep) => {
     let priceRange = {
       minRange: 0,
       maxRange: 1000,
@@ -36,12 +57,12 @@ const getPriceRange = memoizeOne(
     try {
       const minPriceDesc = filterItem[0].code;
       const maxPriceDesc = filterItem[filterItem.length - 1].code;
-      const minPrice = parseInt(
-        minPriceDesc.slice(minPriceDesc.indexOf('_') + 1, minPriceDesc.indexOf('-')), 10);
-      const maxPrice = parseInt(maxPriceDesc.slice(maxPriceDesc.indexOf('-') + 1), 10);
+      const minPrice = parseInt(minPriceDesc.split('-')[0], 10);
+      const tempMaxPrice = parseInt(maxPriceDesc.split('-')[1], 10);
+      const maxPrice = _.ceil(tempMaxPrice, -(tempMaxPrice.toString().length - 1));
       priceRange = {
         minRange: minPrice,
-        maxRange: maxPrice + 50,
+        maxRange: maxPrice + priceStep,
       };
     } catch (e) {
       /* eslint-disable no-console */
@@ -67,14 +88,15 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
 
           if (group.filterItems && group.filterItems.length > 0) {
             group.filterItems.forEach((item) => {
+              const code = isPriceGroup ? item.code : item.itemCode;
               filterItems.push({
                 name: item.name,
-                code: item.itemCode,
+                code,
                 isSelected:
                   isPriceGroup && priceIsSelected
                     ? `${selectedFilters.priceList[0].min}-${selectedFilters.priceList[0].max}`
                     === item.code
-                    : selectedFilters.codeList.includes(item.itemCode),
+                    : selectedFilters.codeList.includes(code),
               });
             });
           }
@@ -96,17 +118,19 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               },
               isPriceGroup ? {
                 isSingleChoice: true,
-                minRange: getPriceRange(filterItems).minRange,
-                maxRange: getPriceRange(filterItems).maxRange,
-                minPrice: getPriceRange(filterItems).minRange,
-                maxPrice: getPriceRange(filterItems).maxRange,
+                minRange: getPriceRange(filterItems, PRICE_STEP).minRange,
+                maxRange: getPriceRange(filterItems, PRICE_STEP).maxRange,
+                minPrice: getPriceRange(filterItems, PRICE_STEP).minRange,
+                maxPrice: getPriceRange(filterItems, PRICE_STEP).maxRange,
               } : {
                 isSingleChoice: false,
               },
               isPriceGroup && priceIsSelected
                 ? {
-                  minPrice: selectedFilters.priceList[0].min || getPriceRange(filterItems).minRange,
-                  maxPrice: selectedFilters.priceList[0].max || getPriceRange(filterItems).maxRange,
+                  minPrice: selectedFilters.priceList[0].min
+                  || getPriceRange(filterItems, PRICE_STEP).minRange,
+                  maxPrice: selectedFilters.priceList[0].max
+                  || getPriceRange(filterItems, PRICE_STEP).maxRange,
                 }
                 : {},
             ),

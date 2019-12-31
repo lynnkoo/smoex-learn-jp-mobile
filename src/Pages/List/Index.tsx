@@ -3,7 +3,7 @@ import {
   View, StyleSheet, Animated,
 } from 'react-native';
 import {
-  ViewPort, IBasePageProps, Event, Toast,
+  ViewPort, IBasePageProps, Event,
 } from '@ctrip/crn';
 import _ from 'lodash';
 import BbkSkeletonLoading, { PageType } from '@ctrip/bbk-component-skeleton-loading';
@@ -13,7 +13,6 @@ import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
 import { CarLog, Utils } from '../../Util/Index';
-import { listLoading } from './Texts';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -80,7 +79,7 @@ interface IListPropsType extends IBasePageProps {
   locationDatePopVisible: boolean;
   agePickerVisible: boolean;
   ageTipPopVisible: boolean;
-  progress: number;
+  filterBarIsShow: boolean;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
   setDatePickerIsShow: ({ visible: boolean }) => void;
@@ -189,7 +188,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   setVehicleListThreshold = ({ nativeEvent }) => {
     const { listThreshold } = this.state;
     const { height } = nativeEvent.layout;
-    if (listThreshold !== height) {
+    if (listThreshold !== height && this.props.filterBarIsShow) {
       this.listThresholdLayout = height;
       this.setState({
         listThreshold: height,
@@ -220,12 +219,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
     }
   }
 
-  // todo 移至到header内单独处理
   handlePressHeader = () => {
-    if (this.props.progress !== 1) {
-      Toast.show(listLoading);
-      return;
-    }
     this.props.setFilterModalIsShow({ visible: false });
     this.props.setLocationAndDatePopIsShow({ visible: true });
     CarLog.LogCode({ enName: ClickKey.C_LIST_HEADER_CHANGEINFO.KEY });
@@ -257,7 +251,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   scrollHeaderAnimation = (value, duration = druation.animationDurationSm) => {
     const { headerAnim } = this.state;
     const { translateY, opacity } = headerAnim;
-    if (this.lastTranslateYAnim === value || this.headerAnimating || this.props.progress !== 1) {
+    if (this.lastTranslateYAnim === value || this.headerAnimating || !this.props.filterBarIsShow) {
       return;
     }
     this.lastTranslateYAnim = value;

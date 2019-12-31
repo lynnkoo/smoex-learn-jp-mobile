@@ -1,4 +1,5 @@
 import { getProductGroupsAndCount, FilterCalculater } from '@ctrip/bbk-logic';
+import _ from 'lodash';
 import { FrontEndConfig } from '../../Constants/Index';
 import { getStore } from '../../State/Store';
 
@@ -50,7 +51,7 @@ export const getVehGroupList = () => {
     vehGroupList.push({
       gId: item.groupCode,
       title: item.groupName,
-      count: item.productList.length, // todo lodash.get
+      count: _.get(item, 'productList.length'),
     });
   });
 

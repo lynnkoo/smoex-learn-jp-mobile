@@ -15,6 +15,7 @@ import {
   isDiffLocation,
 } from '../../../Global/Cache/ListResSelectors';
 
+
 export default withTheme(
   ({
     vendor,
@@ -26,6 +27,7 @@ export default withTheme(
     reference,
     index,
     vehicleIndex,
+    age,
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
@@ -38,10 +40,10 @@ export default withTheme(
       // 跳转Trip详情页地址
       /* eslint-disable max-len */
       const ticket = new Date().getTime();
-      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&cache=${ticket}`;
+      const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&age=${age}&cache=${ticket}`;
       URL.openURL(url);
       CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
-    }, [locationAndDate, reference, vehicleIndex]);
+    }, [age, locationAndDate, reference, vehicleIndex]);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

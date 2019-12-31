@@ -5,7 +5,30 @@ import {
   getActiveFilterBarCode, getSelectedFilters, getProgress, getProgressIsFinish,
 } from '../State/List/Selectors';
 import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
-import { setActiveFilterBarCode, setFilterModalIsShow } from '../State/List/Actions';
+import {
+  setActiveFilterBarCode, setFilterModalIsShow,
+  setFilterBarIsShow,
+} from '../State/List/Actions';
+import { CarLog } from '../Util/Index';
+import { ClickKey } from '../Constants/Index';
+
+const filterBarLog = (data) => {
+  let key = '';
+
+  switch (data) {
+    case 'Sort':
+      key = ClickKey.C_LIST_SORTPOP_SHOW.KEY;
+      break;
+    case 'Filters':
+      key = ClickKey.C_LIST_FILTERPOP_SHOW.KEY;
+      break;
+    default:
+      key = ClickKey.C_LIST_POPULARFILTERPOP_SHOW.KEY;
+      break;
+  }
+
+  CarLog.LogCode({ enName: key });
+};
 
 const getFilterBarData = (state) => {
   const filterItemList = [];
@@ -56,8 +79,12 @@ const mapStateToProps = state => ({
 
 /* eslint-disable no-unused-vars */
 const mapDispatchToProps = dispatch => ({
-  setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
+  setActiveFilterBarCode: (data) => {
+    dispatch(setActiveFilterBarCode(data));
+    filterBarLog(data);
+  },
   setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
+  setFilterBarIsShow: data => dispatch(setFilterBarIsShow(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);

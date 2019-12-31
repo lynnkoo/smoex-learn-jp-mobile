@@ -17,6 +17,7 @@ import {
   SET_AGETIPPOP_VISIBLE,
   SET_PROGRESS_ISFINISH,
   SET_SORTANDFILTER_VISIBLE,
+  SET_FILTERBAR_ISSHOW,
   RESET,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
@@ -110,6 +111,11 @@ export const setProgressIsFinish = data => ({
 
 export const setFilterModalIsShow = data => ({
   type: SET_SORTANDFILTER_VISIBLE,
+  data,
+});
+
+export const setFilterBarIsShow = data => ({
+  type: SET_FILTERBAR_ISSHOW,
   data,
 });
 

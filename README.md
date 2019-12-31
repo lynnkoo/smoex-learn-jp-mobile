@@ -19,6 +19,20 @@ npm run ios
 npm run ios:trip
 
 ```
+
+### Forward Url
+```sh
+# Caution 1: apptype
+# Caution 2: CRNModuleName rn_car_app & rn_ibu_car_app
+
+# Ctrip URL
+# http://10.32.116.125:5389/index.ios.bundle?CRNModuleName=rn_car_app&CRNType=1&apptype=OSD_C_APP
+
+# Trip URL
+# http://10.32.116.125:5388/index.ios.bundle?CRNModuleName=rn_ibu_car_app&CRNType=1
+
+```
+
 ### Locally Development
 1) `npm run start` or `npm run start:trip` - to start server
 2) `npm run watch:ts` - to just-in-time compilation  typescript

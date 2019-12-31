@@ -5,7 +5,10 @@ import {
   getActiveFilterBarCode, getSelectedFilters, getProgress, getProgressIsFinish,
 } from '../State/List/Selectors';
 import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
-import { setActiveFilterBarCode, setFilterModalIsShow } from '../State/List/Actions';
+import {
+  setActiveFilterBarCode, setFilterModalIsShow,
+  setFilterBarIsShow,
+} from '../State/List/Actions';
 import { CarLog } from '../Util/Index';
 import { ClickKey } from '../Constants/Index';
 
@@ -81,6 +84,7 @@ const mapDispatchToProps = dispatch => ({
     filterBarLog(data);
   },
   setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
+  setFilterBarIsShow: data => dispatch(setFilterBarIsShow(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);

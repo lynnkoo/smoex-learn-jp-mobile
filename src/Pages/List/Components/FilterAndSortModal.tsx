@@ -10,7 +10,8 @@ import BbkComponentCarFilterModal,
 import BbkComponentFilterList from '@ctrip/bbk-component-filter-list';
 import { FilterType, FilterCalculaterType } from '@ctrip/bbk-logic';
 import BbkComponentSelectMenu, { BbkSelectMenu } from '@ctrip/bbk-component-select-menu';
-import { FilterBarType } from '../../../Constants/Index';
+import { ClickKey, FilterBarType } from '../../../Constants/Index';
+import { CarLog } from '../../../Util/Index';
 
 const { SelectMenuType } = BbkSelectMenu;
 
@@ -89,6 +90,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
       type={SelectMenuType.Single}
       onToggle={(label) => {
         updateSelectedFilter({ sortFilter: label.code });
+        CarLog.LogCode({ enName: ClickKey.C_LIST_SAVED_SORT.KEY, sortFilter: label.code });
         onHide();
       }}
     />
@@ -295,6 +297,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
     updateFilterCalculate(tempFilterLabel, tempPrice);
     updateSelectedFilter(temp);
     onHide();
+    CarLog.LogCode({ enName: ClickKey.C_LIST_SAVED_FILTERS.KEY, selectedFilters: temp });
   }, [setSelectedFilters, tempFilterLabel, tempPrice,
     updateFilterCalculate, updateSelectedFilter, onHide]);
 

@@ -56,13 +56,13 @@ const ListProgress = memo((props: IPropsType) => {
     Animated.timing(animatedProgress, {
       toValue: progressToVal,
       duration: 900,
-      easing: Easing.ease,
+      easing: Easing.linear,
     }).start(() => {
       if (progress === 1) {
         Animated.timing(animatedOpacity, {
           toValue: 0,
           duration: 300,
-          easing: Easing.ease,
+          easing: Easing.linear,
         }).start(() => {
           setIsFinished(true);
           setProgressIsFinish(true);

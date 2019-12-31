@@ -5,7 +5,8 @@ import { getSharkValue } from '@ctrip/bbk-shark';
 
 export const AgeConfig = {
   DEFAULT_AGE: {
-    getVal: () => getSharkValue('listCombine_defaultAgeRange', 30, 60),
+    // getVal: () => getSharkValue('listCombine_defaultAgeRange', 30, 60),
+    getVal: () => '30~60',
     min: 30,
     max: 60,
   },

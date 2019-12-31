@@ -19,7 +19,7 @@ const FilterBar = memo((props: IPropsType) => {
       Animated.timing(animatedHeight, {
         toValue: BbkUtils.getPixel(80),
         duration: druation.animationDurationSm,
-        easing: Easing.ease,
+        easing: Easing.linear,
       }).start(() => {
         setIsShowed(true);
       });

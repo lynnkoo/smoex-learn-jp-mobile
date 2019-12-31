@@ -9,7 +9,9 @@ const { getPixel } = BbkUtils;
 export const VehicleListStyle = StyleSheet.create({
   wrap: {
     paddingHorizontal: space.spaceXXL,
-    borderTopWidth: border.borderSizeSm,
+  },
+  vehicleImgWrap: {
+    borderTopWidth: border.borderSizeXsm,
   },
   labelFlexLeft: {
     justifyContent: 'flex-start',
@@ -43,7 +45,7 @@ export const VehicleListStyle = StyleSheet.create({
   },
   more: {
     paddingVertical: space.spaceXXL,
-    // borderBottomWidth: border.borderSizeSm,
+    // borderBottomWidth: border.borderSizeXsm,
   },
   moreText: {
     ...font.body2LightStyle,
@@ -72,13 +74,13 @@ export const VehicleListStyle = StyleSheet.create({
     marginLeft: space.spaceS,
   },
   vendorPriceWrap: {
-    marginLeft: BbkChannel.isTrip() ? space.spaceS : space.spaceXS,
+    marginLeft: BbkChannel.isTrip() ? -space.spaceS : -space.spaceXS,
   },
   vehicleHeaderWrap: {
     borderBottomWidth: 0,
   },
   showMoreWrap: {
-    borderTopWidth: border.borderSizeSm,
+    borderTopWidth: border.borderSizeXsm,
   },
 });
 

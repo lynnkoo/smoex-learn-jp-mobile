@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
-import { BbkUtils } from '@ctrip/bbk-utils';
+import { StyleSheet, View } from 'react-native';
+import { BbkUtils, BbkStyleUtil } from '@ctrip/bbk-utils';
 import { color } from '@ctrip/bbk-tokens';
 import BbkHorizontalNav, { BbkHorizontalNavItem } from '@ctrip/bbk-component-horizontal-nav';
 import { WithLogCode } from '../../../Components/Index';
@@ -26,12 +26,7 @@ const styles = StyleSheet.create({
   container: {
     height: BbkUtils.getPixel(84),
     backgroundColor: color.white,
-    ...Platform.select({
-      android: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: color.grayBorder,
-      },
-    }),
+    minWidth: BbkUtils.vw(100),
   },
   mainWrap: {
     borderBottomWidth: 0,
@@ -83,7 +78,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
     const { activeGroupId, progress } = this.props;
     if (progress === 1 && vehGroupNav.length === 0) return null;
     return (
-      <View>
+      <View style={BbkStyleUtil.getMT(StyleSheet.hairlineWidth)}>
         {
           progress > 0 && vehGroupNav.length > 0
           && (
@@ -92,6 +87,7 @@ export default class VehGroupNav extends PureComponent<VehGroupNavPropsType, Veh
               indicatorWidth={BbkUtils.getPixel(80)}
               indicatorHeight={BbkUtils.getPixel(6)}
               selectedId={activeGroupId}
+              spaceAround
             >
               {vehGroupNav}
             </BbkHorizontalNav>

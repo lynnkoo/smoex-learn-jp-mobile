@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     padding: space.spaceXXL,
     backgroundColor: color.white,
     marginTop: -space.spaceL,
-    borderTopWidth: border.borderSizeSm,
+    borderTopWidth: border.borderSizeXsm,
   },
   filterTitle: {
     ...font.body3Style,

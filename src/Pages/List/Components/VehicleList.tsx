@@ -60,21 +60,28 @@ interface sectionProps {
 
 export interface VehicleListProps extends SectionListWithControlProps {
   showMax?: number;
+  scrollViewHeight?: number;
 }
 
 const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
-// android 少于 2 条数据时不展示打通，无法触发 scroll
-// const getShowFooter = sections => (isIos ? sections.length <= 0 : false);
 const VehicleList = (props: VehicleListProps) => {
   const {
     sections,
     showMax,
+    scrollViewHeight,
     ...passThroughProps
   } = props;
   const [showMoreArr, setShowMoreArr] = useState(() => getShowMoreArr(sections, showMax));
-  // android 少于 2 条数据时不展示打通，无法触发 scroll
-  // const [showFooter, setShowFooter] = useState(() => getShowFooter(sections));
+  const [vehicleHeight, setVehicleHeight] = useState(0);
+  const [vehicleHeaderHeight, setVehicleHeaderHeight] = useState(0);
   const sectionsLen = sections.length;
+  // android 少于 2 条数据时不展示打通，无法触发 scroll
+  const shouldSetMinHeight = sectionsLen <= 1 && _.get(sections, '[0].data[0].length') <= 1;
+
+  const onVehicleLayout = ({ nativeEvent }) => {
+    const { height } = nativeEvent.layout;
+    setVehicleHeight(height);
+  };
 
   const renderItem = useCallback((data) => {
     let { item } = data;
@@ -85,19 +92,23 @@ const VehicleList = (props: VehicleListProps) => {
       <Vehicle
         item={item}
         section={data.section}
+        onLayout={shouldSetMinHeight && onVehicleLayout}
       />
     );
-  }, [showMax, showMoreArr]);
+  }, [shouldSetMinHeight, showMax, showMoreArr]);
+
+  const onVehicleHeaderLayout = ({ nativeEvent }) => {
+    const { height } = nativeEvent.layout;
+    setVehicleHeaderHeight(height);
+  };
 
   const renderSectionHeader = useCallback(
-    ({ section: { vehicleHeader, vehicleIndex } }: sectionProps) => (
+    ({ section: { vehicleHeader } }: sectionProps) => (
       <VehicleHeader
         vehicleHeader={vehicleHeader}
-        vehicleIndex={vehicleIndex}
-        sectionsLen={sectionsLen}
-        // setShowFooter={setShowFooter}
+        onLayout={shouldSetMinHeight && onVehicleHeaderLayout}
       />
-    ), [sectionsLen]);
+    ), [shouldSetMinHeight]);
 
   const [showLoginItem, setShowLoginItem] = useState(false);
 
@@ -114,19 +125,26 @@ const VehicleList = (props: VehicleListProps) => {
     setShowMoreArr(getShowMoreArr(sections, showMax));
   }, [sections, showMax]);
 
-  const onLogin = () => {
+  const onLogin = async () => {
     CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
-    User.toLogin();
+    const res = await User.toLogin();
+    if (res) {
+      setShowLoginItem(false);
+    }
   };
 
   const renderSectionFooter = useCallback((
     { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
     const showMore = showMoreArr[vehicleIndex];
-    const moreNumber = Math.max(_.get(data, '[0].length') - showMax, 0);
+    const length = _.get(data, '[0].length');
+    const moreNumber = Math.max(length - showMax, 0);
     const { vehicleName }: any = vehicleHeader || {};
+    const minHeightStyle = shouldSetMinHeight && {
+      minHeight: scrollViewHeight - vehicleHeight - vehicleHeaderHeight,
+    };
 
     return (
-      <>
+      <View style={minHeightStyle}>
         <VehicleFooter
           moreNumber={showMore ? moreNumber : showMore}
           setShowMoreArr={setShowMoreArr}
@@ -143,9 +161,17 @@ const VehicleList = (props: VehicleListProps) => {
             />,
           )
         }
-      </>
+      </View>
     );
-  }, [showLoginItem, showMax, showMoreArr]);
+  }, [
+    showMoreArr,
+    showMax,
+    shouldSetMinHeight,
+    scrollViewHeight,
+    vehicleHeight,
+    vehicleHeaderHeight,
+    showLoginItem,
+  ]);
 
   return (
     <SectionListWithControl

@@ -254,7 +254,9 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       if (item.type === typeName) {
         if (handleType === 'add') {
           if (isPriceLabel) {
-            const deletePriceLabel = item.selectedLabelList.find(v => v.code.indexOf('Price') > -1);
+            const deletePriceLabel = item.selectedLabelList.find(
+              v => v.code && v.code.indexOf('Price') > -1,
+            );
             _.pull(item.selectedLabelList, deletePriceLabel);
           }
           item.selectedLabelList.push({ code: label.code, name: label.name });

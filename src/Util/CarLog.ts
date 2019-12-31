@@ -99,6 +99,7 @@ class CarLog {
       defaultAge: age === AgeConfig.DEFAULT_AGE.getVal(),
       ...AppContext.LanguageInfo,
       ...locationAndDateInfo,
+      queryVid: AppContext.UserTrace.queryVid,
     };
   }
 

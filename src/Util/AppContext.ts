@@ -50,6 +50,10 @@ export interface LanguageInfoType {
   currency: string;
 }
 
+export interface UserTraceType {
+  queryVid?: string,
+}
+
 const baseContext = {
   ABTesting: { trace: '', datas: {} },
   MarketInfo: {
@@ -74,6 +78,7 @@ const baseContext = {
   UrlQuery: {},
   Url: '',
   PageInstance: null,
+  UserTrace: {},
 };
 
 const getAppContext = () => _.cloneDeep(baseContext);
@@ -136,6 +141,10 @@ const setCarEnv = (carEnv: CarEnvType) => {
   appContext.CarEnv = carEnv;
 };
 
+const setUserTrace = (trace: UserTraceType) => {
+  appContext.UserTrace = trace;
+}
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -170,6 +179,9 @@ const AppContext = {
   get PageInstance() {
     return appContext.PageInstance;
   },
+  get UserTrace(): UserTraceType {
+    return appContext.UserTrace;
+  },
   resetAppContext,
   setMarketInfo,
   setABTesting,
@@ -181,6 +193,7 @@ const AppContext = {
   setPageInstance,
   setLanguageCurrency,
   setCarEnv,
+  setUserTrace,
 };
 
 export default AppContext;

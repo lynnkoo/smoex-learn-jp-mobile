@@ -12,7 +12,7 @@ import { color, druation, setOpacity } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
 import { PageId, ClickKey, EventName } from '../../Constants/Index';
-import { CarLog } from '../../Util/Index';
+import { CarLog, Utils } from '../../Util/Index';
 import { listLoading } from './Texts';
 
 // 组件
@@ -26,6 +26,7 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 import { getExposureData, removeExposureData } from '../../Global/Cache/ListReqAndResData';
+
 
 const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
@@ -328,7 +329,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {curStage === PAGESTAGE.SHOW
             && (
               <VehicleListWithControl
-                threshold={listThreshold}
+                scrollViewHeight={Utils.heightWithStatusBar - listThreshold}
                 scrollUpCallback={this.scrollUpCallback}
                 scrollDownCallback={this.scrollDownCallback}
                 refFn={(ref) => { this.vehicleListRef = ref; }}

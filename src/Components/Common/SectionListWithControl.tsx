@@ -33,6 +33,7 @@ export interface SectionListWithControlProps extends SectionListProps<any> {
   ListEmptyComponent?: ReactElement;
   scrollUpCallback?: (e: ScrollResponderEvent) => void;
   scrollDownCallback?: (e: ScrollResponderEvent) => void;
+  shouldSetMinHeight?: boolean;
 }
 
 interface SectionListWithControlState {
@@ -109,7 +110,7 @@ export default class SectionListWithControl
 
   // eslint-disable-next-line
   triggerScroll = (event, triggerEvent = 'onScroll') => {
-    const { threshold, scrollUpCallback, scrollDownCallback } = this.props;
+    const { threshold } = this.props;
     let { showAndroidLoad, showAndroidRefresh } = this.state;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
@@ -145,6 +146,27 @@ export default class SectionListWithControl
       showAndroidRefresh = nextShowAndroidRefresh;
     }
 
+    this.scrollUpDown(triggerEvent, scrollUp, y, event);
+
+    if (triggerEvent === 'onScrollBeginDrag') {
+      this.lastScrollY = y;
+    }
+
+    return {
+      load,
+      refresh,
+      showAndroidLoad,
+      showAndroidRefresh,
+    };
+  }
+
+  scrollUpDown = (triggerEvent, scrollUp, y, event) => {
+    const { scrollUpCallback, scrollDownCallback, shouldSetMinHeight } = this.props;
+
+    if (!shouldSetMinHeight) {
+      return;
+    }
+
     /**
      * 头部隐藏/显示
      */
@@ -176,17 +198,6 @@ export default class SectionListWithControl
     } else if (triggerScrollDownCallback && scrollDownCallback) {
       scrollDownCallback(event);
     }
-
-    if (triggerEvent === 'onScrollBeginDrag') {
-      this.lastScrollY = y;
-    }
-
-    return {
-      load,
-      refresh,
-      showAndroidLoad,
-      showAndroidRefresh,
-    };
   }
 
   onScroll = (event) => {

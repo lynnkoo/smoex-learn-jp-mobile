@@ -5,7 +5,10 @@ import {
   getActiveFilterBarCode, getSelectedFilters, getProgress, getProgressIsFinish,
 } from '../State/List/Selectors';
 import { getPopularFilterItems, getFilterBarItemsCode } from '../Global/Cache/ListResSelectors';
-import { setActiveFilterBarCode, setFilterModalIsShow } from '../State/List/Actions';
+import {
+  setActiveFilterBarCode, setFilterModalIsShow,
+  setFilterBarIsShow,
+} from '../State/List/Actions';
 
 const getFilterBarData = (state) => {
   const filterItemList = [];
@@ -58,6 +61,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setActiveFilterBarCode: data => dispatch(setActiveFilterBarCode(data)),
   setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
+  setFilterBarIsShow: data => dispatch(setFilterBarIsShow(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);

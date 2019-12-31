@@ -143,7 +143,7 @@ const setCarEnv = (carEnv: CarEnvType) => {
 
 const setUserTrace = (trace: UserTraceType) => {
   appContext.UserTrace = trace;
-}
+};
 
 const AppContext = {
   get ABTesting(): ABTestingType {

@@ -140,6 +140,9 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   componentWillUnmount() {
     removeEvents();
     this.sendEvents();
+  }
+
+  pageWillDisappear() {
     this.logExposureData();
   }
 

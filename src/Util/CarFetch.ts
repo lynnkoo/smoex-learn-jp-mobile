@@ -85,7 +85,6 @@ class FetchBase implements FetchBaseType {
     const requestUrl = await this.getRequestUrl(url);
     const tmpParam = param;
     tmpParam[opts.baseParamKey] = this.getBaseRequest(param);
-    // console.log('测试+++getFetchObject+++tmpParam', tmpParam);
     if (!cancelable) {
       return fetch(requestUrl, {
         method: opts.method,

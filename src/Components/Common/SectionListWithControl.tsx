@@ -163,7 +163,7 @@ export default class SectionListWithControl
   scrollUpDown = (triggerEvent, scrollUp, y, event) => {
     const { scrollUpCallback, scrollDownCallback, shouldSetMinHeight } = this.props;
 
-    if (!shouldSetMinHeight) {
+    if (shouldSetMinHeight) {
       return;
     }
 
@@ -178,7 +178,6 @@ export default class SectionListWithControl
       } else if (scrollUp < 0) {
         triggerScrollDownCallback = true;
       }
-      this.onScrollBegin = false;
     }
 
     // 安卓顶部不会触发 onScroll的情况
@@ -190,7 +189,6 @@ export default class SectionListWithControl
       && scrollUp === 0
     ) {
       triggerScrollDownCallback = true;
-      this.onScrollBegin = false;
     }
 
     if (triggerScrollUpCallback && scrollUpCallback) {
@@ -211,17 +209,18 @@ export default class SectionListWithControl
       refresh,
     } = this.triggerScroll(event);
 
+    // onScrollEndDrag could be triggered before onScroll finished
     this.setState({
-      onLoading: load,
-      refreshing: refresh,
+      onLoading: this.onScrollBegin && load,
+      refreshing: this.onScrollBegin && refresh,
     });
   }
 
   onScrollBeginDrag = (event) => {
     this.onScrollBegin = true;
     const {
-      load,
-      refresh,
+      showAndroidLoad,
+      showAndroidRefresh,
     } = this.triggerScroll(event, 'onScrollBeginDrag');
 
     if (isIos) {
@@ -230,7 +229,7 @@ export default class SectionListWithControl
 
     const { throttle } = this.props;
 
-    if (refresh && this.refreshControlWrap) {
+    if (showAndroidRefresh && this.refreshControlWrap) {
       this.refreshControlWrap.setNativeProps({
         style: {
           paddingTop: throttle,
@@ -238,7 +237,7 @@ export default class SectionListWithControl
       });
     }
 
-    if (load && this.loadControlWrap) {
+    if (showAndroidLoad && this.loadControlWrap) {
       this.loadControlWrap.setNativeProps({
         style: {
           paddingBottom: throttle,
@@ -278,6 +277,8 @@ export default class SectionListWithControl
       showAndroidLoad,
       showAndroidRefresh,
     } = this.triggerScroll(event, 'onScrollEndDrag');
+
+    this.onScrollBegin = false;
 
     const nextState: any = {
       showAndroidLoad,

@@ -76,7 +76,7 @@ const VehicleList = (props: VehicleListProps) => {
   const [vehicleHeaderHeight, setVehicleHeaderHeight] = useState(0);
   const sectionsLen = sections.length;
   // android 少于 2 条数据时不展示打通，无法触发 scroll
-  const shouldSetMinHeight = sectionsLen <= 1 && _.get(sections, '[0].data[0].length') <= 1;
+  const shouldSetMinHeight = sectionsLen <= 1 && _.get(sections, '[0].data[0].length') <= 2;
 
   const onVehicleLayout = ({ nativeEvent }) => {
     const { height } = nativeEvent.layout;
@@ -176,6 +176,7 @@ const VehicleList = (props: VehicleListProps) => {
   return (
     <SectionListWithControl
       // showFooter={showFooter}
+      shouldSetMinHeight={shouldSetMinHeight}
       sections={sections}
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}

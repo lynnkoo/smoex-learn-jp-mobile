@@ -161,6 +161,10 @@ const VehicleList = (props: VehicleListProps) => {
             />,
           )
         }
+
+        {
+          vehicleIndex === sectionsLen - 1 && cacheDom.SelectedFilterItems
+        }
       </View>
     );
   }, [
@@ -171,6 +175,7 @@ const VehicleList = (props: VehicleListProps) => {
     vehicleHeight,
     vehicleHeaderHeight,
     showLoginItem,
+    sectionsLen,
   ]);
 
   return (
@@ -181,7 +186,7 @@ const VehicleList = (props: VehicleListProps) => {
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
       ListHeaderExtraComponent={cacheDom.TipList}
-      ListFooterExtraComponent={cacheDom.SelectedFilterItems}
+      // ListFooterExtraComponent={cacheDom.SelectedFilterItems}
       ListEmptyComponent={cacheDom.NoMatch}
       threshold={50}
       {...passThroughProps}

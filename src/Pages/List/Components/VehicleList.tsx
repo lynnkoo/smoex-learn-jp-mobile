@@ -9,7 +9,11 @@ import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
 import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl,
-{ SectionListWithControlProps } from '../../../Components/Common/SectionListWithControl';
+{
+  SectionListWithControlProps,
+  controlHeight,
+}
+  from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
 import LoginItem from './LoginItem';
 import { User, CarLog } from '../../../Util/Index';
@@ -140,7 +144,7 @@ const VehicleList = (props: VehicleListProps) => {
     const moreNumber = Math.max(length - showMax, 0);
     const { vehicleName }: any = vehicleHeader || {};
     const minHeightStyle = shouldSetMinHeight && {
-      minHeight: scrollViewHeight - vehicleHeight - vehicleHeaderHeight,
+      minHeight: scrollViewHeight - vehicleHeight - vehicleHeaderHeight - controlHeight,
     };
 
     return (

@@ -9,6 +9,8 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { isIos, lazySelector } = BbkUtils;
 
+export const controlHeight = 35;
+
 // @ts-ignore
 export interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
   controlWrap: {
     position: 'absolute',
     // refreshControl 的默认高度
-    top: -35,
+    top: -controlHeight,
     width: '100%',
   },
   androidRefreshWrap: {
@@ -395,7 +397,7 @@ export default class SectionListWithControl
       // ts-ignore
       <RefreshControl
         style={isIos ? styles.controlWrap : [styles.androidRefreshWrap, {
-          top: throttle - 35,
+          top: throttle - controlHeight,
         }]}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}

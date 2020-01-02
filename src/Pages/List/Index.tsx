@@ -11,7 +11,9 @@ import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color, druation, setOpacity } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId, ClickKey, EventName } from '../../Constants/Index';
+import {
+  PageId, ClickKey, EventName, LogKey,
+} from '../../Constants/Index';
 import { CarLog, Utils } from '../../Util/Index';
 
 // 组件
@@ -162,8 +164,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   logExposureData() {
     const data = getExposureData();
     CarLog.LogTrace({
-      key: '123546',
-      info: data,
+      key: LogKey.TRACE_LIST_EXPOSURE,
+      info: { data },
     });
   }
 

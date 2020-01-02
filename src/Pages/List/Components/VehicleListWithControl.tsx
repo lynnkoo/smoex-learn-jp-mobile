@@ -47,6 +47,24 @@ const styles = StyleSheet.create({
   },
 });
 
+const getLogKey = (vendor) => {
+  const {
+    vehicleIndex,
+    vendorIndex,
+    vehicleCode,
+    reference = {},
+  } = vendor;
+  const {
+    bizVendorCode,
+  } = reference;
+  return {
+    vehicleIndex,
+    vendorIndex,
+    vehicleCode,
+    bizVendorCode,
+  };
+};
+
 export default class VehicleListWithControl extends
   PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
   static defaultProps = {
@@ -251,10 +269,12 @@ export default class VehicleListWithControl extends
       try {
         if (item.data) {
           _.forEach(item.data[0], (vendor) => {
-            setExposureKey(vendor.key);
+            const key = getLogKey(vendor);
+            setExposureKey(key);
           });
         } else {
-          setExposureKey(item.key);
+          const key = getLogKey(item[0]);
+          setExposureKey(key);
         }
       } catch (e) {
         // eslint-disable-next-line

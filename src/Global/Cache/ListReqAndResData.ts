@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import { getVehicleList, getBaseProductGroups } from './ListResSelectors';
+import { AppContext } from '../../Util/Index';
+import { getStore } from '../../State/Store';
+import { getActiveGroupId, getSelectedFilters } from '../../State/List/Selectors';
 
 /** 列表页接口的请求+响应数据 */
 let reqAndResData = {
@@ -7,6 +9,26 @@ let reqAndResData = {
   listProductRes: null,
 };
 
+/** 埋点数据结构
+ * selectedFilters [] 规则: sortFilter + filterLabels, ','拼接
+ * key string 规则: keyObj.value,  ','拼接
+    {
+      queryVid: {
+        groupId: {
+          selectedFilters: {
+            key: {
+              vehicleIndex: 0,
+              vendorIndex: 0,
+              vehicleCode: '',
+              bizVendorCode: ''
+            }
+          }
+
+          ]
+        }
+      }
+    }
+ */
 let exposureData = {};
 
 export default class ListReqAndResData {
@@ -29,41 +51,33 @@ export default class ListReqAndResData {
   }
 }
 
-export const getExposureKeys = () => _.keys(exposureData);
-
 export const getExposureData = () => {
-  const keys = getExposureKeys();
-  const vehicleList = getVehicleList() || [];
-  const productGroups = getBaseProductGroups() || [];
-  const res = [];
-  // 只在全部车型下面查找即可
-  const allProductList = _.reduce(productGroups, (result, { productList }) => [
-    ...productList,
-    ...result,
-  ], []);
-  if (productGroups) {
-    _.forEach(keys, (key) => {
-      const [vehicleCode, bizVendorCode] = key.split('|');
-      const { vendorPriceList }: any = _.find(allProductList, { vehicleCode }) || {};
-      const vehicle = _.find(vehicleList, { vehicleCode });
-      const vendor = _.find(
-        vendorPriceList,
-        vendorItem => vendorItem.reference.bizVendorCode === bizVendorCode,
-      );
-      if (vehicle) {
-        res.push({
-          vehicle,
-          vendor: _.omit(vendor, ['filterAggregations']),
-        });
-      }
+  const res = {};
+  _.forEach(exposureData, (queryVidObj, queryVid) => {
+    _.forEach(queryVidObj, (groupIdObj, groupId) => {
+      _.forEach(groupIdObj, (selectedFiltersObj, selectedFilterString) => {
+        const path = [queryVid, groupId, selectedFilterString];
+        _.setWith(res, path, _.values(selectedFiltersObj), Object);
+      });
     });
-  }
-
+  });
   return res;
 };
 
-export const setExposureKey = (key) => {
-  exposureData[key] = true;
+export const setExposureKey = (data) => {
+  const queryVid = AppContext.getQueryVid();
+  const state = getStore().getState();
+  const groupId = getActiveGroupId(state);
+  const selectedFilters = getSelectedFilters(state);
+  const { filterLabels, sortFilter } = selectedFilters;
+  const labels = _.map(filterLabels, ({ name }) => name);
+  const selectedFilterString = [sortFilter, ...labels].sort().join(',');
+  const path = [queryVid, groupId, selectedFilterString];
+  const obj = _.get(exposureData, path, {});
+  _.setWith(exposureData, path, {
+    ...obj,
+    [_.values(data).sort().join(',')]: data,
+  }, Object);
 };
 
 export const removeExposureData = () => {

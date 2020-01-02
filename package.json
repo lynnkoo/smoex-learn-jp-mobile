@@ -42,7 +42,7 @@
     "@ctrip/bbk-component-age-modal": "0.0.42",
     "@ctrip/bbk-component-car-date-picker": "0.0.35",
     "@ctrip/bbk-component-car-filter-bar": "0.0.48",
-    "@ctrip/bbk-component-car-filter-modal": "0.0.46",
+    "@ctrip/bbk-component-car-filter-modal": "0.0.48",
     "@ctrip/bbk-component-car-header": "0.0.32",
     "@ctrip/bbk-component-car-image": "0.0.30",
     "@ctrip/bbk-component-car-price-desc": "0.0.34",

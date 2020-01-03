@@ -9,6 +9,8 @@ import { BbkUtils } from '@ctrip/bbk-utils';
 
 const { isIos, lazySelector } = BbkUtils;
 
+export const controlHeight = 35;
+
 // @ts-ignore
 export interface SectionListWithControlProps extends SectionListProps<any> {
   sections: [];
@@ -31,8 +33,8 @@ export interface SectionListWithControlProps extends SectionListProps<any> {
   ListHeaderExtraComponent?: ReactElement;
   ListFooterExtraComponent?: ReactElement;
   ListEmptyComponent?: ReactElement;
-  scrollUpCallback?: (e: ScrollResponderEvent) => void;
-  scrollDownCallback?: (e: ScrollResponderEvent) => void;
+  scrollUpCallback?: (e?: ScrollResponderEvent) => void;
+  scrollDownCallback?: (e?: ScrollResponderEvent) => void;
 }
 
 interface SectionListWithControlState {
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
   controlWrap: {
     position: 'absolute',
     // refreshControl 的默认高度
-    top: -35,
+    top: -controlHeight,
     width: '100%',
   },
   androidRefreshWrap: {
@@ -109,7 +111,7 @@ export default class SectionListWithControl
 
   // eslint-disable-next-line
   triggerScroll = (event, triggerEvent = 'onScroll') => {
-    const { threshold, scrollUpCallback, scrollDownCallback } = this.props;
+    const { threshold } = this.props;
     let { showAndroidLoad, showAndroidRefresh } = this.state;
     const { y } = event.nativeEvent.contentOffset;
     const { height } = event.nativeEvent.layoutMeasurement;
@@ -145,37 +147,7 @@ export default class SectionListWithControl
       showAndroidRefresh = nextShowAndroidRefresh;
     }
 
-    /**
-     * 头部隐藏/显示
-     */
-    let triggerScrollUpCallback = false;
-    let triggerScrollDownCallback = false;
-    if (this.onScrollBegin && triggerEvent === 'onScroll') {
-      if (scrollUp > 0) {
-        triggerScrollUpCallback = true;
-      } else if (scrollUp < 0) {
-        triggerScrollDownCallback = true;
-      }
-      this.onScrollBegin = false;
-    }
-
-    // 安卓顶部不会触发 onScroll的情况
-    if (
-      !isIos
-      && this.onScrollBegin
-      && triggerEvent === 'onScrollEndDrag'
-      && y === 0
-      && scrollUp === 0
-    ) {
-      triggerScrollDownCallback = true;
-      this.onScrollBegin = false;
-    }
-
-    if (triggerScrollUpCallback && scrollUpCallback) {
-      scrollUpCallback(event);
-    } else if (triggerScrollDownCallback && scrollDownCallback) {
-      scrollDownCallback(event);
-    }
+    this.scrollUpDown(triggerEvent, scrollUp, y, event);
 
     if (triggerEvent === 'onScrollBeginDrag') {
       this.lastScrollY = y;
@@ -189,6 +161,40 @@ export default class SectionListWithControl
     };
   }
 
+  scrollUpDown = (triggerEvent, scrollUp, y, event) => {
+    const { scrollUpCallback, scrollDownCallback } = this.props;
+
+    /**
+     * 头部隐藏/显示
+     */
+    let triggerScrollUpCallback = false;
+    let triggerScrollDownCallback = false;
+    if (this.onScrollBegin && triggerEvent === 'onScroll') {
+      if (scrollUp > 0) {
+        triggerScrollUpCallback = true;
+      } else if (scrollUp < 0) {
+        triggerScrollDownCallback = true;
+      }
+    }
+
+    // 安卓顶部不会触发 onScroll的情况
+    if (
+      !isIos
+      && this.onScrollBegin
+      && triggerEvent === 'onScrollEndDrag'
+      && y === 0
+      && scrollUp === 0
+    ) {
+      triggerScrollDownCallback = true;
+    }
+
+    if (triggerScrollUpCallback && scrollUpCallback) {
+      scrollUpCallback(event);
+    } else if (triggerScrollDownCallback && scrollDownCallback) {
+      scrollDownCallback(event);
+    }
+  }
+
   onScroll = (event) => {
     const { onLoading, refreshing } = this.state;
     if (onLoading || refreshing) {
@@ -200,17 +206,18 @@ export default class SectionListWithControl
       refresh,
     } = this.triggerScroll(event);
 
+    // onScrollEndDrag could be triggered before onScroll finished
     this.setState({
-      onLoading: load,
-      refreshing: refresh,
+      onLoading: this.onScrollBegin && load,
+      refreshing: this.onScrollBegin && refresh,
     });
   }
 
   onScrollBeginDrag = (event) => {
     this.onScrollBegin = true;
     const {
-      load,
-      refresh,
+      showAndroidLoad,
+      showAndroidRefresh,
     } = this.triggerScroll(event, 'onScrollBeginDrag');
 
     if (isIos) {
@@ -219,7 +226,7 @@ export default class SectionListWithControl
 
     const { throttle } = this.props;
 
-    if (refresh && this.refreshControlWrap) {
+    if (showAndroidRefresh && this.refreshControlWrap) {
       this.refreshControlWrap.setNativeProps({
         style: {
           paddingTop: throttle,
@@ -227,7 +234,7 @@ export default class SectionListWithControl
       });
     }
 
-    if (load && this.loadControlWrap) {
+    if (showAndroidLoad && this.loadControlWrap) {
       this.loadControlWrap.setNativeProps({
         style: {
           paddingBottom: throttle,
@@ -305,6 +312,7 @@ export default class SectionListWithControl
   // to fix control state
   // onScrollEndDrag could be triggered before onScroll finished
   onMomentumScrollEnd = () => {
+    this.onScrollBegin = false;
     this.setState({
       onLoading: false,
       refreshing: false,
@@ -383,7 +391,7 @@ export default class SectionListWithControl
       // ts-ignore
       <RefreshControl
         style={isIos ? styles.controlWrap : [styles.androidRefreshWrap, {
-          top: throttle - 35,
+          top: throttle - controlHeight,
         }]}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
@@ -409,7 +417,7 @@ export default class SectionListWithControl
 
     const loadControl = (
       <LoadControl
-        style={styles.controlWrap}
+        height={isIos ? controlHeight : controlHeight + 10}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // eslint-disable-next-line
@@ -448,7 +456,7 @@ export default class SectionListWithControl
         onScrollBeginDrag={this.onScrollBeginDrag}
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle}
-        onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
         ListHeaderComponent={listHeaderComponent}
         ListFooterComponent={listFooterComponent}
         ListEmptyComponent={ListEmptyComponent}

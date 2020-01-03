@@ -4,7 +4,7 @@ import List from '../Pages/List/Index';
 import {
   initActiveGroupId, getStatus, fetchListBatchQuery,
   setDatePickerIsShow, setLocationAndDatePopIsShow, setAgePickerIsShow,
-  setAgeTipPopIsShow, setFilterModalIsShow,
+  setAgeTipPopIsShow, setFilterModalIsShow, setScrollViewHeight,
 } from '../State/List/Actions';
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 import {
@@ -41,6 +41,7 @@ const mapDispatchToProps = dispatch => ({
   setAgePickerIsShow: data => dispatch(setAgePickerIsShow(data)),
   setAgeTipPopIsShow: (data) => { dispatch(setAgeTipPopIsShow(data)); },
   setFilterModalIsShow: data => dispatch(setFilterModalIsShow(data)),
+  setScrollViewHeight: data => dispatch(setScrollViewHeight(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

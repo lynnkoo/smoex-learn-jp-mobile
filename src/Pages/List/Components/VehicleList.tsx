@@ -45,7 +45,12 @@ const NoMatch = () => useMemo(
 );
 
 const cacheDom = {
-  NoMatch: <NoMatch />,
+  NoMatch: (
+    <>
+      <NoMatch />
+      <SelectedFilterItems />
+    </>
+  ),
   TipList: <TipList />,
   SelectedFilterItems: <SelectedFilterItems />,
 };

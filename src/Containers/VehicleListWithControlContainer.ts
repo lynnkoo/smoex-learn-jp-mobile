@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { BbkUtils } from '@ctrip/bbk-utils';
 import VehicleListWithControl from '../Pages/List/Components/VehicleListWithControl';
 import {
   getActiveGroupIndex, getProgress, getSelectedFilters, getScrollViewHeight,
@@ -14,8 +14,10 @@ const mapStateToProps = (state) => {
   const { minIndex, maxIndex } = getGroupLength();
   const progress = getProgress(state);
   const selectedFilters = getSelectedFilters(state);
-  const listData = getVehicleListData(progress, _.cloneDeep(selectedFilters));
-  const lastNextIndexObj = getLastNextIndexObj(minIndex, maxIndex, _.cloneDeep(selectedFilters));
+  const listData = getVehicleListData(progress, BbkUtils.cloneDeep(selectedFilters));
+  const lastNextIndexObj = getLastNextIndexObj(
+    minIndex, maxIndex, BbkUtils.cloneDeep(selectedFilters),
+  );
   // console.log('【performance】mapStateToProps ', getActiveGroupIndex(state))
   return {
     index: getActiveGroupIndex(state),

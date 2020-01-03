@@ -133,6 +133,10 @@ export const getFilterBarItemsCode = () => {
     filterList = filterList.concat(mapCode(item, []));
   });
 
+  getPromotionFilterItems().forEach((item) => {
+    filterList = filterList.concat(mapCode(item, []));
+  });
+
   popularFilterList.push({
     type: 'Filters',
     codeList: filterList,

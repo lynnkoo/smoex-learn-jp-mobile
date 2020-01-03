@@ -1,5 +1,5 @@
 import { Channel } from '@ctrip/crn';
-import _ from 'lodash';
+import { BbkUtils } from '@ctrip/bbk-utils';
 
 export interface MarketInfoType {
   channelId: string;
@@ -81,7 +81,7 @@ const baseContext = {
   UserTrace: {},
 };
 
-const getAppContext = () => _.cloneDeep(baseContext);
+const getAppContext = () => BbkUtils.cloneDeep(baseContext);
 
 let appContext = getAppContext();
 

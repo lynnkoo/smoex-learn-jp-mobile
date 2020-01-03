@@ -28,6 +28,7 @@ const getInitalState = () => ({
     bitsFilter: [],
     filterLabels: [],
   },
+  deleteCode: '',
   bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
     filter: [],
   },
@@ -66,7 +67,10 @@ export default (state = initalState, action) => {
     case SET_ACTIVE_FILTER_BAR_CODE:
       return { ...state, activeFilterBarCode: action.data.activeFilterBarCode };
     case UPDATE_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
+      return {
+        ...state,
+        selectedFilters: Object.assign(state.selectedFilters, action.data),
+      };
     case SET_LOCATIONDATEPOP_VISIBLE:
       return { ...state, locationDatePopVisible: action.data.visible };
     case SET_DATEPICKER_VISIBLE:
@@ -77,7 +81,10 @@ export default (state = initalState, action) => {
           ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
       };
     case DELETE_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
+      return {
+        ...state,
+        deleteCode: Object.assign(state.deleteCode, action.data),
+      };
     case CLEAR_SELECTED_FILTER:
       return {
         ...state,

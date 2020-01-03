@@ -145,6 +145,8 @@ const setUserTrace = (trace: UserTraceType) => {
   appContext.UserTrace = trace;
 };
 
+const getQueryVid = () => appContext.UserTrace.queryVid;
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -194,6 +196,7 @@ const AppContext = {
   setLanguageCurrency,
   setCarEnv,
   setUserTrace,
+  getQueryVid,
 };
 
 export default AppContext;

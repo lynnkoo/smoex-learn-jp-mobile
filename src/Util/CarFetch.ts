@@ -85,6 +85,9 @@ class FetchBase implements FetchBaseType {
     const requestUrl = await this.getRequestUrl(url);
     const tmpParam = param;
     tmpParam[opts.baseParamKey] = this.getBaseRequest(param);
+
+    // console.log('getFetchObject+++tmpParam', tmpParam);
+
     if (!cancelable) {
       return fetch(requestUrl, {
         method: opts.method,
@@ -93,6 +96,7 @@ class FetchBase implements FetchBaseType {
       })
         .then(res => res)
         .catch((error) => {
+          // console.log('getFetchObject+++error', error);
           throw error;
         });
     }

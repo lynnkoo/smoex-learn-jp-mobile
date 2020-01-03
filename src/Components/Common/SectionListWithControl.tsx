@@ -33,9 +33,8 @@ export interface SectionListWithControlProps extends SectionListProps<any> {
   ListHeaderExtraComponent?: ReactElement;
   ListFooterExtraComponent?: ReactElement;
   ListEmptyComponent?: ReactElement;
-  scrollUpCallback?: (e: ScrollResponderEvent) => void;
-  scrollDownCallback?: (e: ScrollResponderEvent) => void;
-  shouldSetMinHeight?: boolean;
+  scrollUpCallback?: (e?: ScrollResponderEvent) => void;
+  scrollDownCallback?: (e?: ScrollResponderEvent) => void;
 }
 
 interface SectionListWithControlState {
@@ -163,11 +162,7 @@ export default class SectionListWithControl
   }
 
   scrollUpDown = (triggerEvent, scrollUp, y, event) => {
-    const { scrollUpCallback, scrollDownCallback, shouldSetMinHeight } = this.props;
-
-    if (shouldSetMinHeight) {
-      return;
-    }
+    const { scrollUpCallback, scrollDownCallback } = this.props;
 
     /**
      * 头部隐藏/显示
@@ -280,8 +275,6 @@ export default class SectionListWithControl
       showAndroidRefresh,
     } = this.triggerScroll(event, 'onScrollEndDrag');
 
-    this.onScrollBegin = false;
-
     const nextState: any = {
       showAndroidLoad,
       showAndroidRefresh,
@@ -319,6 +312,7 @@ export default class SectionListWithControl
   // to fix control state
   // onScrollEndDrag could be triggered before onScroll finished
   onMomentumScrollEnd = () => {
+    this.onScrollBegin = false;
     this.setState({
       onLoading: false,
       refreshing: false,
@@ -423,7 +417,7 @@ export default class SectionListWithControl
 
     const loadControl = (
       <LoadControl
-        style={styles.controlWrap}
+        height={isIos ? controlHeight : controlHeight + 10}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
         // eslint-disable-next-line
@@ -462,7 +456,7 @@ export default class SectionListWithControl
         onScrollBeginDrag={this.onScrollBeginDrag}
         onScrollEndDrag={this.onScrollEndDrag}
         onScroll={this.onScrollThrottle}
-        onMomentumScrollEnd={isIos && this.onMomentumScrollEnd}
+        onMomentumScrollEnd={this.onMomentumScrollEnd}
         ListHeaderComponent={listHeaderComponent}
         ListFooterComponent={listFooterComponent}
         ListEmptyComponent={ListEmptyComponent}

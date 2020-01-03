@@ -11,17 +11,15 @@ import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl,
 {
   SectionListWithControlProps,
-  controlHeight,
 }
   from '../../../Components/Common/SectionListWithControl';
-import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
-import LoginItem from './LoginItem';
-import { User, CarLog } from '../../../Util/Index';
-import { ClickKey } from '../../../Constants/Index';
+import { Vehicle, VehicleHeader } from './Vehicle';
+import { User } from '../../../Util/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 import TipList from '../../../Containers/ListTipListContainer';
+import SectionFooterContainer from '../../../Containers/VehicleListSectionFooterContainer';
 
-const { selector, getPixel } = BbkUtils;
+const { getPixel } = BbkUtils;
 
 const styles = StyleSheet.create({
   noMatchWrap: {
@@ -58,13 +56,12 @@ interface section {
   data: [];
 }
 
-interface sectionProps {
+interface SectionProps {
   section: section;
 }
 
 export interface VehicleListProps extends SectionListWithControlProps {
   showMax?: number;
-  scrollViewHeight?: number;
 }
 
 const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
@@ -72,7 +69,7 @@ const VehicleList = (props: VehicleListProps) => {
   const {
     sections,
     showMax,
-    scrollViewHeight,
+    scrollDownCallback,
     ...passThroughProps
   } = props;
   const [showMoreArr, setShowMoreArr] = useState(() => getShowMoreArr(sections, showMax));
@@ -107,7 +104,7 @@ const VehicleList = (props: VehicleListProps) => {
   };
 
   const renderSectionHeader = useCallback(
-    ({ section: { vehicleHeader } }: sectionProps) => (
+    ({ section: { vehicleHeader } }: SectionProps) => (
       <VehicleHeader
         vehicleHeader={vehicleHeader}
         onLayout={shouldSetMinHeight && onVehicleHeaderLayout}
@@ -129,53 +126,22 @@ const VehicleList = (props: VehicleListProps) => {
     setShowMoreArr(getShowMoreArr(sections, showMax));
   }, [sections, showMax]);
 
-  const onLogin = async () => {
-    CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
-    const res = await User.toLogin();
-    if (res) {
-      setShowLoginItem(false);
-    }
-  };
-
-  const renderSectionFooter = useCallback((
-    { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
-    const showMore = showMoreArr[vehicleIndex];
-    const length = _.get(data, '[0].length');
-    const moreNumber = Math.max(length - showMax, 0);
-    const { vehicleName }: any = vehicleHeader || {};
-    const minHeightStyle = shouldSetMinHeight && {
-      minHeight: scrollViewHeight - vehicleHeight - vehicleHeaderHeight - controlHeight,
-    };
-
-    return (
-      <View style={minHeightStyle}>
-        <VehicleFooter
-          moreNumber={showMore ? moreNumber : showMore}
-          setShowMoreArr={setShowMoreArr}
-          vehicleIndex={vehicleIndex}
-          showMoreArr={showMoreArr}
-          vehicleName={vehicleName}
-        />
-
-        {
-          selector(
-            showLoginItem && vehicleIndex === 0,
-            <LoginItem
-              onLogin={onLogin}
-            />,
-          )
-        }
-
-        {
-          vehicleIndex === sectionsLen - 1 && cacheDom.SelectedFilterItems
-        }
-      </View>
-    );
-  }, [
+  const renderSectionFooter = useCallback(sectionProps => (
+    <SectionFooterContainer
+      showMax={showMax}
+      shouldSetMinHeight={shouldSetMinHeight}
+      sectionProps={sectionProps}
+      vehicleTotalHeight={vehicleHeight + vehicleHeaderHeight}
+      sectionsLen={sectionsLen}
+      showMoreArr={showMoreArr}
+      setShowMoreArr={setShowMoreArr}
+      showLoginItem={showLoginItem}
+      setShowLoginItem={setShowLoginItem}
+    />
+  ), [
     showMoreArr,
     showMax,
     shouldSetMinHeight,
-    scrollViewHeight,
     vehicleHeight,
     vehicleHeaderHeight,
     showLoginItem,
@@ -185,7 +151,6 @@ const VehicleList = (props: VehicleListProps) => {
   return (
     <SectionListWithControl
       // showFooter={showFooter}
-      shouldSetMinHeight={shouldSetMinHeight}
       sections={sections}
       renderItem={renderItem}
       renderSectionHeader={renderSectionHeader}
@@ -194,6 +159,7 @@ const VehicleList = (props: VehicleListProps) => {
       // ListFooterExtraComponent={cacheDom.SelectedFilterItems}
       ListEmptyComponent={cacheDom.NoMatch}
       threshold={50}
+      scrollDownCallback={scrollDownCallback}
       {...passThroughProps}
     />
   );

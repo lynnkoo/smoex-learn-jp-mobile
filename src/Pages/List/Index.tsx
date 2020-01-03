@@ -90,6 +90,7 @@ interface IListPropsType extends IBasePageProps {
   setAgeTipPopIsShow: ({ visible: boolean }) => void;
   setFilterModalIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
+  setScrollViewHeight: (height: number) => void;
 }
 
 const removeEvents = () => {
@@ -195,6 +196,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       this.setState({
         listThreshold: height,
       });
+      this.props.setScrollViewHeight(Utils.heightWithStatusBar - height);
     }
   }
 
@@ -257,8 +259,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       return;
     }
     this.lastTranslateYAnim = value;
+    const listThreshold = this.listThresholdLayout + value;
+    this.props.setScrollViewHeight(Utils.heightWithStatusBar - listThreshold);
     this.setState({
-      listThreshold: this.listThresholdLayout + value,
+      listThreshold,
     }, () => {
       Animated.parallel([
         Animated.timing(translateY,
@@ -325,7 +329,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {curStage === PAGESTAGE.SHOW
             && (
               <VehicleListWithControl
-                scrollViewHeight={Utils.heightWithStatusBar - listThreshold}
                 scrollUpCallback={this.scrollUpCallback}
                 scrollDownCallback={this.scrollDownCallback}
                 refFn={(ref) => { this.vehicleListRef = ref; }}

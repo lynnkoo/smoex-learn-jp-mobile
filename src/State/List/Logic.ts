@@ -146,16 +146,28 @@ export const deleteSelectedFilter = createLogic({
     const data = action.data || {};
     const { deleteCode } = data;
     // @ts-ignore
-    const newSelectedFilters = getState().List.selectedFilters.bitsFilter;
+    const newSelectedFilters = [...getState().List.selectedFilters.bitsFilter];
     // @ts-ignore
-    const newSelectedLabels = getState().List.selectedFilters.filterLabels || [];
+    const newSelectedLabels = [...getState().List.selectedFilters.filterLabels] || [];
+    // @ts-ignore
+    let newSelectedPrices = getState().List.selectedFilters.priceFilter;
+
     const deleteLabel = newSelectedLabels.find(label => label && label.code === deleteCode);
 
-    _.pull(newSelectedFilters, deleteCode);
-    _.pull(newSelectedLabels, deleteLabel);
+    if (deleteCode && deleteCode.indexOf('Price') > -1) {
+      newSelectedPrices = [];
+      _.pull(newSelectedLabels, deleteLabel);
+    } else {
+      _.pull(newSelectedFilters, deleteCode);
+      _.pull(newSelectedLabels, deleteLabel);
+    }
 
     dispatch(updateSelectedFilter(
-      { bitsFilter: newSelectedFilters, filterLabels: newSelectedLabels }));
+      {
+        priceFilter: newSelectedPrices,
+        bitsFilter: newSelectedFilters,
+        filterLabels: newSelectedLabels,
+      }));
     done();
   },
 });

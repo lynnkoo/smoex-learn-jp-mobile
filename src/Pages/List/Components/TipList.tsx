@@ -7,11 +7,15 @@ import { color } from '@ctrip/bbk-tokens';
 import { CarLog } from '../../../Util/Index';
 import { ClickKey } from '../../../Constants/Index';
 
+interface IFilterType extends FilterType {
+  filterLabels: any;
+}
+
 interface IPropsType {
   promotionFilterText: string;
   promotionFilterCode: string;
   promotionFilterSelected: boolean;
-  selectedFilters: FilterType;
+  selectedFilters: IFilterType;
   updateSelectedFilter?: (data: any) => void;
 }
 
@@ -21,16 +25,23 @@ const ListTips = (props: IPropsType) => {
   } = props;
 
   const handleTipPress = () => {
-    const newBitsFilter = selectedFilters.bitsFilter;
+    const newBitsFilter = [...selectedFilters.bitsFilter];
+    const newFilterLabels = [...selectedFilters.filterLabels];
     const curCodeIndex = selectedFilters.bitsFilter.findIndex(f => f === promotionFilterCode);
     if (curCodeIndex > -1) {
       newBitsFilter.splice(curCodeIndex, 1);
+      newFilterLabels.splice(curCodeIndex, 1);
     } else {
       newBitsFilter.push(promotionFilterCode);
+      newFilterLabels.push({
+        code: promotionFilterCode,
+        name: promotionFilterText,
+      });
     }
 
     props.updateSelectedFilter({
       bitsFilter: newBitsFilter,
+      filterLabels: newFilterLabels,
     });
 
     CarLog.LogCode({ enName: ClickKey.C_LIST_PROMOTION_FILTER.KEY });

@@ -11,8 +11,10 @@ import { BbkUtils, BbkConstants } from '@ctrip/bbk-utils';
 import { color, druation, setOpacity } from '@ctrip/bbk-tokens';
 import CPage, { IStateType } from '../../Components/App/CPage';
 import { AssistiveTouch } from '../../Components/Index';
-import { PageId, ClickKey, EventName } from '../../Constants/Index';
-import { CarLog } from '../../Util/Index';
+import {
+  PageId, ClickKey, EventName, LogKey,
+} from '../../Constants/Index';
+import { CarLog, Utils } from '../../Util/Index';
 
 // 组件
 import ListHeader from '../../Containers/ListHeaderContainer';
@@ -25,6 +27,7 @@ import ListNoMatch from '../../Containers/NoMatchContainer';
 import RentalCarsDatePicker from '../../Containers/DatePickerContainer';
 import { ListReqAndResData } from '../../Global/Cache/Index';
 import { getExposureData, removeExposureData } from '../../Global/Cache/ListReqAndResData';
+
 
 const { DEFAULT_HEADER_HEIGHT } = BbkConstants;
 interface HeaderAnim {
@@ -87,6 +90,7 @@ interface IListPropsType extends IBasePageProps {
   setAgeTipPopIsShow: ({ visible: boolean }) => void;
   setFilterModalIsShow: ({ visible: boolean }) => void;
   isDebugMode?: boolean;
+  setScrollViewHeight: (height: number) => void;
 }
 
 const removeEvents = () => {
@@ -161,8 +165,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
   logExposureData() {
     const data = getExposureData();
     CarLog.LogTrace({
-      key: '123546',
-      info: data,
+      key: LogKey.TRACE_LIST_EXPOSURE,
+      info: { data },
     });
   }
 
@@ -192,6 +196,7 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       this.setState({
         listThreshold: height,
       });
+      this.props.setScrollViewHeight(Utils.heightWithStatusBar - height);
     }
   }
 
@@ -254,8 +259,10 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       return;
     }
     this.lastTranslateYAnim = value;
+    const listThreshold = this.listThresholdLayout + value;
+    this.props.setScrollViewHeight(Utils.heightWithStatusBar - listThreshold);
     this.setState({
-      listThreshold: this.listThresholdLayout + value,
+      listThreshold,
     }, () => {
       Animated.parallel([
         Animated.timing(translateY,
@@ -322,7 +329,6 @@ export default class List extends CPage<IListPropsType, ListStateType> {
           {curStage === PAGESTAGE.SHOW
             && (
               <VehicleListWithControl
-                threshold={listThreshold}
                 scrollUpCallback={this.scrollUpCallback}
                 scrollDownCallback={this.scrollDownCallback}
                 refFn={(ref) => { this.vehicleListRef = ref; }}

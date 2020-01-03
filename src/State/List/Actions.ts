@@ -19,6 +19,7 @@ import {
   SET_SORTANDFILTER_VISIBLE,
   SET_FILTERBAR_ISSHOW,
   RESET,
+  SET_SCROLL_VIEW_HEIGHT,
 } from './Types';
 import { ActionType } from '../../Types/ActiontType';
 
@@ -121,4 +122,9 @@ export const setFilterBarIsShow = data => ({
 
 export const reset = () => ({
   type: RESET,
+});
+
+export const setScrollViewHeight = data => ({
+  type: SET_SCROLL_VIEW_HEIGHT,
+  data,
 });

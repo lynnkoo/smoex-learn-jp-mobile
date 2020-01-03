@@ -32,3 +32,5 @@ export const getAgeTipPopVisible = state => state.List.ageTipPopVisible;
 export const getSortAndFilterVisible = state => state.List.sortAndFilterVisible;
 
 export const getFilterBarIsShow = state => state.List.filterBarIsShow;
+
+export const getScrollViewHeight = state => state.List.scrollViewHeight;

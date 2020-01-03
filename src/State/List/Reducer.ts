@@ -13,7 +13,9 @@ import {
   SET_SORTANDFILTER_VISIBLE,
   SET_FILTERBAR_ISSHOW,
   RESET,
+  SET_SCROLL_VIEW_HEIGHT,
 } from './Types';
+import { Utils } from '../../Util/Index';
 
 const getInitalState = () => ({
   isLoading: true,
@@ -40,6 +42,7 @@ const getInitalState = () => ({
   ageTipPopVisible: false,
   sortAndFilterVisible: false,
   filterBarIsShow: false,
+  scrollViewHeight: Utils.heightWithStatusBar,
 });
 
 const initalState = getInitalState();
@@ -118,6 +121,11 @@ export default (state = initalState, action) => {
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
+    case SET_SCROLL_VIEW_HEIGHT:
+      return {
+        ...state,
+        scrollViewHeight: action.data,
+      };
     case GET_STATUS:
     case FETCH_LIST_BATCH:
     case FETCH_LIST:

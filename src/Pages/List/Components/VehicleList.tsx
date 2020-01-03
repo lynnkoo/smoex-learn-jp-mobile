@@ -9,15 +9,17 @@ import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
 import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
 import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl,
-{ SectionListWithControlProps } from '../../../Components/Common/SectionListWithControl';
-import { Vehicle, VehicleFooter, VehicleHeader } from './Vehicle';
-import LoginItem from './LoginItem';
-import { User, CarLog } from '../../../Util/Index';
-import { ClickKey } from '../../../Constants/Index';
+{
+  SectionListWithControlProps,
+}
+  from '../../../Components/Common/SectionListWithControl';
+import { Vehicle, VehicleHeader } from './Vehicle';
+import { User } from '../../../Util/Index';
 import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 import TipList from '../../../Containers/ListTipListContainer';
+import SectionFooterContainer from '../../../Containers/VehicleListSectionFooterContainer';
 
-const { selector, getPixel } = BbkUtils;
+const { getPixel } = BbkUtils;
 
 const styles = StyleSheet.create({
   noMatchWrap: {
@@ -43,7 +45,12 @@ const NoMatch = () => useMemo(
 );
 
 const cacheDom = {
-  NoMatch: <NoMatch />,
+  NoMatch: (
+    <>
+      <NoMatch />
+      <SelectedFilterItems />
+    </>
+  ),
   TipList: <TipList />,
   SelectedFilterItems: <SelectedFilterItems />,
 };
@@ -54,13 +61,12 @@ interface section {
   data: [];
 }
 
-interface sectionProps {
+interface SectionProps {
   section: section;
 }
 
 export interface VehicleListProps extends SectionListWithControlProps {
   showMax?: number;
-  scrollViewHeight?: number;
 }
 
 const getShowMoreArr = (sections, showMax) => sections.map(({ data }) => data[0].length > showMax);
@@ -68,7 +74,7 @@ const VehicleList = (props: VehicleListProps) => {
   const {
     sections,
     showMax,
-    scrollViewHeight,
+    scrollDownCallback,
     ...passThroughProps
   } = props;
   const [showMoreArr, setShowMoreArr] = useState(() => getShowMoreArr(sections, showMax));
@@ -76,7 +82,7 @@ const VehicleList = (props: VehicleListProps) => {
   const [vehicleHeaderHeight, setVehicleHeaderHeight] = useState(0);
   const sectionsLen = sections.length;
   // android 少于 2 条数据时不展示打通，无法触发 scroll
-  const shouldSetMinHeight = sectionsLen <= 1 && _.get(sections, '[0].data[0].length') <= 1;
+  const shouldSetMinHeight = sectionsLen <= 1 && _.get(sections, '[0].data[0].length') <= 2;
 
   const onVehicleLayout = ({ nativeEvent }) => {
     const { height } = nativeEvent.layout;
@@ -103,7 +109,7 @@ const VehicleList = (props: VehicleListProps) => {
   };
 
   const renderSectionHeader = useCallback(
-    ({ section: { vehicleHeader } }: sectionProps) => (
+    ({ section: { vehicleHeader } }: SectionProps) => (
       <VehicleHeader
         vehicleHeader={vehicleHeader}
         onLayout={shouldSetMinHeight && onVehicleHeaderLayout}
@@ -125,53 +131,22 @@ const VehicleList = (props: VehicleListProps) => {
     setShowMoreArr(getShowMoreArr(sections, showMax));
   }, [sections, showMax]);
 
-  const onLogin = async () => {
-    CarLog.LogCode({ enName: ClickKey.C_LIST_LOG_IN.KEY });
-    const res = await User.toLogin();
-    if (res) {
-      setShowLoginItem(false);
-    }
-  };
-
-  const renderSectionFooter = useCallback((
-    { section: { data, vehicleIndex, vehicleHeader } }: sectionProps) => {
-    const showMore = showMoreArr[vehicleIndex];
-    const length = _.get(data, '[0].length');
-    const moreNumber = Math.max(length - showMax, 0);
-    const { vehicleName }: any = vehicleHeader || {};
-    const minHeightStyle = shouldSetMinHeight && {
-      minHeight: scrollViewHeight - vehicleHeight - vehicleHeaderHeight,
-    };
-
-    return (
-      <View style={minHeightStyle}>
-        <VehicleFooter
-          moreNumber={showMore ? moreNumber : showMore}
-          setShowMoreArr={setShowMoreArr}
-          vehicleIndex={vehicleIndex}
-          showMoreArr={showMoreArr}
-          vehicleName={vehicleName}
-        />
-
-        {
-          selector(
-            showLoginItem && vehicleIndex === 0,
-            <LoginItem
-              onLogin={onLogin}
-            />,
-          )
-        }
-
-        {
-          vehicleIndex === sectionsLen - 1 && cacheDom.SelectedFilterItems
-        }
-      </View>
-    );
-  }, [
+  const renderSectionFooter = useCallback(sectionProps => (
+    <SectionFooterContainer
+      showMax={showMax}
+      shouldSetMinHeight={shouldSetMinHeight}
+      sectionProps={sectionProps}
+      vehicleTotalHeight={vehicleHeight + vehicleHeaderHeight}
+      sectionsLen={sectionsLen}
+      showMoreArr={showMoreArr}
+      setShowMoreArr={setShowMoreArr}
+      showLoginItem={showLoginItem}
+      setShowLoginItem={setShowLoginItem}
+    />
+  ), [
     showMoreArr,
     showMax,
     shouldSetMinHeight,
-    scrollViewHeight,
     vehicleHeight,
     vehicleHeaderHeight,
     showLoginItem,
@@ -189,6 +164,7 @@ const VehicleList = (props: VehicleListProps) => {
       // ListFooterExtraComponent={cacheDom.SelectedFilterItems}
       ListEmptyComponent={cacheDom.NoMatch}
       threshold={50}
+      scrollDownCallback={scrollDownCallback}
       {...passThroughProps}
     />
   );

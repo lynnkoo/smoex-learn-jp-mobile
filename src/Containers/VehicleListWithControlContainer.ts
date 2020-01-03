@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import { BbkUtils } from '@ctrip/bbk-utils';
 import VehicleListWithControl from '../Pages/List/Components/VehicleListWithControl';
-import { getActiveGroupIndex, getProgress, getSelectedFilters } from '../State/List/Selectors';
+import {
+  getActiveGroupIndex, getProgress, getSelectedFilters, getScrollViewHeight,
+} from '../State/List/Selectors';
 import { setActiveGroupId } from '../State/List/Actions';
 import {
   getVehicleListData, getGroupLength, getLastNextIndexObj,
@@ -24,6 +26,7 @@ const mapStateToProps = (state) => {
     progress,
     listData,
     lastNextIndexObj,
+    scrollViewHeight: getScrollViewHeight(state),
   };
 };
 

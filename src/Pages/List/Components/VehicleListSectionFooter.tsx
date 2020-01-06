@@ -35,7 +35,7 @@ const SectionFooter = memo(({
   const { section: { data, vehicleIndex, vehicleHeader } } = sectionProps;
   const showMore = showMoreArr[vehicleIndex];
   const { vehicleName }: any = vehicleHeader || {};
-  const minHeight = shouldSetMinHeight && scrollViewHeight - vehicleTotalHeight - controlHeight;
+  const minHeight = shouldSetMinHeight ? scrollViewHeight - vehicleTotalHeight - controlHeight : 0;
   const length = _.get(data, '[0].length');
   const moreNumber = Math.max(length - showMax, 0);
 

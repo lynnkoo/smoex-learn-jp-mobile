@@ -4,12 +4,8 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import { Toast } from '@ctrip/crn';
-import BbkThemeProvider from '@ctrip/bbk-theming';
-import TripLight from '@ctrip/bbk-theming/src/themes/Theming.trip.light';
-import TripDark from '@ctrip/bbk-theming/src/themes/Theming.trip.dark';
 import { getSharkValue } from '@ctrip/bbk-shark';
 import { color, druation as druationToken } from '@ctrip/bbk-tokens';
-import { themeLight, themeDark } from '../Theme';
 import { listLoading } from '../Texts';
 import VehicleList, { VehicleListProps } from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
@@ -33,7 +29,6 @@ interface VehicleListWithControlProps extends VehicleListProps {
 interface VehicleListWithControlState {
   index: number;
   initIndex: number;
-  isDark: boolean;
   translateYAnim: any;
 }
 
@@ -73,7 +68,9 @@ export default class VehicleListWithControl extends
     index: 0,
     listData: {},
     initialNumToRender: 10,
-    theme: {},
+    theme: {
+      scrollBackgroundColor: color.grayBg,
+    },
     showMax: 2,
     lastNextIndexObj: {},
     scrollViewHeight: 0,
@@ -97,32 +94,16 @@ export default class VehicleListWithControl extends
     this.state = {
       initIndex: index,
       index,
-      isDark: false,
       translateYAnim: new Animated.Value(0),
     };
     props.refFn(this);
   }
 
-  getTheme() {
-    const {
-      isDark,
-    } = this.state;
-
-    return isDark
-      ? {
-        ...TripDark,
-        ...themeDark,
-      } : {
-        ...TripLight,
-        ...themeLight,
-      };
-  }
-
   getStyle(i, newScrollViewHeight?: number) {
     let { scrollViewHeight } = this.props;
+    const { theme } = this.props;
     scrollViewHeight = newScrollViewHeight || scrollViewHeight;
     const { initIndex } = this.state;
-    const theme = this.getTheme();
     const offset = i - initIndex;
     // console.log('【performance】getStyle ', i, initIndex)
     // console.log('----------getStyle', i, scrollViewHeight, offset)
@@ -230,7 +211,7 @@ export default class VehicleListWithControl extends
       stickySectionHeadersEnabled: true,
       showMax,
       initialNumToRender,
-      endFillColor: theme.scrollBackgroundColor || color.grayBg,
+      endFillColor: theme.scrollBackgroundColor,
       /**
        * scroll handler props
        */
@@ -306,7 +287,8 @@ export default class VehicleListWithControl extends
       if (placeHolder) {
         return <View style={style} key={index} />;
       }
-      // console.log('【performance】cache ', index, placeHolder)
+      // @ts-ignore
+      // logTime('【performance】 cache render');
       this.cacheList[index] = (
         <VehicleList
           style={style}
@@ -441,27 +423,24 @@ export default class VehicleListWithControl extends
     const {
       maxIndex, minIndex, scrollViewHeight,
     } = this.props;
-    const theme = this.getTheme();
 
     return (
-      <BbkThemeProvider theme={theme} channel={null}>
-        <View style={[styles.wrap, {
-          // 手动设置隐藏头时的高度
-          height: scrollViewHeight,
+      <View style={[styles.wrap, {
+        // 手动设置隐藏头时的高度
+        height: scrollViewHeight,
+      }]}
+      >
+        <Animated.View style={[styles.absoluteWrap, {
+          top: 0,
+          height: (maxIndex - minIndex + 1) * scrollViewHeight,
+          transform: [{
+            translateY: translateYAnim,
+          }],
         }]}
         >
-          <Animated.View style={[styles.absoluteWrap, {
-            top: 0,
-            height: (maxIndex - minIndex + 1) * scrollViewHeight,
-            transform: [{
-              translateY: translateYAnim,
-            }],
-          }]}
-          >
-            {this.renderAllVehicleListDom()}
-          </Animated.View>
-        </View>
-      </BbkThemeProvider>
+          {this.renderAllVehicleListDom()}
+        </Animated.View>
+      </View>
     );
   }
 }

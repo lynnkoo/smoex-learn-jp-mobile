@@ -261,7 +261,10 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
             );
             _.pull(item.selectedLabelList, deletePriceLabel);
           }
-          item.selectedLabelList.push({ code: label.code, name: label.name });
+          item.selectedLabelList.push({
+            code: isPriceLabel ? label.itemCode : label.code,
+            name: label.name,
+          });
         } else {
           const deleteLabel = item.selectedLabelList.find(v => v && v.code === label.code);
 

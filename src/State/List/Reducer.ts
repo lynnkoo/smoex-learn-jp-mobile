@@ -13,7 +13,9 @@ import {
   SET_SORTANDFILTER_VISIBLE,
   SET_FILTERBAR_ISSHOW,
   RESET,
+  SET_SCROLL_VIEW_HEIGHT,
 } from './Types';
+import { Utils } from '../../Util/Index';
 
 const getInitalState = () => ({
   isLoading: true,
@@ -28,6 +30,7 @@ const getInitalState = () => ({
     bitsFilter: [],
     filterLabels: [],
   },
+  deleteCode: '',
   bitsFilterByBar: { // filterbar上选项所对应的选中筛选项
     filter: [],
   },
@@ -39,6 +42,7 @@ const getInitalState = () => ({
   ageTipPopVisible: false,
   sortAndFilterVisible: false,
   filterBarIsShow: false,
+  scrollViewHeight: Utils.heightWithStatusBar,
 });
 
 const initalState = getInitalState();
@@ -66,7 +70,10 @@ export default (state = initalState, action) => {
     case SET_ACTIVE_FILTER_BAR_CODE:
       return { ...state, activeFilterBarCode: action.data.activeFilterBarCode };
     case UPDATE_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
+      return {
+        ...state,
+        selectedFilters: Object.assign(state.selectedFilters, action.data),
+      };
     case SET_LOCATIONDATEPOP_VISIBLE:
       return { ...state, locationDatePopVisible: action.data.visible };
     case SET_DATEPICKER_VISIBLE:
@@ -77,7 +84,10 @@ export default (state = initalState, action) => {
           ? action.data.focurOnRTime : state.datePickerFocusOnRtime,
       };
     case DELETE_SELECTED_FILTER:
-      return { ...state, selectedFilters: Object.assign(state.selectedFilters, action.data) };
+      return {
+        ...state,
+        deleteCode: Object.assign(state.deleteCode, action.data),
+      };
     case CLEAR_SELECTED_FILTER:
       return {
         ...state,
@@ -111,6 +121,11 @@ export default (state = initalState, action) => {
       };
     case RESET:
       return { ...JSON.parse(initalStateClone) };
+    case SET_SCROLL_VIEW_HEIGHT:
+      return {
+        ...state,
+        scrollViewHeight: action.data,
+      };
     case GET_STATUS:
     case FETCH_LIST_BATCH:
     case FETCH_LIST:

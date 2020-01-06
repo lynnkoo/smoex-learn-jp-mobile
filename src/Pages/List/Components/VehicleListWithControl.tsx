@@ -13,7 +13,6 @@ import { themeLight, themeDark } from '../Theme';
 import { listLoading } from '../Texts';
 import VehicleList, { VehicleListProps } from './VehicleList';
 import { getGroupNameByIndex } from '../../../State/List/VehicleListMappers';
-import { Utils } from '../../../Util/Index';
 import { setExposureKey } from '../../../Global/Cache/ListReqAndResData';
 
 interface VehicleListWithControlProps extends VehicleListProps {
@@ -25,8 +24,7 @@ interface VehicleListWithControlProps extends VehicleListProps {
   lastNextIndexObj?: any;
   initialNumToRender?: number;
   theme?: any;
-  height?: number;
-  threshold?: number;
+  scrollViewHeight?: number;
   locationDatePopVisible: boolean;
   setActiveGroupId: (args: any) => void;
   refFn?: (args: any) => void;
@@ -49,7 +47,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const getScrollViewHeight = (height, threshold) => height - threshold;
+const getLogKey = (vendor) => {
+  const {
+    vehicleIndex,
+    vendorIndex,
+    vehicleCode,
+    reference = {},
+  } = vendor;
+  const {
+    bizVendorCode,
+  } = reference;
+  return {
+    vehicleIndex,
+    vendorIndex,
+    vehicleCode,
+    bizVendorCode,
+  };
+};
 
 export default class VehicleListWithControl extends
   PureComponent<VehicleListWithControlProps, VehicleListWithControlState> {
@@ -60,10 +74,9 @@ export default class VehicleListWithControl extends
     listData: {},
     initialNumToRender: 10,
     theme: {},
-    height: Utils.heightWithStatusBar,
-    threshold: 0,
     showMax: 2,
     lastNextIndexObj: {},
+    scrollViewHeight: 0,
   };
 
   cacheList = [];
@@ -78,18 +91,15 @@ export default class VehicleListWithControl extends
 
   animating = false;
 
-  scrollViewHeight = 0;
-
   constructor(props) {
     super(props);
-    const { index, height, threshold } = props;
+    const { index } = props;
     this.state = {
       initIndex: index,
       index,
       isDark: false,
       translateYAnim: new Animated.Value(0),
     };
-    this.scrollViewHeight = getScrollViewHeight(height, threshold);
     props.refFn(this);
   }
 
@@ -108,10 +118,11 @@ export default class VehicleListWithControl extends
       };
   }
 
-  getStyle(i) {
+  getStyle(i, newScrollViewHeight?: number) {
+    let { scrollViewHeight } = this.props;
+    scrollViewHeight = newScrollViewHeight || scrollViewHeight;
     const { initIndex } = this.state;
     const theme = this.getTheme();
-    const { scrollViewHeight } = this;
     const offset = i - initIndex;
     // console.log('【performance】getStyle ', i, initIndex)
     // console.log('----------getStyle', i, scrollViewHeight, offset)
@@ -193,6 +204,7 @@ export default class VehicleListWithControl extends
       showMax,
       scrollUpCallback,
       scrollDownCallback,
+      scrollViewHeight,
     } = this.props;
 
     const $lastNextIndexObj = newLastNextIndexObj || lastNextIndexObj;
@@ -248,7 +260,7 @@ export default class VehicleListWithControl extends
        * 曝光埋点
        */
       onViewableItemsChanged: this.setExposureData,
-      scrollViewHeight: this.scrollViewHeight,
+      scrollViewHeight,
     };
   }
 
@@ -257,10 +269,12 @@ export default class VehicleListWithControl extends
       try {
         if (item.data) {
           _.forEach(item.data[0], (vendor) => {
-            setExposureKey(vendor.key);
+            const key = getLogKey(vendor);
+            setExposureKey(key);
           });
         } else {
-          setExposureKey(item.key);
+          const key = getLogKey(item[0]);
+          setExposureKey(key);
         }
       } catch (e) {
         // eslint-disable-next-line
@@ -338,7 +352,7 @@ export default class VehicleListWithControl extends
 
   // eslint-disable-next-line
   UNSAFE_componentWillReceiveProps(props) {
-    const { index, listData, threshold } = this.props;
+    const { index, listData, scrollViewHeight } = this.props;
     if (props.index !== index) {
       this.tabScroll(props.index);
     }
@@ -346,10 +360,8 @@ export default class VehicleListWithControl extends
       this.renderAllVehicleListDom(props.listData, props.lastNextIndexObj);
       this.resetScrollTop();
     }
-    if (!_.isEqual(props.threshold, threshold)) {
-      const { height, threshold: nextThreshold } = props;
-      this.scrollViewHeight = getScrollViewHeight(height, nextThreshold);
-      this.resetHeightStyle();
+    if (!_.isEqual(props.scrollViewHeight, scrollViewHeight)) {
+      this.resetHeightStyle(props.scrollViewHeight);
     }
   }
 
@@ -375,11 +387,12 @@ export default class VehicleListWithControl extends
     delayStart = false,
   }) {
     const { translateYAnim, initIndex } = this.state;
+    const { scrollViewHeight } = this.props;
     // console.log('translateY', this.scrollViewHeight);
     const animation = Animated.timing(
       translateYAnim,
       {
-        toValue: this.scrollViewHeight * (initIndex - index),
+        toValue: scrollViewHeight * (initIndex - index),
         duration,
         useNativeDriver: true,
       },
@@ -391,10 +404,10 @@ export default class VehicleListWithControl extends
   }
 
   // 滑动头部隐藏时需要更新 VehicleList 高度及定位
-  resetHeightStyle() {
+  resetHeightStyle(scrollViewHeight) {
     this.cacheList.forEach((dom, index) => {
       this.scrollerRef[index].setNativeProps({
-        style: this.getStyle(index),
+        style: this.getStyle(index, scrollViewHeight),
       });
     });
   }
@@ -426,10 +439,9 @@ export default class VehicleListWithControl extends
       translateYAnim,
     } = this.state;
     const {
-      maxIndex, minIndex, height, threshold,
+      maxIndex, minIndex, scrollViewHeight,
     } = this.props;
     const theme = this.getTheme();
-    const scrollViewHeight = getScrollViewHeight(height, threshold);
 
     return (
       <BbkThemeProvider theme={theme} channel={null}>

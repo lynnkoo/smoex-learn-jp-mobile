@@ -1,5 +1,5 @@
 import { Channel } from '@ctrip/crn';
-import _ from 'lodash';
+import { BbkUtils } from '@ctrip/bbk-utils';
 
 export interface MarketInfoType {
   channelId: string;
@@ -81,7 +81,7 @@ const baseContext = {
   UserTrace: {},
 };
 
-const getAppContext = () => _.cloneDeep(baseContext);
+const getAppContext = () => BbkUtils.cloneDeep(baseContext);
 
 let appContext = getAppContext();
 
@@ -145,6 +145,8 @@ const setUserTrace = (trace: UserTraceType) => {
   appContext.UserTrace = trace;
 };
 
+const getQueryVid = () => appContext.UserTrace.queryVid;
+
 const AppContext = {
   get ABTesting(): ABTestingType {
     return appContext.ABTesting;
@@ -194,6 +196,7 @@ const AppContext = {
   setLanguageCurrency,
   setCarEnv,
   setUserTrace,
+  getQueryVid,
 };
 
 export default AppContext;

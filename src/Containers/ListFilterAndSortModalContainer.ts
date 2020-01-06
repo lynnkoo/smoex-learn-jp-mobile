@@ -23,7 +23,7 @@ import {
 } from '../Global/Cache/ListResSelectors';
 import { AppContext } from '../Util/Index';
 
-const { selector } = BbkUtils;
+const { selector, cloneDeep } = BbkUtils;
 
 const getPriceStep = memoizeOne(
   (currency) => {
@@ -91,6 +91,7 @@ const setFilterMenu = (filterMenuItem: any, selectedFilters: any) => {
               const code = isPriceGroup ? item.code : item.itemCode;
               filterItems.push({
                 name: item.name,
+                itemCode: item.itemCode,
                 code,
                 isSelected:
                   isPriceGroup && priceIsSelected
@@ -210,7 +211,7 @@ const getFilterData = (state) => {
       break;
   }
 
-  const selectedFilters = _.cloneDeep(getSelectedFilters(state));
+  const selectedFilters = cloneDeep(getSelectedFilters(state));
 
   return {
     filterData,

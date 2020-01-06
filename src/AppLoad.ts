@@ -45,20 +45,19 @@ const getChannelId = ({ channelid, from, s }) => {
 
   if (channelid) id = channelid;
 
-  if (!channelid && from === 'car') id = CHANNEL_ID.CTRIP_MAIN_APP;
+  if (!id && from === 'car') id = CHANNEL_ID.CTRIP_MAIN_APP;
 
-  if (!channelid && s === 'car') id = CHANNEL_ID.CTRIP_MAIN_H5;
+  if (!id && s === 'car') id = CHANNEL_ID.CTRIP_MAIN_H5;
 
-  if (!channelid && Utils.isZucheApp()) id = CHANNEL_ID.ZUCHE;
+  if (!id && Utils.isZucheApp()) id = CHANNEL_ID.ZUCHE;
 
-  if (!channelid && Utils.getChannelName() === CHANNEL_TYPE_UNION.CTRIP) {
+  if (!id && Utils.getChannelName() === CHANNEL_TYPE_UNION.CTRIP) {
     id = CHANNEL_ID.CTRIP_DEFAULT;
   }
 
-  if (!channelid && Utils.isTrip()) id = CHANNEL_ID.IBU_DEFAULT;
+  if (!id && Utils.isTrip()) id = CHANNEL_ID.IBU_DEFAULT;
 
-  // todo: UNKNOW?
-  if (!channelid) id = CHANNEL_ID.CTRIP_DEFAULT;
+  if (!id) id = CHANNEL_ID.CTRIP_DEFAULT;
 
   return id;
 };

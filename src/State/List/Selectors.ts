@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { getVehGroupList } from '../../Global/Cache/ListResSelectors';
+import { AppContext } from '../../Util/Index';
 
 export const getIsLoading = state => state.List.isLoading;
 
@@ -34,3 +35,12 @@ export const getSortAndFilterVisible = state => state.List.sortAndFilterVisible;
 export const getFilterBarIsShow = state => state.List.filterBarIsShow;
 
 export const getScrollViewHeight = state => state.List.scrollViewHeight;
+
+export const getLogData = (state) => {
+  const queryVid = AppContext.getQueryVid();
+  return {
+    queryVid,
+    groupId: getActiveGroupId(state),
+    selectedFilters: getSelectedFilters(state),
+  };
+};

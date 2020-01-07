@@ -1,5 +1,6 @@
 import { IBUSharkUtil, Business } from '@ctrip/crn';
 import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
+import uuid from 'uuid';
 import {
   AppContext, Utils, User, CarStorage,
 } from './Util/Index';
@@ -178,6 +179,7 @@ const appPreLoad = async () => {
     currency: currentCurrency ? currentCurrency.code : '',
     language,
   });
+  AppContext.setUserTrace({ queryVid: uuid() });
 };
 
 export {

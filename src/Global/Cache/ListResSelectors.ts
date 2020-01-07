@@ -9,6 +9,9 @@ import ListReqAndResData from './ListReqAndResData';
 export const getBaseResData = () => (
   ListReqAndResData.getData(ListReqAndResData.keyList.listProductRes) || {});
 
+export const getListSearchCondition = () => (
+  ListReqAndResData.getData(ListReqAndResData.keyList.listProductSearchCondition));
+
 // 获取服务端返回的基础的车型组报价数据
 export const getBaseProductGroups = () => getBaseResData().productGroups || [];
 

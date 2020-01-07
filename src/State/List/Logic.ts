@@ -12,7 +12,7 @@ import {
 } from './Actions';
 import { CarFetch, AppContext } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
-import { getVehGroupList } from '../../Global/Cache/ListResSelectors';
+import { getVehGroupList, getAllProductGroups } from '../../Global/Cache/ListResSelectors';
 import * as UBTLog from './UBTLog';
 
 
@@ -122,7 +122,7 @@ export const setGroupIdByIndex = createLogic({
     const data = action.data || {};
     const { activeGroupIndex, ...passThroughData } = data;
     if (activeGroupIndex !== undefined) {
-      const vehGroup = getVehGroupList()[activeGroupIndex] || {};
+      const vehGroup = getVehGroupList(getAllProductGroups())[activeGroupIndex] || {};
       const activeGroupId = vehGroup.gId;
       if (activeGroupId) {
         next({

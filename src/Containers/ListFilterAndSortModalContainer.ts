@@ -46,14 +46,13 @@ const getPriceStep = memoizeOne(
 );
 
 const PRICE_STEP = getPriceStep(AppContext.LanguageInfo.currency); // 价格滑条滑动间隔
+let priceRange = {
+  minRange: 0,
+  maxRange: 1000,
+};
 
 const getPriceRange = memoizeOne(
   (filterItem, priceStep) => {
-    let priceRange = {
-      minRange: 0,
-      maxRange: 1000,
-    };
-
     try {
       const minPriceDesc = filterItem[0].code;
       const maxPriceDesc = filterItem[filterItem.length - 1].code;
@@ -219,6 +218,7 @@ const getFilterData = (state) => {
     selectedFilters,
     filterCalculater: getFilterCalculate(selectedFilters),
     allFilters: getFilterBarItemsCode() || [],
+    priceRange,
   };
 };
 

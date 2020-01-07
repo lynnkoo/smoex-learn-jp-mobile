@@ -23,18 +23,16 @@ const { selector, htmlDecode } = BbkUtils;
 
 export const Vehicle = memo(withTheme(
   ({
-    item, section, onLayout, theme,
+    item, section, onLayout, theme, showMax,
   }) => {
     const {
-      recommendDesc, vehicleDesc, vehicleHeader, vehicleIndex,
+      recommendDesc, vehicleDesc, vehicleHeader,
     } = section;
     const {
       imgUrl, vehicleImageLabel, vehicleLabelsHorizontal, vehicleLabels,
     } = vehicleDesc;
 
-    // useEffect(() => {
-    //   console.log('√【performance】Vehicle Item ', vehicleHeader.vehicleName)
-    // })
+    // console.log('【performance】Vehicle Item ', vehicleHeader.vehicleName, item.length)
 
     return (
       <View
@@ -79,14 +77,13 @@ export const Vehicle = memo(withTheme(
         }
 
         {
-          _.map(item, (data, index) => (
+          _.map(item, (data, index) => index < showMax && (
             // eslint-disable-next-line
             <Vendor
               key={index}
               index={index}
               {...data}
               vehicleName={vehicleHeader.vehicleName}
-              vehicleIndex={vehicleIndex}
             />
           ))
         }

@@ -159,7 +159,7 @@ const RenderInner: React.FC<IFilterInner> = memo(({
   </View>
 ), isEqualInner);
 
-const FilterAndSortModal: React.FC<IFilterAndSort> = ({
+const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
   visible,
   filterData,
   selectedFilters,
@@ -208,9 +208,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
   useEffect(() => {
     if (!visible) {
-      setActiveFilterBarCode('');
       // setFilterDataState([]);
-      setCount({ vehiclesCount: 0, pricesCount: 0 });
+      // setCount({ vehiclesCount: 0, pricesCount: 0 });
       enableNavigatorDragBack();
     } else {
       disableNavigatorDragBack();
@@ -218,8 +217,9 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
   }, [setActiveFilterBarCode, disableNavigatorDragBack, visible, enableNavigatorDragBack]);
 
   const onHide = useCallback(() => {
+    setActiveFilterBarCode('');
     setFilterModalIsShow({ visible: false });
-  }, [setFilterModalIsShow]);
+  }, [setActiveFilterBarCode, setFilterModalIsShow]);
 
   const setSelectedFilters = useCallback((labelVal, priceVal) => {
     let savedFilter = [];
@@ -347,6 +347,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
 
   if (visible && filterDataState && filterDataState.length === 0) return null;
 
+  // @ts-ignore
+  // logTime('【modal】 FilterAndSortModal render', JSON.stringify(count), type);
   return (
     <BbkComponentCarFilterModal
       // @ts-ignore
@@ -373,6 +375,11 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = ({
       />
     </BbkComponentCarFilterModal>
   );
-};
+}, (prevProps, nextProps) => {
+  if (prevProps.visible === nextProps.visible && !nextProps.visible) {
+    return true;
+  }
+  return false;
+});
 
 export default FilterAndSortModal;

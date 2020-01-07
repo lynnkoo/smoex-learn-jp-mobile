@@ -1,5 +1,6 @@
 import { getProductGroupsAndCount, FilterCalculater } from '@ctrip/bbk-logic';
 import _ from 'lodash';
+import memoizeOne from 'memoize-one';
 import { FrontEndConfig } from '../../Constants/Index';
 import { getStore } from '../../State/Store';
 
@@ -45,9 +46,9 @@ export const getVehAndProductList = () => (
   { vehicleList: getVehicleList(), productGroups: getAllProductGroups() });
 
 // 获取车型组列表数据
-export const getVehGroupList = () => {
+export const getVehGroupList = memoizeOne((productGroups) => {
   const vehGroupList = [];
-  getAllProductGroups().forEach((item) => {
+  productGroups.forEach((item) => {
     vehGroupList.push({
       gId: item.groupCode,
       title: item.groupName,
@@ -56,7 +57,7 @@ export const getVehGroupList = () => {
   });
 
   return vehGroupList;
-};
+}, (newArgs, oldArgs) => newArgs[0] === oldArgs[0]);
 
 // 获取所有车型个数
 export const getAllVehicleCount = () => getBaseResData().allVehicleCount || 0;

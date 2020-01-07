@@ -91,6 +91,7 @@ export default class CPage<P extends IBasePageProps, S extends IStateType> exten
 
   subscribeSearchCondition = () => {
     const store = getStore();
+    // todo 只订阅与搜索条件相关的reducer
     if (this.getPageId() !== PageId.List.ID) {
       this.observeSearchCondition = store.subscribe(() => {
         let previousPageValue = this.curPageValue;

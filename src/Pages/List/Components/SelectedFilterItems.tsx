@@ -1,5 +1,7 @@
 import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
+import _ from 'lodash';
+import { Device } from '@ctrip/crn';
 import { withTheme } from '@ctrip/bbk-theming';
 import BbkCarRightIcon from '@ctrip/bbk-component-right-icon';
 import {
@@ -30,6 +32,7 @@ const styles = StyleSheet.create({
   filterWrapper: {
     alignItems: 'flex-start',
     padding: space.spaceXXL,
+    paddingBottom: _.get(Device, 'softMenuHeight', space.spaceXXL),
     backgroundColor: color.white,
     marginTop: -space.spaceL,
     borderTopWidth: border.borderSizeXsm,
@@ -38,11 +41,13 @@ const styles = StyleSheet.create({
     ...font.body3Style,
     marginBottom: space.spaceXS,
   },
+  filterItemWrap: {
+    marginTop: space.spaceL,
+    marginRight: space.spaceL,
+  },
   filterItem: {
     paddingHorizontal: space.spaceL,
     paddingVertical: space.spaceS,
-    marginTop: space.spaceL,
-    marginRight: space.spaceL,
     backgroundColor: setOpacity(color.blueBase, 0.08),
   },
   filterItemText: {
@@ -63,7 +68,7 @@ const SelectedFilterItem = ({ code, name, clearFilter }: SelectedFilterItemProps
     CarLog.LogCode({ enName: ClickKey.C_LIST_CLEAR_BOTTOM_FILTER.KEY, name });
   };
   return (
-    <BbkTouchable onPress={onPress}>
+    <BbkTouchable onPress={onPress} style={styles.filterItemWrap}>
       <BbkCarRightIcon
         text={name}
         style={styles.filterItem}

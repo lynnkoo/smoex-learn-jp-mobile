@@ -11,7 +11,7 @@ import {
 } from '../../Pages/List/Texts';
 import { VehicleListStyle as style } from '../../Pages/List/Styles';
 import {
-  getVehAndProductList, getVehGroupList,
+  getVehAndProductList, getVehGroupList, getAllProductGroups,
 } from '../../Global/Cache/ListResSelectors';
 
 const { getPixel } = BbkUtils;
@@ -238,7 +238,7 @@ export const getVehicleListData = memoizeOne(
 );
 
 const getEnabledIndex = (index, maxIndex, minIndex, step) => {
-  const vehGroupList = getVehGroupList();
+  const vehGroupList = getVehGroupList(getAllProductGroups());
   let nextIndex = index;
   do {
     if (step > 0) {
@@ -274,7 +274,7 @@ export const getLastNextIndexObj = memoizeOne(
 );
 
 export const getGroupLength = () => {
-  const vehGroupList = getVehGroupList();
+  const vehGroupList = getVehGroupList(getAllProductGroups());
   return {
     minIndex: 0,
     maxIndex: vehGroupList.length - 1,
@@ -282,6 +282,6 @@ export const getGroupLength = () => {
 };
 
 export const getGroupNameByIndex = (index) => {
-  const vehGroupList = getVehGroupList();
+  const vehGroupList = getVehGroupList(getAllProductGroups());
   return (vehGroupList[index] || {}).title;
 };

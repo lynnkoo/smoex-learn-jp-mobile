@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { App, LoadingView } from '@ctrip/crn';
 import BBkThemingProvider from '@ctrip/bbk-theming';
-import BbkChannel from '@ctrip/bbk-utils';
 import pages from './Routers/Index';
 import { ErrorBoundary } from './Components/Index';
 import appLoad, {
@@ -15,6 +14,7 @@ import { initialiseStore, getStore } from './State/Store';
 import { getCountryId } from './State/CountryInfo/Selectors';
 import AppUnLoad from './AppUnLoad';
 import Utils from './Util/Utils';
+import { themeLight } from './Pages/List/Theme';
 
 const navigationBarConfig = {
   hide: true,
@@ -34,6 +34,8 @@ interface StateType {
 export default class RnCarApp extends Component<any, StateType> {
   observeCountry: any = null;
 
+  cacheTheme: any = themeLight;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -45,6 +47,13 @@ export default class RnCarApp extends Component<any, StateType> {
   componentWillUnmount() {
     AppUnLoad();
     this.unSubscribeCountry();
+  }
+
+  getTheme() {
+    if (!this.cacheTheme) {
+      this.cacheTheme = themeLight;
+    }
+    return this.cacheTheme;
   }
 
   subscribeCountry = () => {
@@ -104,7 +113,7 @@ export default class RnCarApp extends Component<any, StateType> {
       : (
         <ErrorBoundary>
           <Provider store={getStore()}>
-            <BBkThemingProvider channel={BbkChannel.getChannel()}>
+            <BBkThemingProvider theme={this.getTheme()}>
               <Car {...this.props} />
             </BBkThemingProvider>
           </Provider>

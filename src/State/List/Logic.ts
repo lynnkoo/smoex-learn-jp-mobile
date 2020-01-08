@@ -10,7 +10,7 @@ import {
   setStatus, initActiveGroupId, fetchApiList,
   fetchApiListCallback, setBatchRequest, reset, updateSelectedFilter,
 } from './Actions';
-import { CarFetch, AppContext } from '../../Util/Index';
+import { CarFetch } from '../../Util/Index';
 import { packageListReqParam } from './Mappers';
 import { getVehGroupList, getAllProductGroups } from '../../Global/Cache/ListResSelectors';
 import * as UBTLog from './UBTLog';
@@ -25,9 +25,7 @@ export const apiListBatchQuery = createLogic({
   /* eslint-disable no-empty-pattern */
   async process({ }, dispatch, done) {
     dispatch(reset());
-    ListReqAndResData.removeData();
     const requestId = uuid();
-    AppContext.setUserTrace({ queryVid: requestId });
     batchGroups.forEach((m) => {
       dispatch(fetchApiList({ vendorGroup: m, requestId }));
     });
@@ -42,6 +40,7 @@ export const apiListQueryProducts = createLogic({
     // 获取请求的批次
     // @ts-ignore
     const param = packageListReqParam(getState(), action.data);
+    ListReqAndResData.setData(ListReqAndResData.keyList.listProductReq, param);
     const res = await CarFetch.getListProduct(param).catch((error) => {
       dispatch(fetchApiListCallback({ isError: true, param, res: error }));
       done();

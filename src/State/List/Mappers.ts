@@ -1,4 +1,5 @@
 import moment from 'moment';
+import uuid from 'uuid';
 import { getAdultNumbers, getChildNumbers, getAge } from '../DriverAgeAndNumber/Selectors';
 import {
   getPickUpTime,
@@ -17,16 +18,19 @@ import {
   getDropOffLocationLng,
 } from '../LocationAndDate/Selectors';
 
-import { AgeConfig } from '../../Constants/Index';
-import { getPromotionFilterItems } from '../../Global/Cache/ListResSelectors';
+import { AgeConfig, LogKey } from '../../Constants/Index';
+import {
+  getPromotionFilterItems, getListSearchCondition,
+} from '../../Global/Cache/ListResSelectors';
 import { getSelectedFilters } from './Selectors';
+
+import { AppContext, CarLog } from '../../Util/Index';
+import { ListReqAndResData } from '../../Global/Cache/Index';
 
 /* eslint-disable import/prefer-default-export */
 export const packageListReqParam = (state, data: { vendorGroup: number, requestId: string }) => {
   const curAge = getAge(state);
-  return {
-    requestId: data.requestId,
-    vendorGroup: data.vendorGroup,
+  const basicParam = {
     age: curAge === AgeConfig.DEFAULT_AGE.getVal() ? AgeConfig.DEFAULT_AGE.min : Number(curAge),
     adultNumbers: getAdultNumbers(state),
     childrenNumbers: getChildNumbers(state),
@@ -55,6 +59,25 @@ export const packageListReqParam = (state, data: { vendorGroup: number, requestI
       },
     },
     searchType: 1,
+  };
+
+  // Update queryVid based on whether search conditions change
+  const previousParam = getListSearchCondition();
+  if (previousParam && JSON.stringify(previousParam) !== JSON.stringify(basicParam)) {
+    AppContext.setUserTrace({ queryVid: uuid() });
+    CarLog.LogTrace({
+      key: LogKey.PAGE_SEARCH,
+      info: { pageId: AppContext.PageInstance.getPageId() },
+    });
+  }
+
+  ListReqAndResData.removeData();
+  ListReqAndResData.setData(ListReqAndResData.keyList.listProductSearchCondition, basicParam);
+
+  return {
+    ...basicParam,
+    requestId: data.requestId,
+    vendorGroup: data.vendorGroup,
     now: new Date(),
   };
 };

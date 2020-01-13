@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import VehGroupNav from '../Pages/List/Components/VehGroupNav';
 import { getActiveGroupId, getProgress } from '../State/List/Selectors';
 import {
-  getVehGroupList, getAllVehicleCount, getAllVendorPriceCount,
+  getVehGroupList, getAllVehicleCount, getAllVendorPriceCount, getAllProductGroups,
 } from '../Global/Cache/ListResSelectors';
 import { setActiveGroupId } from '../State/List/Actions';
 
 const mapStateToProps = state => ({
   progress: getProgress(state),
   activeGroupId: getActiveGroupId(state),
-  vehGroupList: getVehGroupList(),
+  vehGroupList: getVehGroupList(getAllProductGroups()),
   allVehicleCount: getAllVehicleCount(),
   allVendorPriceCount: getAllVendorPriceCount(),
 });

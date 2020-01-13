@@ -9,7 +9,7 @@ import {
 import { setLocationInfo } from '../State/LocationAndDate/Actions';
 import {
   getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getAgePickerVisible,
-  getAgeTipPopVisible, getFilterBarIsShow,
+  getAgeTipPopVisible, getSortAndFilterVisible, getFilterBarIsShow,
 } from '../State/List/Selectors';
 import { getFormatRentalDate, getIsShowDropOff } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
@@ -28,6 +28,7 @@ const mapStateToProps = state => ({
   locationDatePopVisible: getLocationDatePopVisible(state),
   agePickerVisible: getAgePickerVisible(state),
   ageTipPopVisible: getAgeTipPopVisible(state),
+  sortAndFilterVisible: getSortAndFilterVisible(state),
   filterBarIsShow: getFilterBarIsShow(state),
 });
 

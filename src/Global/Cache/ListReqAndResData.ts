@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import { AppContext } from '../../Util/Index';
 import { getStore } from '../../State/Store';
-import { getActiveGroupId, getSelectedFilters } from '../../State/List/Selectors';
+import { getLogData } from '../../State/List/Selectors';
 
 /** 列表页接口的请求+响应数据 */
 let reqAndResData = {
@@ -35,6 +34,7 @@ export default class ListReqAndResData {
   static keyList = {
     listProductReq: 'listProductReq',
     listProductRes: 'listProductRes',
+    listProductSearchCondition: 'listProductSearchCondition',
   };
 
   static getData = (key: string) => reqAndResData[key];
@@ -64,15 +64,20 @@ export const getExposureData = () => {
   return res;
 };
 
-export const setExposureKey = (data) => {
-  const queryVid = AppContext.getQueryVid();
+export const getLogDataFromState = () => {
   const state = getStore().getState();
-  const groupId = getActiveGroupId(state);
-  const selectedFilters = getSelectedFilters(state);
+  const { queryVid, groupId, selectedFilters } = getLogData(state);
   const { filterLabels, sortFilter } = selectedFilters;
   const labels = _.map(filterLabels, ({ name }) => name);
   const selectedFilterString = [sortFilter, ...labels].sort().join(',');
-  const path = [queryVid, groupId, selectedFilterString];
+  return {
+    queryVid, groupId, selectedFilters: selectedFilterString,
+  };
+};
+
+export const setExposureKey = (data) => {
+  const { queryVid, groupId, selectedFilters } = getLogDataFromState();
+  const path = [queryVid, groupId, selectedFilters];
   const obj = _.get(exposureData, path, {});
   _.setWith(exposureData, path, {
     ...obj,

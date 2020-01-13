@@ -1,10 +1,11 @@
 import { IBUSharkUtil, Business } from '@ctrip/crn';
 import BbkTranslationKey from '@ctrip/bbk-car-translation-key';
+import uuid from 'uuid';
 import {
   AppContext, Utils, User, CarStorage,
 } from './Util/Index';
 import { initialiseAppState } from './State/Store';
-import { initialiseABTesting } from './Util/ABTesting';
+import { initialiseABTesting, initialisePreABTesting } from './Util/ABTesting';
 import { Platform } from './Constants/Index';
 import { CHANNEL_ID, CHANNEL_TYPE_UNION } from './Constants/Platform';
 import StorageKey from './Constants/StorageKey';
@@ -155,6 +156,8 @@ const loadSharkData = async () => {
 };
 
 const appPreLoad = async () => {
+  AppContext.setUserTrace({ queryVid: uuid() });
+  initialisePreABTesting();
   const label = 'loadLanguageAsync';
   DebugLog.time(label);
 

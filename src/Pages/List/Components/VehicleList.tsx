@@ -90,15 +90,13 @@ const VehicleList = (props: VehicleListProps) => {
   };
 
   const renderItem = useCallback((data) => {
-    let { item } = data;
-    if (showMoreArr[data.section.vehicleIndex]) {
-      item = data.item.slice(0, showMax);
-    }
+    const { item } = data;
     return (
       <Vehicle
         item={item}
         section={data.section}
         onLayout={shouldSetMinHeight && onVehicleLayout}
+        showMax={showMoreArr[data.section.vehicleIndex] ? showMax : item.length}
       />
     );
   }, [shouldSetMinHeight, showMax, showMoreArr]);

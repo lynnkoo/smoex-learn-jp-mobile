@@ -14,7 +14,7 @@ import VerdorHeader from './VendorHeader';
 import {
   isDiffLocation,
 } from '../../../Global/Cache/ListResSelectors';
-
+import { getLogDataFromState } from '../../../Global/Cache/ListReqAndResData';
 
 export default withTheme(
   ({
@@ -25,8 +25,10 @@ export default withTheme(
     soldOutLabel,
     locationAndDate,
     reference,
-    index,
     vehicleIndex,
+    vehicleCode,
+    vendorIndex,
+    index,
     age,
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
@@ -42,8 +44,19 @@ export default withTheme(
       const ticket = new Date().getTime();
       const url = `/rn_ibu_car/_crn_config?CRNModuleName=rn_ibu_car&CRNType=1&page=details&fromurl=ctqlist&data=${encodeURIComponent(JSON.stringify(data))}&age=${age}&cache=${ticket}`;
       URL.openURL(url);
-      CarLog.LogCode({ enName: ClickKey.C_LIST_VENDOR.KEY });
-    }, [age, locationAndDate, reference, vehicleIndex]);
+      const logData = getLogDataFromState();
+
+      CarLog.LogCode({
+        enName: ClickKey.C_LIST_VENDOR.KEY,
+        data: {
+          ...logData,
+          vehicleIndex,
+          vendorIndex,
+          vehicleCode,
+          bizVendorCode: reference.bizVendorCode,
+        },
+      });
+    }, [age, locationAndDate, reference, vehicleCode, vehicleIndex, vendorIndex]);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

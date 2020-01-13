@@ -81,6 +81,7 @@ interface IListPropsType extends IBasePageProps {
   locationDatePopVisible: boolean;
   agePickerVisible: boolean;
   ageTipPopVisible: boolean;
+  sortAndFilterVisible: boolean;
   filterBarIsShow: boolean;
   fetchList: () => void;
   setLocationInfo: (rentalLocation: any) => void;
@@ -206,7 +207,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
 
   onBackAndroid() {
     const {
-      datePickerVisible, locationDatePopVisible, agePickerVisible, ageTipPopVisible,
+      datePickerVisible, locationDatePopVisible, agePickerVisible,
+      ageTipPopVisible, sortAndFilterVisible,
     } = this.props;
     if (datePickerVisible) {
       this.datePickerRef.dismiss(() => {
@@ -218,6 +220,8 @@ export default class List extends CPage<IListPropsType, ListStateType> {
       this.props.setAgePickerIsShow({ visible: false });
     } else if (ageTipPopVisible) {
       this.props.setAgeTipPopIsShow({ visible: false });
+    } else if (sortAndFilterVisible) {
+      this.props.setFilterModalIsShow({ visible: false });
     } else {
       this.pageGoBack();
     }

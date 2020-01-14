@@ -34,6 +34,7 @@ export default class ListReqAndResData {
   static keyList = {
     listProductReq: 'listProductReq',
     listProductRes: 'listProductRes',
+    listProductSearchCondition: 'listProductSearchCondition',
   };
 
   static getData = (key: string) => reqAndResData[key];

@@ -1,4 +1,4 @@
-import { ABTesting, Util } from '@ctrip/crn';
+import { ABTesting } from '@ctrip/crn';
 import AppContext from './AppContext';
 
 export interface AbItemType {
@@ -53,13 +53,8 @@ const getAbsExpCodes = getIsSyncAbs(false);
 
 const getAbsExpCodesSync = getIsSyncAbs(true);
 
-
 const getAbs = () => {
-  let expCodes = getAbsExpCodes();
-  if (Util.isInChromeDebug) {
-    expCodes = expCodes.concat(getAbsExpCodesSync());
-  }
-
+  const expCodes = getAbsExpCodes();
   // @ts-ignore
   ABTesting.getMultiABTestingInfo(expCodes, (result) => {
     AppContext.setABTesting(result);
@@ -70,8 +65,10 @@ const getAbs = () => {
 const getAbsSync = () => {
   const expCodes = getAbsExpCodesSync();
   // @ts-ignore
-  const result = ABTesting.getMultiABTestingInfoSync(expCodes);
-  AppContext.setABTesting(result);
+  // todo Framework supports sync
+  ABTesting.getMultiABTestingInfo(expCodes, (result) => {
+    AppContext.setABTesting(result);
+  });
 };
 
 export const getAbBoolean = (AbInfo: AbItemType) => {
@@ -84,10 +81,9 @@ export const getAbExpVersion = (AbInfo: AbItemType) => (
 );
 
 export const initialiseABTesting = () => {
-  // sync
-  if (!Util.isInChromeDebug) {
-    // getAbsSync();
-  }
-  // async
   getAbs();
+};
+
+export const initialisePreABTesting = () => {
+  getAbsSync();
 };

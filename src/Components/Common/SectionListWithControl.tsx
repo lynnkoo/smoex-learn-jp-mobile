@@ -6,10 +6,13 @@ import _ from 'lodash';
 import { RefreshControl, LoadControl } from '@ctrip/crn';
 import { color } from '@ctrip/bbk-tokens';
 import { BbkUtils } from '@ctrip/bbk-utils';
+import BbkListTopBg, { maxTipIndex } from '@ctrip/bbk-component-list-top-bg';
 
 const { isIos, lazySelector } = BbkUtils;
 
 export const controlHeight = 35;
+
+const getBgTipRandom = bgTipRandom => (bgTipRandom + 1 > maxTipIndex ? 0 : bgTipRandom + 1);
 
 // @ts-ignore
 export interface SectionListWithControlProps extends SectionListProps<any> {
@@ -18,6 +21,7 @@ export interface SectionListWithControlProps extends SectionListProps<any> {
   throttle?: number;
   pullStartContent?: string;
   pullContinueContent?: string;
+  isTop?: boolean;
   refreshingIcon?: string;
   refreshingContent?: string;
   refreshResult?: boolean;
@@ -44,6 +48,8 @@ interface SectionListWithControlState {
   showAndroidLoad: boolean;
   showAndroidRefresh: boolean;
   showFooter?: boolean;
+  showTopBg?: boolean;
+  bgTipRandom?: number;
 }
 
 const styles = StyleSheet.create({
@@ -63,6 +69,11 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: color.fontPrimary,
+  },
+  topBgWrap: {
+    position: 'absolute',
+    top: -controlHeight * 2,
+    width: '100%',
   },
 });
 
@@ -87,6 +98,7 @@ export default class SectionListWithControl
 
   static defaultProps = {
     throttle: 50,
+    threshold: 50,
   };
 
   constructor(props) {
@@ -98,6 +110,7 @@ export default class SectionListWithControl
       showAndroidLoad: false,
       showAndroidRefresh: false,
       showFooter: false,
+      bgTipRandom: 0,
     };
     this.setScrollThrottle();
   }
@@ -158,6 +171,7 @@ export default class SectionListWithControl
       refresh,
       showAndroidLoad,
       showAndroidRefresh,
+      y,
     };
   }
 
@@ -204,12 +218,14 @@ export default class SectionListWithControl
     const {
       load,
       refresh,
+      y,
     } = this.triggerScroll(event);
 
     // onScrollEndDrag could be triggered before onScroll finished
     this.setState({
       onLoading: this.onScrollBegin && load,
       refreshing: this.onScrollBegin && refresh,
+      showTopBg: y <= 0,
     });
   }
 
@@ -224,20 +240,23 @@ export default class SectionListWithControl
       return;
     }
 
-    const { throttle } = this.props;
+    const { threshold, isTop } = this.props;
 
     if (showAndroidRefresh && this.refreshControlWrap) {
       this.refreshControlWrap.setNativeProps({
         style: {
-          paddingTop: throttle,
+          paddingTop: threshold + (isTop ? controlHeight : 0),
         },
+      });
+      this.setState({
+        showTopBg: true,
       });
     }
 
     if (showAndroidLoad && this.loadControlWrap) {
       this.loadControlWrap.setNativeProps({
         style: {
-          paddingBottom: throttle,
+          paddingBottom: threshold,
         },
       });
     }
@@ -297,6 +316,8 @@ export default class SectionListWithControl
 
     if (refresh) {
       const { onRefresh } = this.props;
+      const { bgTipRandom } = this.state;
+      nextState.bgTipRandom = getBgTipRandom(bgTipRandom);
       onRefresh(() => {
         this.setState({
           refreshing: false,
@@ -359,8 +380,11 @@ export default class SectionListWithControl
       onLoading,
       refreshResult,
       showFooter,
+      showTopBg,
+      bgTipRandom,
     } = this.state;
     const {
+      threshold,
       throttle,
       sections,
       renderItem,
@@ -369,6 +393,7 @@ export default class SectionListWithControl
       index,
       style,
 
+      isTop,
       pullStartContent,
       pullIcon,
       pullContinueContent,
@@ -391,7 +416,7 @@ export default class SectionListWithControl
       // ts-ignore
       <RefreshControl
         style={isIos ? styles.controlWrap : [styles.androidRefreshWrap, {
-          top: throttle - controlHeight,
+          top: threshold - controlHeight,
         }]}
         iconStyle={styles.iconStyle}
         textStyle={styles.textStyle}
@@ -408,10 +433,20 @@ export default class SectionListWithControl
       />
     );
 
+    const TopBg = (
+      <BbkListTopBg
+        visible={showTopBg}
+        random={bgTipRandom}
+        wrapStyle={[styles.topBgWrap, !isIos && {
+          top: 0,
+        }]}
+      />
+    );
+
     const listHeaderComponent = (
       <View ref={(ref) => { this.refreshControlWrap = ref; }}>
         {ListHeaderExtraComponent}
-        {refreshControl}
+        {isTop ? TopBg : refreshControl}
       </View>
     );
 

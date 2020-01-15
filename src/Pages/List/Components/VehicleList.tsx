@@ -161,7 +161,6 @@ const VehicleList = (props: VehicleListProps) => {
       ListHeaderExtraComponent={cacheDom.TipList}
       // ListFooterExtraComponent={cacheDom.SelectedFilterItems}
       ListEmptyComponent={cacheDom.NoMatch}
-      threshold={50}
       scrollDownCallback={scrollDownCallback}
       {...passThroughProps}
     />

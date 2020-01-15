@@ -7,13 +7,14 @@ import {
 import _ from 'lodash';
 import BbkComponentCarFilterModal,
 { FilterFooter, IBbkComponentCarFilterModalFooter } from '@ctrip/bbk-component-car-filter-modal';
-import BbkComponentFilterList from '@ctrip/bbk-component-filter-list';
+import BbkComponentFilterList, { filterUtil } from '@ctrip/bbk-component-filter-list';
 import { FilterType, FilterCalculaterType } from '@ctrip/bbk-logic';
 import BbkComponentSelectMenu, { BbkSelectMenu } from '@ctrip/bbk-component-select-menu';
 import { ClickKey, FilterBarType } from '../../../Constants/Index';
 import { CarLog } from '../../../Util/Index';
 
 const { SelectMenuType } = BbkSelectMenu;
+const { usePriceInfo, getPriceText } = filterUtil;
 
 interface IFilterInner extends IBbkComponentCarFilterModalFooter {
   type: string;
@@ -35,6 +36,7 @@ export interface IFilterAndSort extends IFilterInner {
   filterCalculater: FilterCalculaterType;
   selectedFilters: IFilterType;
   allFilters: any;
+  priceRange: {minRange: number, maxRange: number};
   disableNavigatorDragBack: () => void;
   enableNavigatorDragBack: () => void;
   setActiveFilterBarCode: (data: any) => void;
@@ -165,6 +167,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
   selectedFilters,
   allFilters = [],
   filterCalculater = { vehiclesCount: 0, pricesCount: 0 },
+  priceRange,
   type,
   currency,
   priceStep,
@@ -178,11 +181,23 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
 }: IFilterAndSort) => {
   const animationConfig = null;
   const [tempFilterLabel, setTempFilterLabel] = useState([]);
-  const [tempPrice, setTempPrice] = useState({});
+  const [tempPrice, setTempPrice] = useState({ min: 0, max: 0 });
   // eslint-disable-next-line prefer-const
   let [filterDataState, setFilterDataState] = useState([]);
   const [count, setCount] = useState(filterCalculater);
   const [toggleClearFilter, setToggleClearFilter] = useState(false);
+  const {
+    startPrice,
+    endPrice,
+    startPriceStr,
+    endPriceStr,
+    formatCurrency,
+    minRange,
+    maxRange,
+    maxRangeStr,
+  } = usePriceInfo({
+    tempPrice, priceRange, priceStep, currency,
+  });
 
   filterDataState = filterData;
 
@@ -203,7 +218,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
   useEffect(() => {
     setTempPrice(
       selectedFilters.priceFilter
-        && selectedFilters.priceFilter.length > 0 ? selectedFilters.priceFilter[0] : {});
+        && selectedFilters.priceFilter.length > 0
+        ? selectedFilters.priceFilter[0] : { min: 0, max: 0 });
   }, [selectedFilters.priceFilter]);
 
   useEffect(() => {
@@ -233,7 +249,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
       filter => filter && filter.code && filter.code.indexOf('Price') === -1);
     bitsFilter = savedBitsFilter.map(filter => filter && filter.code);
 
-    // @ts-ignore;
     if (price && price.min === 0 && price.max === 0) {
       price = {};
     }
@@ -246,13 +261,8 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
     };
   }, [selectedFilters.sortFilter]);
 
-  const updateFilterCalculate = useCallback((labelVal, priceVal) => {
-    const temp = setSelectedFilters(labelVal, priceVal);
-    setCount(getFilterCalculate(temp));
-  }, [getFilterCalculate, setSelectedFilters]);
-
-  const updateTempFilter = useCallback((label, handleType, typeName, isPriceLabel) => {
-    const temp = tempFilterLabel.map((item) => {
+  const setFilterLabel = useCallback((label, handleType, typeName, isPriceLabel) => {
+    const filterLabel = tempFilterLabel.map((item) => {
       if (item.type === typeName) {
         if (handleType === 'add') {
           if (isPriceLabel) {
@@ -275,9 +285,43 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
       return item;
     });
 
+    return filterLabel;
+  }, [tempFilterLabel]);
+
+  const setPriceLabel = useCallback(() => {
+    const priceText = getPriceText({
+      startPrice,
+      endPrice,
+      startPriceStr,
+      endPriceStr,
+      maxRange,
+      maxRangeStr,
+      currency: formatCurrency,
+    });
+
+    const handleType = startPrice === minRange && endPrice === maxRange ? 'delete' : 'add';
+    const label = {
+      name: priceText,
+      itemCode: `Price_${priceText}`,
+    };
+
+    const filterLabel = setFilterLabel(label, handleType, FilterBarType.Filters, true);
+
+    return filterLabel;
+  }, [endPrice, endPriceStr, formatCurrency, maxRange, maxRangeStr,
+    minRange, setFilterLabel, startPrice, startPriceStr]);
+
+  const updateFilterCalculate = useCallback((labelVal, priceVal) => {
+    const temp = setSelectedFilters(labelVal, priceVal);
+    setCount(getFilterCalculate(temp));
+  }, [getFilterCalculate, setSelectedFilters]);
+
+  const updateTempFilter = useCallback((label, handleType, typeName, isPriceLabel) => {
+    const temp = setFilterLabel(label, handleType, typeName, isPriceLabel);
+
     setTempFilterLabel(temp);
     updateFilterCalculate(temp, tempPrice);
-  }, [updateFilterCalculate, tempFilterLabel, tempPrice]);
+  }, [setFilterLabel, updateFilterCalculate, tempPrice]);
 
   const updateTempPrice = useCallback((price, priceType) => {
     const temp: any = tempPrice;
@@ -295,14 +339,18 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
   }, [updateFilterCalculate, tempFilterLabel, tempPrice]);
 
   const onSaveFilter = useCallback(() => {
-    const temp = setSelectedFilters(tempFilterLabel, tempPrice);
+    let filterLabel = tempFilterLabel;
+    if (tempPrice && !(tempPrice.min === 0 && tempPrice.max === 0)) {
+      filterLabel = setPriceLabel();
+    }
+    const temp = setSelectedFilters(filterLabel, tempPrice);
 
-    updateFilterCalculate(tempFilterLabel, tempPrice);
+    updateFilterCalculate(filterLabel, tempPrice);
     updateSelectedFilter(temp);
     onHide();
     CarLog.LogCode({ enName: ClickKey.C_LIST_SAVED_FILTERS.KEY, selectedFilters: temp });
-  }, [setSelectedFilters, tempFilterLabel, tempPrice,
-    updateFilterCalculate, updateSelectedFilter, onHide]);
+  }, [tempFilterLabel, tempPrice, setSelectedFilters,
+    updateFilterCalculate, updateSelectedFilter, onHide, setPriceLabel]);
 
   const onClearFilter = useCallback(() => {
     const tempCode = tempFilterLabel.map((item) => {
@@ -339,7 +387,7 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
       return newMenu;
     });
 
-    setTempPrice({});
+    setTempPrice({ min: 0, max: 0 });
     setFilterDataState(tempFilterDataState);
     setTempFilterLabel(tempCode);
     updateFilterCalculate(tempCode, {});
@@ -375,11 +423,6 @@ const FilterAndSortModal: React.FC<IFilterAndSort> = memo(({
       />
     </BbkComponentCarFilterModal>
   );
-}, (prevProps, nextProps) => {
-  if (prevProps.visible === nextProps.visible && !nextProps.visible) {
-    return true;
-  }
-  return false;
-});
+}, (prevProps, nextProps) => prevProps.visible === nextProps.visible && !nextProps.visible);
 
 export default FilterAndSortModal;

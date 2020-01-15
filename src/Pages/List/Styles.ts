@@ -25,7 +25,7 @@ export const VehicleListStyle = StyleSheet.create({
   vendor: {
     paddingTop: space.spaceXXL,
     paddingBottom: space.spaceXXL,
-    overflow: 'hidden',
+    // overflow: 'hidden',
   },
   flexRow: {
     flexDirection: 'row',

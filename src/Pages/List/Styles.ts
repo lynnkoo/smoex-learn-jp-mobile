@@ -4,7 +4,7 @@ import {
 } from '@ctrip/bbk-tokens';
 import { BbkUtils, BbkChannel } from '@ctrip/bbk-utils';
 
-const { getPixel } = BbkUtils;
+const { getPixel, isAndroid } = BbkUtils;
 
 export const VehicleListStyle = StyleSheet.create({
   wrap: {
@@ -75,6 +75,7 @@ export const VehicleListStyle = StyleSheet.create({
   },
   vendorPriceWrap: {
     marginLeft: BbkChannel.isTrip() ? -space.spaceS : -space.spaceXS,
+    paddingRight: isAndroid ? space.spaceXXL : 0,
   },
   vehicleHeaderWrap: {
     borderBottomWidth: 0,

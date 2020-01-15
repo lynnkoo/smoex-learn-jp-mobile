@@ -2,7 +2,7 @@
  * todo: test
  * 此方法为解决android IBULoading 多次show的问题
  */
-import { Loading } from '@ctrip/crn';
+import { IBULoading, Loading } from '@ctrip/crn';
 import Utils from './Utils';
 
 class IBULoadingFn {
@@ -11,7 +11,7 @@ class IBULoadingFn {
     this[`${type}_isLoadingShow`] = true;
     // @ts-ignore
     if (Utils.isTrip()) {
-      Loading.showMaskLoading(params, cancelCallback);
+      IBULoading.showLoadingDialog(params, cancelCallback);
     } else {
       // @ts-ignore
       Loading.showIconicLoadingV2(params, cancelCallback);
@@ -21,10 +21,10 @@ class IBULoadingFn {
   hide(type = 'detail') {
     if (!this[`${type}_isLoadingShow`]) return;
     this[`${type}_isLoadingShow`] = false;
-    Loading.hideMaskLoading();
+    IBULoading.dismissLoadingDialog();
     // @ts-ignore
     if (Utils.isTrip()) {
-      Loading.hideMaskLoading();
+      IBULoading.dismissLoadingDialog();
     } else {
       // @ts-ignore
       Loading.hideIconicLoadingV2();

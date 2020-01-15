@@ -191,7 +191,8 @@ export default class VehicleListWithControl extends
     const $lastNextIndexObj = newLastNextIndexObj || lastNextIndexObj;
     const { last, next } = $lastNextIndexObj[index];
     const isTop = index <= minIndex || last < minIndex;
-    const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
+    // const noRefresh = isTop && getSharkValue('listCombine_toTheTop');
+    const noRefresh = isTop && ' ';
     const noMoreContent = getSharkValue('listCombine_toTheBottom');
     const lastGroupName = getGroupNameByIndex(last);
     const nextGroupName = getGroupNameByIndex(next);
@@ -215,6 +216,7 @@ export default class VehicleListWithControl extends
       /**
        * scroll handler props
        */
+      isTop,
       onRefresh: this.onRefreshSection,
       onLoadMore: this.onLoadMore,
       refFn: (ref) => {

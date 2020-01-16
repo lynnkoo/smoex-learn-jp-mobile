@@ -11,7 +11,7 @@ import {
   getIsLoading, getIsFail, getDatePickerVisible, getLocationDatePopVisible, getAgePickerVisible,
   getAgeTipPopVisible, getSortAndFilterVisible, getFilterBarIsShow,
 } from '../State/List/Selectors';
-import { getFormatRentalDate, getIsShowDropOff } from '../State/LocationAndDate/Selectors';
+import { getFormatRentalDate, getRentalLocation } from '../State/LocationAndDate/Selectors';
 import { getAge } from '../State/DriverAgeAndNumber/Selectors';
 import { isDebugMode } from '../State/Debug/Selectors';
 
@@ -22,7 +22,7 @@ const mapStateToProps = state => ({
   indexCallbckData: {
     rentalDate: getFormatRentalDate(state),
     age: getAge(state),
-    isShowDropOff: getIsShowDropOff(state),
+    rentalLocation: getRentalLocation(state),
   },
   datePickerVisible: getDatePickerVisible(state),
   locationDatePopVisible: getLocationDatePopVisible(state),

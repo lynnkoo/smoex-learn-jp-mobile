@@ -374,6 +374,16 @@ export default class SectionListWithControl
     }
   }
 
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { sections } = this.props;
+    if (nextProps.sections.length === 0 && sections.length !== 0) {
+      this.setState({
+        showFooter: true,
+      });
+    }
+  }
+
   render() {
     const {
       refreshing,

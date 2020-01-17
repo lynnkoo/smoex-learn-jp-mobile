@@ -1,13 +1,7 @@
 import React, {
-  memo, useMemo, useCallback, useState, useEffect,
+  memo, useCallback, useState, useEffect,
 } from 'react';
 import _ from 'lodash';
-import { View, StyleSheet } from 'react-native';
-import { BbkUtils } from '@ctrip/bbk-utils';
-import { getSharkValue } from '@ctrip/bbk-shark';
-import BbkListNoMatch from '@ctrip/bbk-component-list-no-match';
-import { ImgType } from '@ctrip/bbk-component-list-no-match/dist/NoMatchImg';
-import { color } from '@ctrip/bbk-tokens';
 import SectionListWithControl,
 {
   SectionListWithControlProps,
@@ -15,44 +9,13 @@ import SectionListWithControl,
   from '../../../Components/Common/SectionListWithControl';
 import { Vehicle, VehicleHeader } from './Vehicle';
 import { User } from '../../../Util/Index';
-import SelectedFilterItems from '../../../Containers/SelectedFilterItemsContainer';
 import TipList from '../../../Containers/ListTipListContainer';
 import SectionFooterContainer from '../../../Containers/VehicleListSectionFooterContainer';
-
-const { getPixel } = BbkUtils;
-
-const styles = StyleSheet.create({
-  noMatchWrap: {
-    backgroundColor: color.white,
-    paddingTop: getPixel(64),
-    paddingBottom: getPixel(40),
-  },
-});
-
-const NoMatch = () => useMemo(
-  () => (
-    <View style={styles.noMatchWrap}>
-      <BbkListNoMatch
-        type={ImgType.No_Search_Result}
-        title={getSharkValue('listCombine_filterModalNoResult')}
-        subTitle=""
-        isShowOperateButton={false}
-        isShowRentalDate={false}
-      />
-    </View>
-  ),
-  [],
-);
+import FilterNoMatchContainer from '../../../Containers/FilterNoMatchContainer';
 
 const cacheDom = {
-  NoMatch: (
-    <>
-      <NoMatch />
-      <SelectedFilterItems />
-    </>
-  ),
+  NoMatch: <FilterNoMatchContainer />,
   TipList: <TipList />,
-  SelectedFilterItems: <SelectedFilterItems />,
 };
 
 interface section {
@@ -159,7 +122,6 @@ const VehicleList = (props: VehicleListProps) => {
       renderSectionHeader={renderSectionHeader}
       renderSectionFooter={renderSectionFooter}
       ListHeaderExtraComponent={cacheDom.TipList}
-      // ListFooterExtraComponent={cacheDom.SelectedFilterItems}
       ListEmptyComponent={cacheDom.NoMatch}
       scrollDownCallback={scrollDownCallback}
       {...passThroughProps}

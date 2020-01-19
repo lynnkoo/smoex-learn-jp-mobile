@@ -54,7 +54,7 @@ const ListTips = (props: IPropsType) => {
       paddingVertical: BbkUtils.getPixel(24),
       paddingHorizontal: BbkUtils.getPixel(32),
       backgroundColor: color.white,
-      zIndex: 1
+      zIndex: 1,
     }}
     >
       <BbkTips

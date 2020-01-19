@@ -297,6 +297,7 @@ export default class SectionListWithControl
     const nextState: any = {
       showAndroidLoad,
       showAndroidRefresh,
+      showTopBg: isIos ? this.state.showTopBg : false,
     };
 
     if (load) {

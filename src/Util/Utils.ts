@@ -41,6 +41,7 @@ class Utils {
   */
   static getAppType(urlAppType: string = ''): string {
     /* eslint-disable dot-notation */
+    // @ts-ignore
     if (global['__crn_appId'] === APP_ID.TRIP) return APP_TYPE.OSD_T_APP;
     if (urlAppType.toUpperCase() === APP_TYPE.OSD_C_APP) return APP_TYPE.OSD_C_APP;
     if (urlAppType.toUpperCase() === APP_TYPE.ISD_C_APP) return APP_TYPE.ISD_C_APP;
@@ -49,6 +50,7 @@ class Utils {
 
   // value oneof rn_car_app | rn_ibu_car_app
   static getChannelName(): string {
+    // @ts-ignore
     return global['__crn_productName'];
   }
 
@@ -65,6 +67,7 @@ class Utils {
   }
 
   static isTrip(): boolean {
+    // @ts-ignore
     return global['__crn_appId'] === APP_ID.TRIP;
   }
 
@@ -93,6 +96,7 @@ class Utils {
   }
 
   static isZucheApp(): boolean {
+    // @ts-ignore
     return global['__crn_appId'] === APP_ID.ZUCHE;
   }
 

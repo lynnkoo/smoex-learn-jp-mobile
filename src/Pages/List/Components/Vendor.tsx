@@ -36,10 +36,13 @@ export default withTheme(
       const data: any = {
         ...locationAndDate,
         book: {
-          sortNum: isHotLabel,
           ...reference,
         },
       };
+
+      if (isHotLabel) {
+        data.book.sortNum = 1;
+      }
       // 跳转Trip详情页地址
       /* eslint-disable max-len */
       const ticket = new Date().getTime();

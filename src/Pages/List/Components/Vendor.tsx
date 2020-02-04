@@ -30,12 +30,13 @@ export default withTheme(
     vendorIndex,
     index,
     age,
+    isHotLabel
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
         ...locationAndDate,
         book: {
-          sortNum: vehicleIndex,
+          sortNum: isHotLabel,
           ...reference,
         },
       };

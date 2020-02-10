@@ -30,15 +30,19 @@ export default withTheme(
     vendorIndex,
     index,
     age,
+    isHotLabel
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
         ...locationAndDate,
         book: {
-          sortNum: vehicleIndex,
           ...reference,
         },
       };
+
+      if (isHotLabel) {
+        data.book.sortNum = 1;
+      }
       // 跳转Trip详情页地址
       /* eslint-disable max-len */
       const ticket = new Date().getTime();

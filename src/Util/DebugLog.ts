@@ -16,6 +16,7 @@ const debugLog = {
   timeLog: (label?: string, ...data: any[]) => {
     if (Util.isInChromeDebug) {
       /* eslint-disable no-console */
+      // @ts-ignore
       console.timeLog(label, data);
     }
   },

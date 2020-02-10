@@ -84,6 +84,7 @@ export const Vehicle = memo(withTheme(
               index={index}
               {...data}
               vehicleName={vehicleHeader.vehicleName}
+              isHotLabel={vehicleHeader.isHotLabel}
             />
           ))
         }

@@ -104,7 +104,7 @@ export const apiListQueryProductsCallback = createLogic({
     const hasResult = (curPageResData
       && curPageResData.productGroups
       && curPageResData.productGroups.length > 0) || false;
-    const nextIsLoading = (hasResult || has200) ? false : curProgress === 0;
+    const nextIsLoading = !((hasResult || has200));
     const nextFailed = hasResult ? false : (has200 ? true : curProgress === 1);
     const nextProgress = has200 ? 1 : curProgress;
     dispatch(setStatus({ isLoading: nextIsLoading, isFail: nextFailed, progress: nextProgress }));

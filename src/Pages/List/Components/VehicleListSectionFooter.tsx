@@ -31,6 +31,7 @@ const SectionFooter = memo(({
   setShowMoreArr,
   showLoginItem,
   setShowLoginItem,
+  fetchListBatchQuery,
 }: any) => {
   const { section: { data, vehicleIndex, vehicleHeader } } = sectionProps;
   const showMore = showMoreArr[vehicleIndex];
@@ -46,6 +47,8 @@ const SectionFooter = memo(({
     const res = await User.toLogin();
     if (res) {
       setShowLoginItem(false);
+      // 重新加载数据，更新优惠信息
+      fetchListBatchQuery();
     }
   };
 

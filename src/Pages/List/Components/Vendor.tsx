@@ -30,7 +30,7 @@ export default withTheme(
     vendorIndex,
     index,
     age,
-    isHotLabel
+    isHotLabel,
   }) => {
     const onVerdorHeaderPress = useCallback(() => {
       const data: any = {
@@ -60,7 +60,7 @@ export default withTheme(
           bizVendorCode: reference.bizVendorCode,
         },
       });
-    }, [age, locationAndDate, reference, vehicleCode, vehicleIndex, vendorIndex]);
+    }, [age, isHotLabel, locationAndDate, reference, vehicleCode, vehicleIndex, vendorIndex]);
 
     const soldoutLabelProps = {
       ...soldOutLabel,

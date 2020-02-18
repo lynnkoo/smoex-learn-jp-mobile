@@ -47,9 +47,9 @@ const SectionFooter = memo(({
     const res = await User.toLogin();
     if (res) {
       setShowLoginItem(false);
+      // 重新加载数据，更新优惠信息
+      fetchListBatchQuery();
     }
-    // 重新加载数据，更新优惠信息
-    fetchListBatchQuery();
   };
 
   return (

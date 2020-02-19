@@ -11,22 +11,24 @@ let reqAndResData = {
 /** 埋点数据结构
  * selectedFilters [] 规则: sortFilter + filterLabels, ','拼接
  * key string 规则: keyObj.value,  ','拼接
-    {
-      queryVid: {
-        groupId: {
-          selectedFilters: {
-            key: {
+    [{
+      queryVid: '',
+      queryVidData: [{
+        groupId: '',
+        groupIdData: [{
+          selectedFilters: '',
+          selectedFiltersData: [{
+            key: '',
+            keyData: {
               vehicleIndex: 0,
               vendorIndex: 0,
               vehicleCode: '',
               bizVendorCode: ''
             }
-          }
-
-          ]
-        }
-      }
-    }
+          }]
+        }]
+      }]
+    }]
  */
 let exposureData = {};
 
@@ -52,14 +54,30 @@ export default class ListReqAndResData {
 }
 
 export const getExposureData = () => {
-  const res = {};
+  const res = [];
   _.forEach(exposureData, (queryVidObj, queryVid) => {
+    const resData = {
+      queryVid,
+      queryVidData: [],
+    };
     _.forEach(queryVidObj, (groupIdObj, groupId) => {
+      const queryVidData = {
+        groupId,
+        groupIdData: [],
+      };
       _.forEach(groupIdObj, (selectedFiltersObj, selectedFilterString) => {
-        const path = [queryVid, groupId, selectedFilterString];
-        _.setWith(res, path, _.values(selectedFiltersObj), Object);
+        const groupIdData = {
+          selectedFilters: selectedFilterString,
+          selectedFiltersData: _.map(selectedFiltersObj, (key, value) => ({
+            key,
+            keyData: value,
+          })),
+        };
+        queryVidData.groupIdData.push(groupIdData);
       });
+      resData.queryVidData.push(queryVidData);
     });
+    res.push(resData);
   });
   return res;
 };
